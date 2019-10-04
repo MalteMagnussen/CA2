@@ -1,91 +1,80 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package facades;
 
-import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import entities.Hobby;
 import entities.Person;
-import java.util.List;
+import java.util.ArrayList;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import utils.EMF_Creator;
 
 /**
  *
  * @author Camilla
  */
 public class SearchFacadeTest {
-    
+
+    private static EntityManagerFactory emf;
+    private static SearchFacade facade;
+
+    private static ArrayList<Person> testPersons = new ArrayList();
+    private static ArrayList<Hobby> hobbies1 = new ArrayList();
+    private static ArrayList<Hobby> hobbies2 = new ArrayList();
+    private static ArrayList<Hobby> hobbies3 = new ArrayList();
+
     public SearchFacadeTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
-    }
-    
-    @AfterAll
-    public static void tearDownClass() {
-    }
-    
-    @BeforeEach
-    public void setUp() {
-    }
-    
-    @AfterEach
-    public void tearDown() {
+        emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
+        facade = SearchFacade.getSearchFacade(emf);
+        
+        EntityManager em = emf.createEntityManager();
+
+        hobbies1.add(new Hobby("WoW", "Det der spil"));
+        hobbies1.add(new Hobby("Fisk", "Kun havfisk"));
+        hobbies2.add(new Hobby("Papers, Please!", "Glory to Arstotzka!"));
+        hobbies2.add(new Hobby("WoW", "Det der spil"));
+        hobbies3.add(new Hobby("Frimærker", "Samlerobjekt"));
+
+        testPersons.add(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1));
+        testPersons.add(new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2));
+        testPersons.add(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3));
+        
+        try {
+            for (Person p : testPersons) {
+                em.getTransaction().begin();
+                em.persist(p);
+                em.getTransaction().commit();
+            }
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
     }
 
-    @Test
-    public void testGetSearchFacade() {
-        System.out.println("getSearchFacade");
-        EntityManagerFactory _emf = null;
-        SearchFacade expResult = null;
-        SearchFacade result = SearchFacade.getSearchFacade(_emf);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    @Test
+    //@Test
     public void testAddPerson() {
-        System.out.println("addPerson");
-        PersonDTO_IN pDTO = null;
-        SearchFacade instance = null;
-        Person expResult = null;
-        Person result = instance.addPerson(pDTO);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
     }
 
     @Test
     public void testGetAllPersonDTO_OUT() {
-        System.out.println("getAllPersonDTO_OUT");
-        SearchFacade instance = null;
-        List<PersonDTO_OUT> expResult = null;
-        List<PersonDTO_OUT> result = instance.getAllPersonDTO_OUT();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ArrayList<PersonDTO_OUT> exp = new ArrayList();
+        exp.add(new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1)));
+        exp.add(new PersonDTO_OUT(new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2)));
+        exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
+        assertEquals(exp, facade.getAllPersonDTO_OUT());
     }
 
-    @Test
+//    @Test
     public void testGetPersonDTO_OUT_ByLastname() throws Exception {
-        System.out.println("getPersonDTO_OUT_ByLastname");
-        String lastname = "";
-        SearchFacade instance = null;
-        List<PersonDTO_OUT> expResult = null;
-        List<PersonDTO_OUT> result = instance.getPersonDTO_OUT_ByLastname(lastname);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
     }
-    
+
 }

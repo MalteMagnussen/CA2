@@ -72,7 +72,6 @@ public class PersonDTO_OUT {
     public int hashCode()
     {
         int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
         hash = 97 * hash + Objects.hashCode(this.email);
         hash = 97 * hash + Objects.hashCode(this.fName);
         hash = 97 * hash + Objects.hashCode(this.lName);
@@ -104,10 +103,6 @@ public class PersonDTO_OUT {
             return false;
         }
         if (!Objects.equals(this.lName, other.lName))
-        {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id))
         {
             return false;
         }

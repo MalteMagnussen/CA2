@@ -1,83 +1,73 @@
 package dto;
 
 import entities.Hobby;
+import entities.Person;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Schema(name = "Person")
 public class PersonDTO_IN {
     
-    private Integer id;
-    private String email, fName, lName;
+    @Schema(name = "First Name", required = true, example = "Johnny")
+    private String firstName;
+    @Schema(name = "Last Name", required = true, example = "Reimar")
+    private String lastName;
+    @Schema(name = "Email", required = true, example = "Johnny@Reimar.dk")
+    private String email;
+    @Schema(example="None available")
     private List<Hobby> hobbies;
-    
-    public PersonDTO_IN()
-    {}
 
-    public PersonDTO_IN(Integer id, String email, String fName, String lName)
-    {
-        this.id = id;
-        this.email = email;
-        this.fName = fName;
-        this.lName = lName;
-        this.hobbies = new ArrayList();
+    public PersonDTO_IN() {
     }
 
-    public PersonDTO_IN(String email, String fName, String lName) {
-        this.email = email;
-        this.fName = fName;
-        this.lName = lName;
-        this.hobbies = new ArrayList();
+    public PersonDTO_IN(Person person) {
+        this.email = person.getEmail();
+        this.firstName = person.getFirstName();
+        this.lastName = person.getLastName();
+        this.hobbies = person.getHobbies();
     }
-    
-    public PersonDTO_IN(String email, String fName, String lName, List<Hobby> hobbies) {
+
+    public PersonDTO_IN(PersonDTO_OUT person) {
+        this.email = person.getEmail();
+        this.firstName = person.getFirstName();
+        this.lastName = person.getLastName();
+        this.hobbies = person.getHobbies();
+    }
+
+    public PersonDTO_IN(String email, String firstName, String lastName, List<Hobby> hobbies) {
         this.email = email;
-        this.fName = fName;
-        this.lName = lName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.hobbies = hobbies;
     }
     
-
-    public Integer getId()
-    {
-        return id;
+    public void addHobby(Hobby h){
+        this.hobbies.add(h);
     }
 
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getfName()
-    {
-        return fName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setfName(String fName)
-    {
-        this.fName = fName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getlName()
-    {
-        return lName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setlName(String lName)
-    {
-        this.lName = lName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public List<Hobby> getHobbies() {
@@ -87,55 +77,32 @@ public class PersonDTO_IN {
     public void setHobbies(List<Hobby> hobbies) {
         this.hobbies = hobbies;
     }
-    
-    
 
     @Override
-    public int hashCode()
-    {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.email);
-        hash = 97 * hash + Objects.hashCode(this.fName);
-        hash = 97 * hash + Objects.hashCode(this.lName);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final PersonDTO_IN other = (PersonDTO_IN) obj;
-        if (!Objects.equals(this.email, other.email))
-        {
+        if (!Objects.equals(this.email, other.email)) {
             return false;
         }
-        if (!Objects.equals(this.fName, other.fName))
-        {
+        if (!Objects.equals(this.firstName, other.firstName)) {
             return false;
         }
-        if (!Objects.equals(this.lName, other.lName))
-        {
+        if (!Objects.equals(this.lastName, other.lastName)) {
+            return false;
+        }
+        if (!Objects.equals(this.hobbies, other.hobbies)) {
             return false;
         }
         return true;
     }
-
-    @Override
-    public String toString()
-    {
-        return "PersonDTO_IN{" + "id=" + id + ", email=" + email + ", fName=" + fName + ", lName=" + lName + '}';
-    }
-    
     
 }

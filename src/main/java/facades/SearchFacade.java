@@ -1,7 +1,10 @@
 package facades;
 
 import dto.PersonDTO_IN;
+import dto.PersonDTO_OUT;
 import entities.Person;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
@@ -57,6 +60,38 @@ public class SearchFacade
             return null;
         } finally
         {
+            em.close();
+        }
+    }
+    
+    public List<PersonDTO_OUT> getAllPersonDTO_OUT() {
+        EntityManager em = getEntityManager();
+        try {
+            List<Person> persons = em.createNamedQuery("Person.getAll").getResultList();
+            List<PersonDTO_OUT> result = new ArrayList<>();
+            persons.forEach((person) -> {
+                result.add(new PersonDTO_OUT(person));
+            });
+            return result;
+            } catch (Exception ex) {
+            throw new WebApplicationException("No persons in database", 400);
+        } finally {
+            em.close();
+        }
+    }
+    
+    public List<PersonDTO_OUT> getPersonDTO_OUT_ByLastname(String lastname) throws Exception {
+        EntityManager em = getEntityManager();
+        try {
+            List<Person> persons = em.createNamedQuery("Person.getByLastName").setParameter("lastName", lastname).getResultList();
+            List<PersonDTO_OUT> result = new ArrayList<>();
+            persons.forEach((person) -> {
+                result.add(new PersonDTO_OUT(person));
+            });
+            return result;
+        } catch (Exception ex) {
+            throw new WebApplicationException("No persons in database", 400);
+        } finally {
             em.close();
         }
     }

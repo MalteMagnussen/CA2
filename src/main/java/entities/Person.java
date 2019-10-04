@@ -11,12 +11,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Person.getAll", query = "SELECT p FROM Person p"),
+    @NamedQuery(name = "Person.getByLastName", query = "SELECT p FROM Person p WHERE p.lastName = :lastName"),})
 public class Person implements Serializable
 {
 

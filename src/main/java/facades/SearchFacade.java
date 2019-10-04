@@ -5,9 +5,11 @@
  */
 package facades;
 
+import dto.PersonDTO_IN;
 import entities.Person;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.WebApplicationException;
 
 /**
  *
@@ -39,25 +41,30 @@ public class SearchFacade
         return emf.createEntityManager();
     }
     
-//    public Person addPerson(PersonDTO pDTO)
-//    {
-//        Person p
-//        EntityManager em = getEntityManager();
-//        try
-//        {
-//            em.getTransaction().begin();
-//            em.persist(p);
-//            em.getTransaction().commit();
-//            return p;
-//        } catch (Exception ex)
-//        {
-//            System.out.println("Failed to persist object");
-//            //ex.printStackTrace();
-//            return null;
-//        } finally
-//        {
-//            em.close();
-//        }
-//    }
+    public Person addPerson(PersonDTO_IN pDTO)
+    {
+        Person p = new Person(pDTO.getEmail(), pDTO.getfName(), pDTO.getlName(), null);
+        EntityManager em = getEntityManager();
+        if (p.getId() == null || p.getEmail() == null ||
+                p.getFirstName() == null || p.getLastName() == null)
+        {
+            throw new WebApplicationException("Missing input", 400);
+        }
+        try
+        {
+            em.getTransaction().begin();
+            em.persist(p);
+            em.getTransaction().commit();
+            return p;
+        } catch (Exception ex)
+        {
+            System.out.println("Failed to persist object");
+            //ex.printStackTrace();
+            return null;
+        } finally
+        {
+            em.close();
+        }
+    }
     
 }

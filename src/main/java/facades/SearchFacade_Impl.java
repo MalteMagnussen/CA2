@@ -14,12 +14,12 @@ import javax.ws.rs.WebApplicationException;
  *
  * @author
  */
-public class SearchFacade {
+public class SearchFacade_Impl implements ISearchFacade {
 
-    private static SearchFacade instance;
+    private static SearchFacade_Impl instance;
     private static EntityManagerFactory emf;
 
-    private SearchFacade() {
+    private SearchFacade_Impl() {
     }
 
     /**
@@ -27,10 +27,10 @@ public class SearchFacade {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static SearchFacade getSearchFacade(EntityManagerFactory _emf) {
+    public static SearchFacade_Impl getSearchFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
-            instance = new SearchFacade();
+            instance = new SearchFacade_Impl();
         }
         return instance;
     }

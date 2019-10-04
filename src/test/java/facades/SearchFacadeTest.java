@@ -25,7 +25,7 @@ import utils.EMF_Creator;
 public class SearchFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static SearchFacade facade;
+    private static SearchFacade_Impl facade;
 
     private static ArrayList<Person> testPersons = new ArrayList();
     private static ArrayList<Hobby> hobbies1 = new ArrayList();
@@ -38,7 +38,7 @@ public class SearchFacadeTest {
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
-        facade = SearchFacade.getSearchFacade(emf);
+        facade = SearchFacade_Impl.getSearchFacade(emf);
         
         hobbies1.add(new Hobby("WoW", "Det der spil"));
         hobbies1.add(new Hobby("Fisk", "Kun havfisk"));

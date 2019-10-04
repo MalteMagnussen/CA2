@@ -1,5 +1,6 @@
 package facades;
 
+import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Hobby;
 import entities.Person;
@@ -58,9 +59,12 @@ public class SearchFacadeTest {
         }
     }
 
-    //@Test
+    @Test
     public void testAddPerson() {
-        
+        ArrayList<Hobby> addHobbies = new ArrayList();
+        Person exp = new Person("testADD@email.dk", "testADD", "Deathwing", addHobbies);
+        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADD@email.dk", "testADD", "Deathwing");
+        assertEquals(exp, facade.addPerson(addTESTpersonDTO));
     }
 
     @Test

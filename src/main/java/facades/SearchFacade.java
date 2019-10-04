@@ -42,7 +42,7 @@ public class SearchFacade
     {
         Person p = new Person(pDTO.getEmail(), pDTO.getfName(), pDTO.getlName(), null);
         EntityManager em = getEntityManager();
-        if (p.getId() == null || p.getEmail() == null ||
+        if (p.getEmail() == null ||
                 p.getFirstName() == null || p.getLastName() == null)
         {
             throw new WebApplicationException("Missing input", 400);

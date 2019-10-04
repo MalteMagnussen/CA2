@@ -105,7 +105,6 @@ public class Person implements Serializable
     public int hashCode()
     {
         int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.id);
         hash = 59 * hash + Objects.hashCode(this.email);
         hash = 59 * hash + Objects.hashCode(this.firstName);
         hash = 59 * hash + Objects.hashCode(this.lastName);
@@ -138,10 +137,6 @@ public class Person implements Serializable
             return false;
         }
         if (!Objects.equals(this.lastName, other.lastName))
-        {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id))
         {
             return false;
         }

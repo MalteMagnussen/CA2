@@ -20,6 +20,14 @@ public class PersonDTO_IN {
         this.lName = lName;
     }
 
+    public PersonDTO_IN(String email, String fName, String lName) {
+        this.email = email;
+        this.fName = fName;
+        this.lName = lName;
+    }
+    
+    
+
     public Integer getId()
     {
         return id;

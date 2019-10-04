@@ -16,12 +16,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author
  */
 @Entity
+@NamedQueries({
+@NamedQuery(name = "Person.deleteAllRows", query = "DELETE FROM Person"),
+@NamedQuery(name = "Person.getAll", query = "SELECT p FROM Person p"),
+@NamedQuery(name = "Person.getPersonByID", query = "SELECT p FROM Person p WHERE p.id = :id"),
+/* Get all Persons with a given hobby. */
+@NamedQuery(name = "Person.getPersonsByHobby", query = "SELECT p FROM Person p JOIN p.hobbies h WHERE h.name = :name"), 
+/* Get the count of people with a given hobby */
+@NamedQuery(name = "Person.countPersonsByHobby", query = "SELECT count(p) FROM Person p JOIN p.hobbies h WHERE h.name = :name"),
+/* Get information about a person, given a phone number */
+@NamedQuery(name = "Person.getPersonByPhoneNumber", query = "SELECT p FROM Person p WHERE p.phone = :phone"),
+})
 public class Person implements Serializable
 {
 

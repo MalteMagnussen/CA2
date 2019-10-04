@@ -5,6 +5,7 @@
  */
 package facades;
 
+import entities.Person;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -38,5 +39,25 @@ public class SearchFacade
         return emf.createEntityManager();
     }
     
+//    public Person addPerson(PersonDTO pDTO)
+//    {
+//        Person p
+//        EntityManager em = getEntityManager();
+//        try
+//        {
+//            em.getTransaction().begin();
+//            em.persist(p);
+//            em.getTransaction().commit();
+//            return p;
+//        } catch (Exception ex)
+//        {
+//            System.out.println("Failed to persist object");
+//            //ex.printStackTrace();
+//            return null;
+//        } finally
+//        {
+//            em.close();
+//        }
+//    }
     
 }

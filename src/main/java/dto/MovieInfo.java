@@ -1,5 +1,6 @@
 package dto;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,8 @@ EXAMPLE CLASS
 */
 
 @Schema(name = "MovieInfo")  //Because of this we could have called the class MovieInfoDTO
+@io.swagger.v3.oas.annotations.Hidden
+@Deprecated
 public class MovieInfo {
 
     private int id;

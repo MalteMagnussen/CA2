@@ -67,6 +67,8 @@ public class PersonDTO_OUT {
     {
         this.lName = lName;
     }
+    
+    
 
     @Override
     public int hashCode()

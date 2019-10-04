@@ -1,6 +1,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -48,6 +49,13 @@ public class Person implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.hobbies = hobbies;
+    }
+    
+    public Person(String email, String firstName, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.hobbies = new ArrayList();
     }
 
     public Integer getId() {

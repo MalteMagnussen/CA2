@@ -22,7 +22,6 @@ import utils.EMF_Creator;
  *
  * @author Camilla
  */
-
 public class SearchFacadeTest {
 
     private static EntityManagerFactory emf;
@@ -41,8 +40,6 @@ public class SearchFacadeTest {
         emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
         facade = SearchFacade.getSearchFacade(emf);
         
-        EntityManager em = emf.createEntityManager();
-
         hobbies1.add(new Hobby("WoW", "Det der spil"));
         hobbies1.add(new Hobby("Fisk", "Kun havfisk"));
         hobbies2.add(new Hobby("Papers, Please!", "Glory to Arstotzka!"));
@@ -52,7 +49,26 @@ public class SearchFacadeTest {
         testPersons.add(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1));
         testPersons.add(new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2));
         testPersons.add(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3));
-        
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+            em.getTransaction().commit();
+
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+    }
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        EntityManager em = emf.createEntityManager();
         try {
             for (Person p : testPersons) {
                 em.getTransaction().begin();
@@ -64,14 +80,6 @@ public class SearchFacadeTest {
         } finally {
             em.close();
         }
-    }
-
-    @AfterEach
-    public void tearDown() throws Exception {
-    }
-
-    @BeforeEach
-    public void setUp() throws Exception {
     }
 
     @AfterAll
@@ -87,7 +95,7 @@ public class SearchFacadeTest {
     }
 
     @Test
-    public void testzGetAllPersonDTO_OUT() {
+    public void testGetAllPersonDTO_OUT() {
         ArrayList<PersonDTO_OUT> exp = new ArrayList();
         exp.add(new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1)));
         exp.add(new PersonDTO_OUT(new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2)));
@@ -103,7 +111,7 @@ public class SearchFacadeTest {
         exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
         assertEquals(exp, facade.getPersonDTO_OUT_ByHobby("Frimærker"));
     }
-    
+
     @Test
     public void testGetPersonDTO_OUT_ByHobby_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
@@ -115,11 +123,20 @@ public class SearchFacadeTest {
     public void testGetCountPersonByHobby() {
         assertEquals(2L, facade.getCountPersonByHobby("WoW"));
     }
-    
+
     @Test
     public void testGetCountPersonByHobby_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.getCountPersonByHobby("HAT");
         });
+    }
+
+    @Test
+    public void testAddPersonWithHobbies() {
+        ArrayList<Hobby> addHobbies = new ArrayList();
+        addHobbies.add(new Hobby("Testhobby", "hobbytest"));
+        Person exp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+        assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
     }
 }

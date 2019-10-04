@@ -2,6 +2,7 @@ package facades;
 
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import entities.Hobby;
 import entities.Person;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +42,7 @@ public class SearchFacade {
     public Person addPerson(PersonDTO_IN pDTO) {
         Person p = new Person(pDTO.getEmail(), pDTO.getfName(), pDTO.getlName(), null);
         EntityManager em = getEntityManager();
-        if (p.getEmail() == null
-                || p.getFirstName() == null || p.getLastName() == null) {
+        if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null) {
             throw new WebApplicationException("Missing input", 400);
         }
         try {
@@ -63,7 +63,7 @@ public class SearchFacade {
         EntityManager em = getEntityManager();
         try {
             List<Person> persons = em.createNamedQuery("Person.getAll").getResultList();
-            if(persons.isEmpty()){
+            if (persons.isEmpty()) {
                 throw new WebApplicationException("No persons in database", 400);
             }
             List<PersonDTO_OUT> result = new ArrayList<>();
@@ -82,7 +82,7 @@ public class SearchFacade {
         EntityManager em = getEntityManager();
         try {
             List<Person> persons = em.createNamedQuery("Person.getPersonsByHobby").setParameter("name", hobbyName).getResultList();
-            if(persons.isEmpty()){
+            if (persons.isEmpty()) {
                 throw new WebApplicationException("No persons with hobby in database", 400);
             }
             List<PersonDTO_OUT> result = new ArrayList<>();
@@ -101,10 +101,34 @@ public class SearchFacade {
         EntityManager em = getEntityManager();
         try {
             Long result = (long) em.createNamedQuery("Person.countPersonsByHobby").setParameter("name", hobbyName).getSingleResult();
-            if(result == 0){
+            if (result == 0) {
                 throw new WebApplicationException("No persons with hobby in database", 400);
             }
             return result;
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
+        } finally {
+            em.close();
+        }
+    }
+
+    public Person addPersonWithHobbies(PersonDTO_IN personDTO) {
+        Person person = new Person(personDTO.getEmail(), personDTO.getfName(), personDTO.getlName());
+        List<Hobby> hobbies = personDTO.getHobbies();
+        EntityManager em = getEntityManager();
+        if (person.getEmail() == null || person.getFirstName() == null || person.getLastName() == null || hobbies == null || hobbies.isEmpty()) {
+            throw new WebApplicationException("Missing input", 400);
+        }
+        try {
+            em.getTransaction().begin();
+
+            hobbies.forEach((hobby) -> {
+                Hobby mergeHobby = em.merge(hobby);
+                person.addHobby(mergeHobby);
+            });
+            em.persist(person);
+            em.getTransaction().commit();
+            return person;
         } catch (Exception ex) {
             throw new WebApplicationException(ex.getMessage(), 400);
         } finally {

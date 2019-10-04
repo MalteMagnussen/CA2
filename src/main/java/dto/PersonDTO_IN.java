@@ -1,6 +1,9 @@
 package dto;
 
+import entities.Hobby;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Schema(name = "Person")
@@ -8,6 +11,7 @@ public class PersonDTO_IN {
     
     private Integer id;
     private String email, fName, lName;
+    private List<Hobby> hobbies;
     
     public PersonDTO_IN()
     {}
@@ -18,14 +22,22 @@ public class PersonDTO_IN {
         this.email = email;
         this.fName = fName;
         this.lName = lName;
+        this.hobbies = new ArrayList();
     }
 
     public PersonDTO_IN(String email, String fName, String lName) {
         this.email = email;
         this.fName = fName;
         this.lName = lName;
+        this.hobbies = new ArrayList();
     }
     
+    public PersonDTO_IN(String email, String fName, String lName, List<Hobby> hobbies) {
+        this.email = email;
+        this.fName = fName;
+        this.lName = lName;
+        this.hobbies = hobbies;
+    }
     
 
     public Integer getId()
@@ -68,11 +80,20 @@ public class PersonDTO_IN {
         this.lName = lName;
     }
 
+    public List<Hobby> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<Hobby> hobbies) {
+        this.hobbies = hobbies;
+    }
+    
+    
+
     @Override
     public int hashCode()
     {
         int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
         hash = 97 * hash + Objects.hashCode(this.email);
         hash = 97 * hash + Objects.hashCode(this.fName);
         hash = 97 * hash + Objects.hashCode(this.lName);
@@ -104,10 +125,6 @@ public class PersonDTO_IN {
             return false;
         }
         if (!Objects.equals(this.lName, other.lName))
-        {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id))
         {
             return false;
         }

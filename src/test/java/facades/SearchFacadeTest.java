@@ -16,6 +16,7 @@ import utils.EMF_Creator;
  *
  * @author Camilla
  */
+
 public class SearchFacadeTest {
 
     private static EntityManagerFactory emf;
@@ -68,17 +69,21 @@ public class SearchFacadeTest {
     }
 
     @Test
-    public void testGetAllPersonDTO_OUT() {
+    public void testzGetAllPersonDTO_OUT() {
         ArrayList<PersonDTO_OUT> exp = new ArrayList();
         exp.add(new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1)));
         exp.add(new PersonDTO_OUT(new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2)));
         exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
+        System.out.println("EXP " + exp.size());
+        System.out.println("RES " + facade.getAllPersonDTO_OUT().size());
         assertEquals(exp, facade.getAllPersonDTO_OUT());
     }
 
-//    @Test
+    @Test
     public void testGetPersonDTO_OUT_ByLastname() throws Exception {
-        
+        ArrayList<PersonDTO_OUT> exp = new ArrayList();
+        exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
+        assertEquals(exp, facade.getPersonDTO_OUT_ByLastname("Onyxia"));
     }
 
 }

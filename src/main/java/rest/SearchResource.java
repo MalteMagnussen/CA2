@@ -58,13 +58,7 @@ import javax.ws.rs.core.Response;
 )
 @Path("search")
 public class SearchResource {
-
-//    private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
-//    private static final FacadeExample FACADE = FacadeExample.getFacadeExample(EMF);
-    //  private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    
-    
-    /* Begin recommended for assignment */
+    //<editor-fold defaultstate="collapsed" desc="API recommended for assignment">
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -75,6 +69,7 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested Person"),
                 @ApiResponse(responseCode = "404", description = "Person not found")})
+
     public PersonDTO_OUT getPersonInfoByPhone(@QueryParam("phone") long phone) {
         //    /api/search/phone?phone=<phone>
         //get from facade
@@ -151,9 +146,9 @@ public class SearchResource {
         List<String> returnList = new ArrayList();
         return returnList;
     }
+    //</editor-fold>
     
-    /* End recommended for assignment */
-    /* Begin Person CRUD */
+    //<editor-fold defaultstate="collapsed" desc="API - Person CRUD">
     @GET
     @Path("person/{name}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -162,6 +157,7 @@ public class SearchResource {
                 @ApiResponse(responseCode = "200", description = "List of persons with name"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
+
     public List<PersonDTO_OUT> getPersonByName(@PathParam("name") String name) {
         if (name == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
@@ -205,7 +201,7 @@ public class SearchResource {
         //change through facade, return
         return new PersonDTO_OUT();
     }
-    
+
     @DELETE
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
@@ -222,9 +218,9 @@ public class SearchResource {
         //delete through facade, return
         return new PersonDTO_OUT();
     }
-    
-    /* End Person CRUD */
-    /* Begin Hobby CRUD */
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="API - Hobby CRUD">
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -233,6 +229,7 @@ public class SearchResource {
                 @ApiResponse(responseCode = "200", description = "List of hobbies with name"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
+
     public List<HobbyDTO_OUT> getHobbyByName(@PathParam("hobby") String hobby) {
         if (hobby == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
@@ -276,7 +273,7 @@ public class SearchResource {
         //change through facade, return
         return new HobbyDTO_OUT();
     }
-    
+
     @DELETE
     @Path("hobby")
     @Produces(MediaType.APPLICATION_JSON)
@@ -293,11 +290,9 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-    
-    /* End Hobby CRUD */
-    
+//</editor-fold>
 
-    /*Old stuff*/
+    //<editor-fold defaultstate="collapsed" desc="Old stuff (Movie)">
     @Deprecated
     @GET
     @Path("/deprecated/{id}")
@@ -309,6 +304,7 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = MovieInfo.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested Movie"),
                 @ApiResponse(responseCode = "404", description = "Movie not found")})
+
     public MovieInfo getMovieInfo(@PathParam("id") int id) {
         if (id == 13) {
             throw new WebApplicationException("Requested movie not found.", 400);
@@ -332,5 +328,5 @@ public class SearchResource {
         movie.setId(464);
         return movie;
     }
-
+//</editor-fold>
 }

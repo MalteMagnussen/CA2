@@ -1,6 +1,8 @@
 package rest;
 
 import com.google.gson.JsonObject;
+import dto.HobbyDTO_IN;
+import dto.HobbyDTO_OUT;
 import dto.MovieInfo;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
@@ -38,6 +40,7 @@ import javax.ws.rs.core.Response;
         tags = {
             @Tag(name = "General", description = "API related to CA2"),
             @Tag(name = "Persons", description = "CRUD-operations for Person"),
+            @Tag(name = "Hobbies", description = "CRUD-operations for Hobby"),
             @Tag(name = "Movies", description = "Deprecated")
 
         },
@@ -150,7 +153,7 @@ public class SearchResource {
     }
     
     /* End recommended for assignment */
-    
+    /* Begin Person CRUD */
     @GET
     @Path("person/{name}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -220,8 +223,78 @@ public class SearchResource {
         return new PersonDTO_OUT();
     }
     
+    /* End Person CRUD */
+    /* Begin Hobby CRUD */
+    @GET
+    @Path("hobby/{hobby}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get hobbies given a name", tags = {"Hobbies"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "List of hobbies with name"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public List<HobbyDTO_OUT> getHobbyByName(@PathParam("hobby") String hobby) {
+        if (hobby == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //Based on entity & DTO we might want first name + last name
+        //get from facade, return
+        List<HobbyDTO_OUT> returnList = new ArrayList();
+        return returnList;
+    }
+
+    @POST
+    @Path("hobby")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new hobby", tags = {"Hobbies"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The Newly created Hobby"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public HobbyDTO_OUT addHobby(HobbyDTO_IN hobby) {
+        if (hobby == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //add through facade, return
+        return new HobbyDTO_OUT();
+    }
+
+    @PUT
+    @Path("hobby")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Edit existing hobby", tags = {"Hobbies"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The edited Hobby"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public HobbyDTO_OUT editHobby(HobbyDTO_IN hobby) {
+        if (hobby == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //change through facade, return
+        return new HobbyDTO_OUT();
+    }
     
+    @DELETE
+    @Path("hobby")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Delete existing Hobby", tags = {"Hobbies"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The deleted Hobby"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public HobbyDTO_OUT deleteHobby(HobbyDTO_IN hobby) {
+        if (hobby == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //delete through facade, return
+        return new HobbyDTO_OUT();
+    }
     
+    /* End Hobby CRUD */
     
 
     /*Old stuff*/

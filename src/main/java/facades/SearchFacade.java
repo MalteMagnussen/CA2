@@ -13,16 +13,16 @@ import javax.ws.rs.WebApplicationException;
  *
  * @author
  */
-public class SearchFacade
-{
+public class SearchFacade {
+
     private static SearchFacade instance;
     private static EntityManagerFactory emf;
-    
-    private SearchFacade() {}
-    
-    
+
+    private SearchFacade() {
+    }
+
     /**
-     * 
+     *
      * @param _emf
      * @return an instance of this facade class.
      */
@@ -37,63 +37,79 @@ public class SearchFacade
     private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-    
-    public Person addPerson(PersonDTO_IN pDTO)
-    {
+
+    public Person addPerson(PersonDTO_IN pDTO) {
         Person p = new Person(pDTO.getEmail(), pDTO.getfName(), pDTO.getlName(), null);
         EntityManager em = getEntityManager();
-        if (p.getEmail() == null ||
-                p.getFirstName() == null || p.getLastName() == null)
-        {
+        if (p.getEmail() == null
+                || p.getFirstName() == null || p.getLastName() == null) {
             throw new WebApplicationException("Missing input", 400);
         }
-        try
-        {
+        try {
             em.getTransaction().begin();
             em.persist(p);
             em.getTransaction().commit();
             return p;
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println("Failed to persist object");
             //ex.printStackTrace();
             return null;
-        } finally
-        {
-            em.close();
-        }
-    }
-    
-    public List<PersonDTO_OUT> getAllPersonDTO_OUT() {
-        EntityManager em = getEntityManager();
-        try {
-            List<Person> persons = em.createNamedQuery("Person.getAll").getResultList();
-            List<PersonDTO_OUT> result = new ArrayList<>();
-            persons.forEach((person) -> {
-                result.add(new PersonDTO_OUT(person));
-            });
-            return result;
-            } catch (Exception ex) {
-            throw new WebApplicationException("No persons in database", 400);
         } finally {
             em.close();
         }
     }
-        // Person.getPersonsByHobby", query = "SELECT p FROM Person p JOIN p.hobbies h WHERE h.name = :name"),
-    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) throws Exception {
+
+    public List<PersonDTO_OUT> getAllPersonDTO_OUT() {
         EntityManager em = getEntityManager();
         try {
-            List<Person> persons = em.createNamedQuery("Person.getPersonsByHobby").setParameter("name", hobbyName).getResultList();
+            List<Person> persons = em.createNamedQuery("Person.getAll").getResultList();
+            if(persons.isEmpty()){
+                throw new WebApplicationException("No persons in database", 400);
+            }
             List<PersonDTO_OUT> result = new ArrayList<>();
             persons.forEach((person) -> {
                 result.add(new PersonDTO_OUT(person));
             });
             return result;
         } catch (Exception ex) {
-            throw new WebApplicationException("No persons in database", 400);
+            throw new WebApplicationException(ex.getMessage(), 400);
         } finally {
             em.close();
         }
     }
-    
+
+    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) throws Exception {
+        EntityManager em = getEntityManager();
+        try {
+            List<Person> persons = em.createNamedQuery("Person.getPersonsByHobby").setParameter("name", hobbyName).getResultList();
+            if(persons.isEmpty()){
+                throw new WebApplicationException("No persons with hobby in database", 400);
+            }
+            List<PersonDTO_OUT> result = new ArrayList<>();
+            persons.forEach((person) -> {
+                result.add(new PersonDTO_OUT(person));
+            });
+            return result;
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
+        } finally {
+            em.close();
+        }
+    }
+
+    public long getCountPersonByHobby(String hobbyName) {
+        EntityManager em = getEntityManager();
+        try {
+            Long result = (long) em.createNamedQuery("Person.countPersonsByHobby").setParameter("name", hobbyName).getSingleResult();
+            if(result == 0){
+                throw new WebApplicationException("No persons with hobby in database", 400);
+            }
+            return result;
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
+        } finally {
+            em.close();
+        }
+    }
+
 }

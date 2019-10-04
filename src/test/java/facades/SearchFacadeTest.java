@@ -5,11 +5,17 @@ import dto.PersonDTO_OUT;
 import entities.Hobby;
 import entities.Person;
 import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.WebApplicationException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import utils.EMF_Creator;
 
 /**
@@ -60,6 +66,18 @@ public class SearchFacadeTest {
         }
     }
 
+    @AfterEach
+    public void tearDown() throws Exception {
+    }
+
+    @BeforeEach
+    public void setUp() throws Exception {
+    }
+
+    @AfterAll
+    public static void tearDownClass() throws Exception {
+    }
+
     @Test
     public void testAddPerson() {
         ArrayList<Hobby> addHobbies = new ArrayList();
@@ -85,5 +103,23 @@ public class SearchFacadeTest {
         exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
         assertEquals(exp, facade.getPersonDTO_OUT_ByHobby("Frimærker"));
     }
+    
+    @Test
+    public void testGetPersonDTO_OUT_ByHobby_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonDTO_OUT_ByHobby("HAT");
+        });
+    }
 
+    @Test
+    public void testGetCountPersonByHobby() {
+        assertEquals(2L, facade.getCountPersonByHobby("WoW"));
+    }
+    
+    @Test
+    public void testGetCountPersonByHobby_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getCountPersonByHobby("HAT");
+        });
+    }
 }

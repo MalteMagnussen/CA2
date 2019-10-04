@@ -39,8 +39,9 @@ public class SearchFacade_Impl implements ISearchFacade {
         return emf.createEntityManager();
     }
 
+    @Override
     public Person addPerson(PersonDTO_IN pDTO) {
-        Person p = new Person(pDTO.getEmail(), pDTO.getfName(), pDTO.getlName(), null);
+        Person p = new Person(pDTO.getEmail(), pDTO.getFirstName(), pDTO.getLastName(), null);
         EntityManager em = getEntityManager();
         if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null) {
             throw new WebApplicationException("Missing input", 400);
@@ -59,6 +60,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
     public List<PersonDTO_OUT> getAllPersonDTO_OUT() {
         EntityManager em = getEntityManager();
         try {
@@ -78,6 +80,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
     public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) throws Exception {
         EntityManager em = getEntityManager();
         try {
@@ -97,6 +100,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
     public long getCountPersonByHobby(String hobbyName) {
         EntityManager em = getEntityManager();
         try {
@@ -112,8 +116,9 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
     public Person addPersonWithHobbies(PersonDTO_IN personDTO) {
-        Person person = new Person(personDTO.getEmail(), personDTO.getfName(), personDTO.getlName());
+        Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
         List<Hobby> hobbies = personDTO.getHobbies();
         EntityManager em = getEntityManager();
         if (person.getEmail() == null || person.getFirstName() == null || person.getLastName() == null || hobbies == null || hobbies.isEmpty()) {

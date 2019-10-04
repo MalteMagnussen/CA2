@@ -5,7 +5,6 @@ import dto.PersonDTO_OUT;
 import entities.Hobby;
 import entities.Person;
 import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;

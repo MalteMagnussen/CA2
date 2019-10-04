@@ -6,11 +6,16 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 
 /**
  *
@@ -26,6 +31,13 @@ public class Person implements Serializable
     private Integer id;
     private String email, firstName, lastName;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "hobby_id")
+    private List<Hobby> hobbies;
+
+    public Person()
+    {}
+    
     public Integer getId()
     {
         return id;
@@ -66,14 +78,30 @@ public class Person implements Serializable
         this.lastName = lastName;
     }
 
+    public List<Hobby> getHobbies()
+    {
+        return hobbies;
+    }
+
+    public void setHobbies(List<Hobby> hobbies)
+    {
+        this.hobbies = hobbies;
+    }
+
+    public void addHobby(Hobby hobby)
+    {
+        this.hobbies.add(hobby);
+    }
+
     @Override
     public int hashCode()
     {
         int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.id);
-        hash = 83 * hash + Objects.hashCode(this.email);
-        hash = 83 * hash + Objects.hashCode(this.firstName);
-        hash = 83 * hash + Objects.hashCode(this.lastName);
+        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 59 * hash + Objects.hashCode(this.email);
+        hash = 59 * hash + Objects.hashCode(this.firstName);
+        hash = 59 * hash + Objects.hashCode(this.lastName);
+        hash = 59 * hash + Objects.hashCode(this.hobbies);
         return hash;
     }
 
@@ -109,13 +137,17 @@ public class Person implements Serializable
         {
             return false;
         }
+        if (!Objects.equals(this.hobbies, other.hobbies))
+        {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString()
     {
-        return "Person{" + "id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + '}';
+        return "Person{" + "id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", hobbies=" + hobbies + '}';
     }
 
     

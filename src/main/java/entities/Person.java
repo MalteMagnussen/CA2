@@ -25,8 +25,9 @@ import javax.persistence.NamedQuery;
     @NamedQuery(name = "Person.deleteAllRows", query = "DELETE FROM Person"),
     @NamedQuery(name = "Person.getPersonByID", query = "SELECT p FROM Person p WHERE p.id = :id"),
     @NamedQuery(name = "Person.getPersonsByHobby", query = "SELECT p FROM Person p JOIN p.hobbies h WHERE h.name = :name"),
-    @NamedQuery(name = "Person.countPersonsByHobby", query = "SELECT count(p) FROM Person p JOIN p.hobbies h WHERE h.name = :name"),
-    @NamedQuery(name = "Person.getPersonByPhoneNumber", query = "SELECT p FROM Person p WHERE p.phone = :phone"),})
+    @NamedQuery(name = "Person.countPersonsByHobby", query = "SELECT count(p) FROM Person p JOIN p.hobbies h WHERE h.name = :name"),})
+//    @NamedQuery(name = "Person.getPersonByPhoneNumber", query = "SELECT p FROM Person p WHERE p.phone = :phone"),})
+
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;

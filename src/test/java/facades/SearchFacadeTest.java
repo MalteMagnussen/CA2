@@ -80,10 +80,10 @@ public class SearchFacadeTest {
     }
 
     @Test
-    public void testGetPersonDTO_OUT_ByLastname() throws Exception {
+    public void testGetPersonDTO_OUT_ByHobby() throws Exception {
         ArrayList<PersonDTO_OUT> exp = new ArrayList();
         exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
-        assertEquals(exp, facade.getPersonDTO_OUT_ByLastname("Onyxia"));
+        assertEquals(exp, facade.getPersonDTO_OUT_ByHobby("Frimærker"));
     }
 
 }

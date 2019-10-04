@@ -79,11 +79,11 @@ public class SearchFacade
             em.close();
         }
     }
-    
-    public List<PersonDTO_OUT> getPersonDTO_OUT_ByLastname(String lastname) throws Exception {
+        // Person.getPersonsByHobby", query = "SELECT p FROM Person p JOIN p.hobbies h WHERE h.name = :name"),
+    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) throws Exception {
         EntityManager em = getEntityManager();
         try {
-            List<Person> persons = em.createNamedQuery("Person.getByLastName").setParameter("lastName", lastname).getResultList();
+            List<Person> persons = em.createNamedQuery("Person.getPersonsByHobby").setParameter("name", hobbyName).getResultList();
             List<PersonDTO_OUT> result = new ArrayList<>();
             persons.forEach((person) -> {
                 result.add(new PersonDTO_OUT(person));

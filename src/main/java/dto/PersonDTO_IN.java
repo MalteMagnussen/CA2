@@ -9,8 +9,8 @@ import java.util.Objects;
 @Schema(name = "Person")
 public class PersonDTO_IN {
     
+    @Schema(name = "ID", required = true, example = "1")
     private Integer id;
-    
     @Schema(name = "First Name", required = true, example = "Johnny")
     private String firstName;
     @Schema(name = "Last Name", required = true, example = "Reimar")

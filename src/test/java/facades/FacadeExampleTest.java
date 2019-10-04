@@ -16,7 +16,7 @@ import utils.EMF_Creator.DbSelector;
 import utils.EMF_Creator.Strategy;
 
 //Uncomment the line below, to temporarily disable this test
-@Disabled
+//@Disabled
 public class FacadeExampleTest {
 
     private static EntityManagerFactory emf;
@@ -29,7 +29,7 @@ public class FacadeExampleTest {
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactory(
                 "pu",
-                "jdbc:mysql://localhost:3307/startcode_test",
+                "jdbc:mysql://localhost:3307/CA2_test",
                 "dev",
                 "ax2",
                 EMF_Creator.Strategy.CREATE);

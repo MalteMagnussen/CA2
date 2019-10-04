@@ -11,12 +11,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  *
  * @author
  */
 @Entity
+@NamedQueries({
+@NamedQuery(name = "Hobby.deleteAllRows", query = "DELETE FROM Hobby"),
+@NamedQuery(name = "Hobby.getAll", query = "SELECT h FROM Hobby h"),
+@NamedQuery(name = "Hobby.getHobbyByID", query = "SELECT h FROM Hobby h WHERE h.id = :id"),
+})
 public class Hobby implements Serializable
 {
 

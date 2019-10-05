@@ -93,7 +93,7 @@ public class SearchResource {
     public long getPersonsCountByHobby(@PathParam("hobby") String hobby) {
         return FACADE.getCountPersonByHobby(hobby);
     }
-    
+
     @GET
     @Path("person/{name}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -110,7 +110,40 @@ public class SearchResource {
         List<PersonDTO_OUT> returnList = FACADE.getPersonByFullName(name);
         return returnList;
     }
-
+    
+    @POST
+    @Path("person")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new person", tags = {"Persons"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The Newly created Person"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public PersonDTO_OUT addPersonNoHobbies(PersonDTO_IN person) {
+        if (person == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        return new PersonDTO_OUT(FACADE.addPerson(person));
+    }
+    
+    @POST
+    @Path("person")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new person", tags = {"Persons"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The Newly created Person"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN person) {
+        if (person == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        return new PersonDTO_OUT(FACADE.addPersonWithHobbies(person));
+    }
+    
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -161,23 +194,6 @@ public class SearchResource {
         //get from facade. Not sure if we want this to be string, object or ?
         List<String> returnList = new ArrayList();
         return returnList;
-    }
-
-    @POST
-    @Path("person")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add new person", tags = {"Persons"},
-            responses = {
-                @ApiResponse(responseCode = "200", description = "The Newly created Person"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
-            })
-    public PersonDTO_OUT addPerson(PersonDTO_IN person) {
-        if (person == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        //add through facade, return
-        return new PersonDTO_OUT();
     }
 
     @PUT
@@ -283,7 +299,9 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="DEPRECATED TO DELETE">
     @Deprecated
     @GET
     @Path("/deprecated/{id}")
@@ -319,4 +337,5 @@ public class SearchResource {
         movie.setId(464);
         return movie;
     }
+    //</editor-fold>
 }

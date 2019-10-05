@@ -76,7 +76,7 @@ public class SearchResource {
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons with that hobby found")})
     public List<PersonDTO_OUT> getPersonsByHobby(@QueryParam("hobby") String hobby) {
-        List<PersonDTO_OUT> returnList = FACADE.getPersonDTO_OUT_ByHobby("hobby");
+        List<PersonDTO_OUT> returnList = FACADE.getPersonDTO_OUT_ByHobby(hobby);
         return returnList;
     }
 
@@ -91,25 +91,23 @@ public class SearchResource {
                 @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
                 @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
     public long getPersonsCountByHobby(@PathParam("hobby") String hobby) {
-        return FACADE.getCountPersonByHobby("hobby");
+        return FACADE.getCountPersonByHobby(hobby);
     }
     
     @GET
     @Path("person/{name}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get person given a name", tags = {"Persons"},
+    @Operation(summary = "Get person given a name (firstname lastname)", tags = {"Persons"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "List of persons with name"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
 
-    public List<PersonDTO_OUT> getPersonByName(@PathParam("name") String name) {
+    public List<PersonDTO_OUT> getPersonByFullName(@PathParam("name") String name) {
         if (name == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        //Based on entity & DTO we might want first name + last name
-        //get from facade, return
-        List<PersonDTO_OUT> returnList = new ArrayList();
+        List<PersonDTO_OUT> returnList = FACADE.getPersonByFullName(name);
         return returnList;
     }
 

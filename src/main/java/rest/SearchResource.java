@@ -58,7 +58,7 @@ import javax.ws.rs.core.Response;
 )
 @Path("search")
 public class SearchResource {
-    //<editor-fold defaultstate="collapsed" desc="API recommended for assignment">
+
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -146,9 +146,8 @@ public class SearchResource {
         List<String> returnList = new ArrayList();
         return returnList;
     }
-    //</editor-fold>
+
     
-    //<editor-fold defaultstate="collapsed" desc="API - Person CRUD">
     @GET
     @Path("person/{name}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -218,9 +217,7 @@ public class SearchResource {
         //delete through facade, return
         return new PersonDTO_OUT();
     }
-//</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="API - Hobby CRUD">
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -290,9 +287,7 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-//</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Old stuff (Movie)">
     @Deprecated
     @GET
     @Path("/deprecated/{id}")
@@ -328,5 +323,4 @@ public class SearchResource {
         movie.setId(464);
         return movie;
     }
-//</editor-fold>
 }

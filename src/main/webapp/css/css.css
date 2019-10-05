@@ -11,3 +11,9 @@ and open the template in the editor.
 .bottom-space {
     margin-bottom: 50px;
 }
+
+#myBody {
+    font-family: sans-serif;
+    padding:8px;
+    font-size: large;
+}

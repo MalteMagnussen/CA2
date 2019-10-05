@@ -6,6 +6,7 @@ import dto.HobbyDTO_OUT;
 import dto.MovieInfo;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import facades.ISearchFacade;
 import facades.SearchFacade_Impl;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,7 +64,7 @@ import utils.EMF_Creator;
 public class SearchResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
-    private static final SearchFacade_Impl FACADE = SearchFacade_Impl.getSearchFacade(EMF);
+    private static final ISearchFacade FACADE = SearchFacade_Impl.getSearchFacade(EMF);
 
     @GET
     @Path("/hobby")

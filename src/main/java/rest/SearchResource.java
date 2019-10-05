@@ -79,6 +79,21 @@ public class SearchResource {
         List<PersonDTO_OUT> returnList = FACADE.getPersonDTO_OUT_ByHobby(hobby);
         return returnList;
     }
+    
+    @GET
+    @Path("/allpersons")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all persons",
+            tags = {"General"},
+            responses = {
+                @ApiResponse(
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
+                @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
+                @ApiResponse(responseCode = "404", description = "No persons found")})
+    public List<PersonDTO_OUT> getPersonsByHobby() {
+        List<PersonDTO_OUT> returnList = FACADE.getAllPersonDTO_OUT();
+        return returnList;
+    }
 
     @GET
     @Path("/hobby/{hobby}/count")

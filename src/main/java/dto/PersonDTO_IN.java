@@ -9,6 +9,8 @@ import java.util.Objects;
 @Schema(name = "Person")
 public class PersonDTO_IN {
     
+    @Schema(name = "ID", required = true, example = "1")
+    private Integer id;
     @Schema(name = "First Name", required = true, example = "Johnny")
     private String firstName;
     @Schema(name = "Last Name", required = true, example = "Reimar")
@@ -40,6 +42,12 @@ public class PersonDTO_IN {
         this.firstName = firstName;
         this.lastName = lastName;
         this.hobbies = hobbies;
+    }
+
+    public PersonDTO_IN(String email, String firstname, String lastname) {
+        this.email = email;
+        this.firstName = firstname;
+        this.lastName = lastname;
     }
     
     public void addHobby(Hobby h){
@@ -103,6 +111,24 @@ public class PersonDTO_IN {
             return false;
         }
         return true;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.firstName);
+        hash = 83 * hash + Objects.hashCode(this.lastName);
+        hash = 83 * hash + Objects.hashCode(this.email);
+        hash = 83 * hash + Objects.hashCode(this.hobbies);
+        return hash;
     }
     
 }

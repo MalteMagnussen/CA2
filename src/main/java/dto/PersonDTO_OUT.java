@@ -8,7 +8,8 @@ import java.util.Objects;
 
 @Schema(name = "Person")
 public class PersonDTO_OUT {
-    
+    @Schema(name = "ID", required = true, example = "1")
+    private Integer id;
     @Schema(name = "First Name", required = true, example = "Johnny")
     private String firstName;
     @Schema(name = "Last Name", required = true, example = "Reimar")
@@ -78,6 +79,14 @@ public class PersonDTO_OUT {
         this.hobbies = hobbies;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -103,6 +112,16 @@ public class PersonDTO_OUT {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 61 * hash + Objects.hashCode(this.firstName);
+        hash = 61 * hash + Objects.hashCode(this.lastName);
+        hash = 61 * hash + Objects.hashCode(this.email);
+        hash = 61 * hash + Objects.hashCode(this.hobbies);
+        return hash;
     }
     
 }

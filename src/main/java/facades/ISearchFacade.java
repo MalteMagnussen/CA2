@@ -20,4 +20,6 @@ public interface ISearchFacade {
     public long getCountPersonByHobby(String hobbyName);
 
     public Person addPersonWithHobbies(PersonDTO_IN personDTO);
+    
+    public List<PersonDTO_OUT> getPersonByFullName(String name);
 }

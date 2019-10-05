@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.ws.rs.WebApplicationException;
 
 /**
@@ -81,7 +82,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) throws Exception {
+    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) {
         EntityManager em = getEntityManager();
         try {
             List<Person> persons = em.createNamedQuery("Person.getPersonsByHobby").setParameter("name", hobbyName).getResultList();
@@ -134,6 +135,30 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.persist(person);
             em.getTransaction().commit();
             return person;
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<PersonDTO_OUT> getPersonByFullName(String name) {
+        EntityManager em = getEntityManager();
+        String[] names = name.split(" ");
+        try {
+            Query query = em.createNamedQuery("Person.getPersonsByFullName");
+            query.setParameter("firstName", names[0]);
+            query.setParameter("lastName", names[1]);
+            List<Person> results = query.getResultList();
+            if (results.isEmpty()) {
+                throw new WebApplicationException("No persons with that name in database", 400);
+            }
+            List<PersonDTO_OUT> personDTOs = new ArrayList<>();
+            for (Person person : results) {
+                personDTOs.add(new PersonDTO_OUT(person));
+            }
+            return personDTOs;
         } catch (Exception ex) {
             throw new WebApplicationException(ex.getMessage(), 400);
         } finally {

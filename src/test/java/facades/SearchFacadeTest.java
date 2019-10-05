@@ -5,6 +5,7 @@ import dto.PersonDTO_OUT;
 import entities.Hobby;
 import entities.Person;
 import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
@@ -137,5 +138,12 @@ public class SearchFacadeTest {
         Person exp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
+    }
+    
+    @Test
+    public void testGetPersonByFullName() {
+        PersonDTO_OUT expResult = new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1));
+        List<PersonDTO_OUT> result = facade.getPersonByFullName("Rigmor Noggenfogger");
+        assertEquals(expResult, result.get(0));
     }
 }

@@ -15,9 +15,11 @@ public interface ISearchFacade {
 
     public List<PersonDTO_OUT> getAllPersonDTO_OUT();
 
-    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName) throws Exception;
+    public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName);
 
     public long getCountPersonByHobby(String hobbyName);
 
     public Person addPersonWithHobbies(PersonDTO_IN personDTO);
+    
+    public List<PersonDTO_OUT> getPersonByFullName(String name);
 }

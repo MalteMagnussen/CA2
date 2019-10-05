@@ -6,6 +6,8 @@ import dto.HobbyDTO_OUT;
 import dto.MovieInfo;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import facades.ISearchFacade;
+import facades.SearchFacade_Impl;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -29,6 +32,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import utils.EMF_Creator;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -58,7 +62,104 @@ import javax.ws.rs.core.Response;
 )
 @Path("search")
 public class SearchResource {
-    //<editor-fold defaultstate="collapsed" desc="API recommended for assignment">
+
+    private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
+    private static final ISearchFacade FACADE = SearchFacade_Impl.getSearchFacade(EMF);
+
+    @GET
+    @Path("/hobby")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all persons with a given hobby",
+            tags = {"General"},
+            responses = {
+                @ApiResponse(
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
+                @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
+                @ApiResponse(responseCode = "404", description = "No persons with that hobby found")})
+    public List<PersonDTO_OUT> getPersonsByHobby(@QueryParam("hobby") String hobby) {
+        List<PersonDTO_OUT> returnList = FACADE.getPersonDTO_OUT_ByHobby(hobby);
+        return returnList;
+    }
+
+    @GET
+    @Path("/allpersons")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all persons",
+            tags = {"General"},
+            responses = {
+                @ApiResponse(
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
+                @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
+                @ApiResponse(responseCode = "404", description = "No persons found")})
+    public List<PersonDTO_OUT> getPersonsByHobby() {
+        List<PersonDTO_OUT> returnList = FACADE.getAllPersonDTO_OUT();
+        return returnList;
+    }
+
+    @GET
+    @Path("/hobby/{hobby}/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get the count of people with a given hobby",
+            tags = {"General"},
+            responses = {
+                @ApiResponse(
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
+                @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
+                @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
+    public long getPersonsCountByHobby(@PathParam("hobby") String hobby) {
+        return FACADE.getCountPersonByHobby(hobby);
+    }
+
+    @GET
+    @Path("person/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get person given a name (firstname lastname)", tags = {"Persons"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "List of persons with name"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+
+    public List<PersonDTO_OUT> getPersonByFullName(@PathParam("name") String name) {
+        if (name == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        List<PersonDTO_OUT> returnList = FACADE.getPersonByFullName(name);
+        return returnList;
+    }
+
+    @POST
+    @Path("person")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new person", tags = {"Persons"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The Newly created Person"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public PersonDTO_OUT addPersonNoHobbies(PersonDTO_IN person) {
+        if (person == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        return new PersonDTO_OUT(FACADE.addPerson(person));
+    }
+
+    @POST
+    @Path("person")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new person", tags = {"Persons"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The Newly created Person"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN person) {
+        if (person == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        return new PersonDTO_OUT(FACADE.addPersonWithHobbies(person));
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,23 +175,6 @@ public class SearchResource {
         //    /api/search/phone?phone=<phone>
         //get from facade
         return new PersonDTO_OUT();
-    }
-
-    @GET
-    @Path("/hobby")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get all persons with a given hobby",
-            tags = {"General"},
-            responses = {
-                @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
-                @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
-                @ApiResponse(responseCode = "404", description = "No persons with that hobby found")})
-    public List<PersonDTO_OUT> getPersonsByHobby(@QueryParam("hobby") String hobby) {
-        //    /api/search/hobby?hobby=<hobby>
-        //get from facade
-        List<PersonDTO_OUT> returnList = new ArrayList();
-        return returnList;
     }
 
     @GET
@@ -112,25 +196,6 @@ public class SearchResource {
     }
 
     @GET
-    @Path("/hobby/{hobby}/count")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get the count of people with a given hobby",
-            tags = {"General"},
-            responses = {
-                @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
-                @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
-                @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
-    public Response getPersonsCountByHobby(@PathParam("hobby") String hobby) {
-        //    /api/search/hobby/{hobby}/count
-        //get from facade, use pathparam
-        int value = 404;
-        JsonObject dbMsg = new JsonObject();
-        dbMsg.addProperty("Persons with request hobby", value);
-        return Response.ok(dbMsg).build();
-    }
-
-    @GET
     @Path("/zip/")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Get a list of all zip codes in Denmark",
@@ -145,44 +210,6 @@ public class SearchResource {
         //get from facade. Not sure if we want this to be string, object or ?
         List<String> returnList = new ArrayList();
         return returnList;
-    }
-    //</editor-fold>
-    
-    //<editor-fold defaultstate="collapsed" desc="API - Person CRUD">
-    @GET
-    @Path("person/{name}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get person given a name", tags = {"Persons"},
-            responses = {
-                @ApiResponse(responseCode = "200", description = "List of persons with name"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
-            })
-
-    public List<PersonDTO_OUT> getPersonByName(@PathParam("name") String name) {
-        if (name == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        //Based on entity & DTO we might want first name + last name
-        //get from facade, return
-        List<PersonDTO_OUT> returnList = new ArrayList();
-        return returnList;
-    }
-
-    @POST
-    @Path("person")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add new person", tags = {"Persons"},
-            responses = {
-                @ApiResponse(responseCode = "200", description = "The Newly created Person"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
-            })
-    public PersonDTO_OUT addPerson(PersonDTO_IN person) {
-        if (person == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        //add through facade, return
-        return new PersonDTO_OUT();
     }
 
     @PUT
@@ -218,9 +245,7 @@ public class SearchResource {
         //delete through facade, return
         return new PersonDTO_OUT();
     }
-//</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="API - Hobby CRUD">
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -290,9 +315,9 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-//</editor-fold>
+    //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Old stuff (Movie)">
+    //<editor-fold defaultstate="collapsed" desc="DEPRECATED TO DELETE">
     @Deprecated
     @GET
     @Path("/deprecated/{id}")
@@ -328,5 +353,5 @@ public class SearchResource {
         movie.setId(464);
         return movie;
     }
-//</editor-fold>
+    //</editor-fold>
 }

@@ -1,28 +1,93 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Start Page</title>
+        <title>CA2 - Start Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <!-- BOOTSTRAP -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <!-- MyCSS -->
+        <link href="css/css.css" rel="stylesheet">
+
     </head>
-    <body style="font-family: sans-serif;padding:8px;font-size: large">
-        <h1>Initial Deployment TEST - CA2 - Change or Remove this page.</h1>
-        <h2>Start Code for JPA and JAX-RS projects with support for OpenAPI Documentation</h2>
-        <div>
-            <a href="openapi">API-Documentation</a>
-            <p>Observe that the link above does NOT (yet) document your code, but the (in)famous Pet-store</p>
-            <p>In your browser test these two endpoints:</p>
-            <ul>
-                <li><code>/api/openapi.json</code></li>
-                <li><code>/api/openapi.yaml</code></li>
-            </ul>
-            <p>What is returned by these two endpoints (MIME type, and what does the content represent) </p>
-            <h4>TODO:</h4>
-            <ul>
-                <li>Open the file <em>index.html</em> in the folder <em>openapi</em></li>
-                <li>Locate the URL that points to the external petstore-API and replace with a (relative) link to one of the two endpoints given above</li>
-                <li>Refresh your browser (CTRL-F5) and click the link to the <em>API-Documentation</em> again</li>
-                <li>Verify that you get documentation for your own end-points</li>
-            </ul>
+    <body id='myBody'>
+        <!-- NAVBAR: https://getbootstrap.com/docs/4.3/components/navbar/ -->
+        <!-- Change 'active' class with JS when navbar element is clicked. -->
+        <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand">CA2 - Hold Krykke</a>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    
+                    <!-- API DOCS -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="openapi">API Docs </a>
+                    </li>
+                    
+                    <!-- SCRUM PLAN -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="scrum.html">Scrum Plan</a>
+                    </li>
+
+                    <!-- GITHUB -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            GitHub
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="https://github.com/MalteMagnussen/CA2">GitHub</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="https://github.com/MalteMagnussen/CA2/projects/2">Sprint 1</a>
+                            <a class="dropdown-item" href="https://github.com/MalteMagnussen/CA2/projects/3">Sprint 2</a>
+                            <a class="dropdown-item" href="https://github.com/MalteMagnussen/CA2/projects/5">Sprint 3</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+
+        <!-- TEMP MENU BELOW - I'm thinking we eventually swap to having a nav-bar and then a div below that we populate -->
+        <div class="container" id="index">
+            <div class="float-left">
+                <h1>Course Assignment 2</h1>
+                <!-- Three columns. -->
+                <div class="row">
+                    <!-- Link to scrum page --> 
+                    <div class="col-sm">
+                        <div class="card border-0 shadow">
+                            <a href="scrum.html">
+                                <img src="https://i.imgur.com/mnwvgb5.png?1">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Link to API Documentation. Should always be kept somewhere here. -->
+                    <div class="col-sm">
+                        <div class="card border-0 shadow">
+                            <a href="openapi">
+                                <img src="https://i.imgur.com/4s52AIy.png?1">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- GitHub -->
+                    <div class="col-sm">
+                        <div class="card border-0 shadow">
+                            <a href="https://github.com/MalteMagnussen/CA2">
+                                <img src="https://i.imgur.com/qaDtYoL.png?1">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Container for JS stuff -->
+        <div class='myContent'></div>
+
+        <!-- BOOTSTRAP -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
     </body>
 </html>

@@ -79,7 +79,7 @@ public class SearchResource {
         List<PersonDTO_OUT> returnList = FACADE.getPersonDTO_OUT_ByHobby(hobby);
         return returnList;
     }
-    
+
     @GET
     @Path("/allpersons")
     @Produces(MediaType.APPLICATION_JSON)
@@ -125,7 +125,7 @@ public class SearchResource {
         List<PersonDTO_OUT> returnList = FACADE.getPersonByFullName(name);
         return returnList;
     }
-    
+
     @POST
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ public class SearchResource {
         }
         return new PersonDTO_OUT(FACADE.addPerson(person));
     }
-    
+
     @POST
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
@@ -157,7 +157,7 @@ public class SearchResource {
         }
         return new PersonDTO_OUT(FACADE.addPersonWithHobbies(person));
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @GET
     @Path("/phone")

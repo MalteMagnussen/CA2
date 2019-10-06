@@ -36,6 +36,7 @@ import utils.EMF_Creator;
  */
 public class SearchResourceTest
 {
+
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     //Read this line from a settings-file  since used several places
@@ -44,18 +45,20 @@ public class SearchResourceTest
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
-    
-    static HttpServer startServer() {
+
+    static HttpServer startServer()
+    {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
     }
-    
+
     public SearchResourceTest()
     {
     }
-    
+
     @BeforeAll
-    public static void setUpClass() {
+    public static void setUpClass()
+    {
         emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
 
         httpServer = startServer();
@@ -68,10 +71,10 @@ public class SearchResourceTest
     }
 
     @AfterAll
-    public static void closeTestServer() {
+    public static void closeTestServer()
+    {
         httpServer.shutdownNow();
     }
-    
 
     /**
      * Test of addPerson method, of class SearchResource.
@@ -79,11 +82,14 @@ public class SearchResourceTest
 //    @Test
 //    public void testAddPerson()
 //    {
-//        String payload = "{\n" +
-//"      \"fName\": \"Barack\",\n" +
-//"      \"lName\": \"Obama\",\n" +
-//"      \"phone\": \"98775433\"}";
-//        
+//    String payload = "{\n"
+//            + "  \"ID\": 1,\n"
+//            + "  \"First Name\": \"Johnny\",\n"
+//            + "  \"Last Name\": \"Reimar\",\n"
+//            + "  \"Email\": \"Johnny@Reimar.dk\",\n"
+//            + "  \"hobbies\": \"None available\"\n"
+//            + "}";
+//
 //        given()
 //        .contentType("application/json")
 //        .body(payload)
@@ -95,6 +101,4 @@ public class SearchResourceTest
 //        .body("lName", equalTo("Obama"))
 //        .body("phone", equalTo("98775433"));
 //    }
-
-    
 }

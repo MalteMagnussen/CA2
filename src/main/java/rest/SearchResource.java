@@ -128,7 +128,7 @@ public class SearchResource {
     }
 
     @POST
-    @Path("person")
+    @Path("/create/person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
@@ -144,7 +144,7 @@ public class SearchResource {
     }
 
     @POST
-    @Path("person")
+    @Path("/create-with-hobby/person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},

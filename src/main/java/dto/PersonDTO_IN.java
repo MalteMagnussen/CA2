@@ -3,6 +3,7 @@ package dto;
 import entities.Hobby;
 import entities.Person;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,7 +19,7 @@ public class PersonDTO_IN {
     @Schema(name = "Email", required = true, example = "Johnny@Reimar.dk")
     private String email;
     @Schema(example="None available")
-    private List<Hobby> hobbies;
+    private List<Hobby> hobbies = new ArrayList();
 
     public PersonDTO_IN() {
     }
@@ -30,11 +31,15 @@ public class PersonDTO_IN {
         this.hobbies = person.getHobbies();
     }
 
+    /**
+     * Do not use this constructor.
+     * @param person 
+     */
+    @Deprecated
     public PersonDTO_IN(PersonDTO_OUT person) {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        this.hobbies = person.getHobbies();
     }
 
     public PersonDTO_IN(String email, String firstName, String lastName, List<Hobby> hobbies) {

@@ -44,7 +44,9 @@ public class SearchFacade_Impl implements ISearchFacade {
     public PersonDTO_OUT addPerson(PersonDTO_IN pDTO) {
         Person p = new Person(pDTO.getEmail(), pDTO.getFirstName(), pDTO.getLastName(), null);
         EntityManager em = getEntityManager();
-        if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null) {
+        if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null ||
+            p.getEmail().trim().equals("") || p.getFirstName().trim().equals("") ||
+            p.getLastName().trim().equals("")) {
             throw new WebApplicationException("Missing input", 400);
         }
         try {
@@ -125,7 +127,10 @@ public class SearchFacade_Impl implements ISearchFacade {
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
         List<Hobby> hobbies = personDTO.getHobbies();
         EntityManager em = getEntityManager();
-        if (person.getEmail() == null || person.getFirstName() == null || person.getLastName() == null || hobbies == null || hobbies.isEmpty()) {
+        if (person.getEmail() == null || person.getFirstName() == null ||
+            person.getLastName() == null || hobbies == null ||
+            hobbies.isEmpty() || person.getEmail().trim().equals("") || 
+            person.getFirstName().trim().equals("") || person.getLastName().trim().equals("")) {
             throw new WebApplicationException("Missing input", 400);
         }
         try {

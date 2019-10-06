@@ -57,6 +57,7 @@ public class SearchFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
             em.getTransaction().commit();
 
         } catch (Exception e) {

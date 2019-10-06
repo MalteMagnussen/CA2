@@ -140,7 +140,7 @@ public class SearchResource {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        return new PersonDTO_OUT(FACADE.addPerson(person));
+        return FACADE.addPerson(person);
     }
 
     @POST
@@ -156,7 +156,7 @@ public class SearchResource {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        return new PersonDTO_OUT(FACADE.addPersonWithHobbies(person));
+        return FACADE.addPersonWithHobbies(person);
     }
 
     //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">

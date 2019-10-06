@@ -2,7 +2,6 @@ package facades;
 
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
-import entities.Person;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public interface ISearchFacade {
 
-    public Person addPerson(PersonDTO_IN personDTO);
+    public PersonDTO_OUT addPerson(PersonDTO_IN personDTO);
 
     public List<PersonDTO_OUT> getAllPersonDTO_OUT();
 
@@ -19,7 +18,7 @@ public interface ISearchFacade {
 
     public long getCountPersonByHobby(String hobbyName);
 
-    public Person addPersonWithHobbies(PersonDTO_IN personDTO);
+    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO);
     
     public List<PersonDTO_OUT> getPersonByFullName(String name);
 }

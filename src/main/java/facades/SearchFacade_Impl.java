@@ -41,7 +41,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public Person addPerson(PersonDTO_IN pDTO) {
+    public PersonDTO_OUT addPerson(PersonDTO_IN pDTO) {
         Person p = new Person(pDTO.getEmail(), pDTO.getFirstName(), pDTO.getLastName(), null);
         EntityManager em = getEntityManager();
         if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null) {
@@ -51,7 +51,10 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.getTransaction().begin();
             em.persist(p);
             em.getTransaction().commit();
-            return p;
+            //Needs to be refactored
+            p.addHobby(new Hobby("None", ""));
+            PersonDTO_OUT pOUT = new PersonDTO_OUT(p);
+            return pOUT;
         } catch (Exception ex) {
             System.out.println("Failed to persist object");
             //ex.printStackTrace();
@@ -118,7 +121,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public Person addPersonWithHobbies(PersonDTO_IN personDTO) {
+    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO) {
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
         List<Hobby> hobbies = personDTO.getHobbies();
         EntityManager em = getEntityManager();
@@ -134,7 +137,8 @@ public class SearchFacade_Impl implements ISearchFacade {
             });
             em.persist(person);
             em.getTransaction().commit();
-            return person;
+            PersonDTO_OUT pOUT = new PersonDTO_OUT(person);
+            return pOUT;
         } catch (Exception ex) {
             throw new WebApplicationException(ex.getMessage(), 400);
         } finally {

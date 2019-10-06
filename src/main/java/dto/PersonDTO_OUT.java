@@ -123,5 +123,11 @@ public class PersonDTO_OUT {
         hash = 61 * hash + Objects.hashCode(this.hobbies);
         return hash;
     }
+
+    @Override
+    public String toString()
+    {
+        return "PersonDTO_OUT{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", hobbies=" + hobbies + '}';
+    }
     
 }

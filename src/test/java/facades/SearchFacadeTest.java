@@ -89,8 +89,8 @@ public class SearchFacadeTest {
 
     @Test
     public void testAddPerson() {
-        ArrayList<Hobby> addHobbies = new ArrayList();
-        Person exp = new Person("testADD@email.dk", "testADD", "Deathwing", addHobbies);
+        Person preExp = new Person("testADD@email.dk", "testADD", "Deathwing");
+        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
         PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADD@email.dk", "testADD", "Deathwing");
         assertEquals(exp, facade.addPerson(addTESTpersonDTO));
     }
@@ -136,7 +136,8 @@ public class SearchFacadeTest {
     public void testAddPersonWithHobbies() {
         ArrayList<Hobby> addHobbies = new ArrayList();
         addHobbies.add(new Hobby("Testhobby", "hobbytest"));
-        Person exp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+        Person preExp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
         PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
     }

@@ -53,8 +53,6 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.getTransaction().begin();
             em.persist(p);
             em.getTransaction().commit();
-            //Needs to be refactored
-            p.addHobby(new Hobby("None", ""));
             PersonDTO_OUT pOUT = new PersonDTO_OUT(p);
             return pOUT;
         } catch (Exception ex) {

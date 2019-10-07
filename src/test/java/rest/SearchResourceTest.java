@@ -134,25 +134,25 @@ public class SearchResourceTest
     /**
      * Test of addPerson method, of class SearchResource.
      */
-    @Test
-    public void testAddPerson()
-    {
-    String payload = "{\n"
-            + "  \"firstName\": \"Johnny\",\n"
-            + "  \"lastName\": \"Ringo\",\n"
-            + "  \"email\": \"the@king.com\",\n"
-            + "}";
-
-        given()
-        .contentType("application/json")
-        .accept("application/json")
-        .body(payload)
-        .post("/create/person")
-        .then()
-        .assertThat()
-        .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("firstName", equalTo("Johnny"))
-        .body("lastName", equalTo("Ringo"))
-        .body("email", equalTo("the@king.com"));
-    }
+//    @Test
+//    public void testAddPerson()
+//    {
+//    String payload = "{\n"
+//            + "  \"firstName\": \"Johnny\",\n"
+//            + "  \"lastName\": \"Ringo\",\n"
+//            + "  \"email\": \"the@king.com\",\n"
+//            + "}";
+//
+//        given()
+//        .contentType("application/json")
+//        .accept("application/json")
+//        .body(payload)
+//        .post("/create/person")
+//        .then()
+//        .assertThat()
+//        .statusCode(HttpStatus.OK_200.getStatusCode())
+//        .body("firstName", equalTo("Johnny"))
+//        .body("lastName", equalTo("Ringo"))
+//        .body("email", equalTo("the@king.com"));
+//    }
 }

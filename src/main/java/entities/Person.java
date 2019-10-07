@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -42,6 +43,14 @@ public class Person implements Serializable {
     @JoinColumn(name = "hobby_id")
     private List<Hobby> hobbies;
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "person",
+            cascade = CascadeType.PERSIST
+    )
+    @JoinColumn(name = "phone_id")
+    private List<Phone> phoneNumbers;
+
     public Person() {
     }
 
@@ -51,7 +60,7 @@ public class Person implements Serializable {
         this.lastName = lastName;
         this.hobbies = hobbies;
     }
-    
+
     public Person(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;

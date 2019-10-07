@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Schema(name = "Person")
 public class PersonDTO_IN {
-    
+
     @Schema(name = "ID", required = true, example = "1")
     private Integer id;
     @Schema(name = "First Name", required = true, example = "Johnny")
@@ -18,7 +18,7 @@ public class PersonDTO_IN {
     private String lastName;
     @Schema(name = "Email", required = true, example = "Johnny@Reimar.dk")
     private String email;
-    @Schema(example="None available")
+    @Schema(example = "None available")
     private List<Hobby> hobbies = new ArrayList();
 
     public PersonDTO_IN() {
@@ -43,8 +43,8 @@ public class PersonDTO_IN {
         this.firstName = firstname;
         this.lastName = lastname;
     }
-    
-    public void addHobby(Hobby h){
+
+    public void addHobby(Hobby h) {
         this.hobbies.add(h);
     }
 
@@ -124,5 +124,5 @@ public class PersonDTO_IN {
         hash = 83 * hash + Objects.hashCode(this.hobbies);
         return hash;
     }
-    
+
 }

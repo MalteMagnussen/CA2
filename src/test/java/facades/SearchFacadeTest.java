@@ -18,10 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import utils.EMF_Creator;
 
-/**
- *
- * @author Camilla
- */
 public class SearchFacadeTest {
 
     private static EntityManagerFactory emf;
@@ -39,7 +35,7 @@ public class SearchFacadeTest {
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
         facade = SearchFacade_Impl.getSearchFacade(emf);
-        
+
         hobbies1.add(new Hobby("WoW", "Det der spil"));
         hobbies1.add(new Hobby("Fisk", "Kun havfisk"));
         hobbies2.add(new Hobby("Papers, Please!", "Glory to Arstotzka!"));
@@ -141,7 +137,7 @@ public class SearchFacadeTest {
         PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
     }
-    
+
     @Test
     public void testGetPersonByFullName() {
         PersonDTO_OUT expResult = new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1));

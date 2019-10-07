@@ -15,10 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-/**
- *
- * @author
- */
 @Entity
 @NamedQueries({
     @NamedQuery(name = "Person.getAll", query = "SELECT p FROM Person p"),
@@ -51,7 +47,7 @@ public class Person implements Serializable {
         this.lastName = lastName;
         this.hobbies = hobbies;
     }
-    
+
     public Person(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;

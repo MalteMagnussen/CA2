@@ -9,13 +9,13 @@ import java.util.Objects;
 
 @Schema(name = "Hobby")
 public class HobbyDTO_IN {
-    
-    @Schema(required = true,example = "Lacrosse")
+
+    @Schema(required = true, example = "Lacrosse")
     private String name;
-    @Schema(required = true,example = "Rich People Game")
+    @Schema(required = true, example = "Rich People Game")
     private String description;
-    @Schema(example="None available")
-    private List<Person> persons  = new ArrayList();
+    @Schema(example = "None available")
+    private List<Person> persons = new ArrayList();
 
     public HobbyDTO_IN() {
     }
@@ -31,8 +31,8 @@ public class HobbyDTO_IN {
         this.description = description;
         this.persons = persons;
     }
-    
-    public void addPerson(Person p){
+
+    public void addPerson(Person p) {
         this.persons.add(p);
     }
 
@@ -89,5 +89,5 @@ public class HobbyDTO_IN {
         }
         return true;
     }
-    
+
 }

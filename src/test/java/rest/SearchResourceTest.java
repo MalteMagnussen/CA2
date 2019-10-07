@@ -5,43 +5,25 @@
  */
 package rest;
 
-import dto.HobbyDTO_IN;
-import dto.HobbyDTO_OUT;
-import dto.MovieInfo;
-import dto.PersonDTO_IN;
-import dto.PersonDTO_OUT;
 import entities.Hobby;
 import entities.Person;
-import facades.SearchFacade_Impl;
 import io.restassured.RestAssured;
-import static io.restassured.RestAssured.given;
-import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import utils.EMF_Creator;
 
-/**
- *
- * @author
- */
-public class SearchResourceTest
-{
+public class SearchResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api/";
@@ -54,20 +36,17 @@ public class SearchResourceTest
     private static ArrayList<Hobby> hobbies1 = new ArrayList();
     private static ArrayList<Hobby> hobbies2 = new ArrayList();
     private static ArrayList<Hobby> hobbies3 = new ArrayList();
-    
-    static HttpServer startServer()
-    {
+
+    static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
     }
 
-    public SearchResourceTest()
-    {
+    public SearchResourceTest() {
     }
 
     @BeforeAll
-    public static void setUpClass()
-    {
+    public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
 
         httpServer = startServer();
@@ -77,7 +56,7 @@ public class SearchResourceTest
         RestAssured.port = SERVER_PORT;
 
         RestAssured.defaultParser = Parser.JSON;
-        
+
         hobbies1.add(new Hobby("MHW", "Monster Hunter World"));
         hobbies1.add(new Hobby("WF", "Warframe"));
         hobbies2.add(new Hobby("Origami", "The art of folding paper"));
@@ -104,7 +83,7 @@ public class SearchResourceTest
             em.close();
         }
     }
-    
+
     @AfterEach
     public void tearDown() throws Exception {
         EntityManager em = emf.createEntityManager();
@@ -120,16 +99,11 @@ public class SearchResourceTest
             em.close();
         }
     }
-    
+
     @AfterAll
-    public static void closeTestServer()
-    {
+    public static void closeTestServer() {
         httpServer.shutdownNow();
     }
-    
-
-
-
 
     /**
      * Test of addPerson method, of class SearchResource.

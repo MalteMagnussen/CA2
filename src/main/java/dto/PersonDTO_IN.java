@@ -31,17 +31,6 @@ public class PersonDTO_IN {
         this.hobbies = person.getHobbies();
     }
 
-    /**
-     * Do not use this constructor.
-     * @param person 
-     */
-    @Deprecated
-    public PersonDTO_IN(PersonDTO_OUT person) {
-        this.email = person.getEmail();
-        this.firstName = person.getFirstName();
-        this.lastName = person.getLastName();
-    }
-
     public PersonDTO_IN(String email, String firstName, String lastName, List<Hobby> hobbies) {
         this.email = email;
         this.firstName = firstName;

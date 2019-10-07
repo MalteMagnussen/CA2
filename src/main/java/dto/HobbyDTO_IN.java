@@ -20,17 +20,6 @@ public class HobbyDTO_IN {
     public HobbyDTO_IN() {
     }
 
-    /**
-     * Do not use this constructor.
-     * @param hobby 
-     */
-    @Deprecated
-    public HobbyDTO_IN(HobbyDTO_OUT hobby) {
-        this.name = hobby.getName();
-        this.description = hobby.getDescription();
-//        this.persons = hobby.getPersons();
-    }
-
     public HobbyDTO_IN(Hobby hobby) {
         this.name = hobby.getName();
         this.description = hobby.getDescription();

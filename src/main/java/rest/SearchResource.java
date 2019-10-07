@@ -128,7 +128,7 @@ public class SearchResource {
     }
 
     @POST
-    @Path("person")
+    @Path("/create/person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
@@ -140,11 +140,11 @@ public class SearchResource {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        return new PersonDTO_OUT(FACADE.addPerson(person));
+        return FACADE.addPerson(person);
     }
 
     @POST
-    @Path("person")
+    @Path("/create-with-hobby/person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
@@ -156,7 +156,7 @@ public class SearchResource {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        return new PersonDTO_OUT(FACADE.addPersonWithHobbies(person));
+        return FACADE.addPersonWithHobbies(person);
     }
 
     //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">

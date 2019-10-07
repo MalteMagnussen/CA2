@@ -41,17 +41,20 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public Person addPerson(PersonDTO_IN pDTO) {
+    public PersonDTO_OUT addPerson(PersonDTO_IN pDTO) {
         Person p = new Person(pDTO.getEmail(), pDTO.getFirstName(), pDTO.getLastName(), null);
         EntityManager em = getEntityManager();
-        if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null) {
+        if (p.getEmail() == null || p.getFirstName() == null || p.getLastName() == null ||
+            p.getEmail().trim().equals("") || p.getFirstName().trim().equals("") ||
+            p.getLastName().trim().equals("")) {
             throw new WebApplicationException("Missing input", 400);
         }
         try {
             em.getTransaction().begin();
             em.persist(p);
             em.getTransaction().commit();
-            return p;
+            PersonDTO_OUT pOUT = new PersonDTO_OUT(p);
+            return pOUT;
         } catch (Exception ex) {
             System.out.println("Failed to persist object");
             //ex.printStackTrace();
@@ -118,11 +121,14 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public Person addPersonWithHobbies(PersonDTO_IN personDTO) {
+    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO) {
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
         List<Hobby> hobbies = personDTO.getHobbies();
         EntityManager em = getEntityManager();
-        if (person.getEmail() == null || person.getFirstName() == null || person.getLastName() == null || hobbies == null || hobbies.isEmpty()) {
+        if (person.getEmail() == null || person.getFirstName() == null ||
+            person.getLastName() == null || hobbies == null ||
+            hobbies.isEmpty() || person.getEmail().trim().equals("") || 
+            person.getFirstName().trim().equals("") || person.getLastName().trim().equals("")) {
             throw new WebApplicationException("Missing input", 400);
         }
         try {
@@ -134,7 +140,8 @@ public class SearchFacade_Impl implements ISearchFacade {
             });
             em.persist(person);
             em.getTransaction().commit();
-            return person;
+            PersonDTO_OUT pOUT = new PersonDTO_OUT(person);
+            return pOUT;
         } catch (Exception ex) {
             throw new WebApplicationException(ex.getMessage(), 400);
         } finally {

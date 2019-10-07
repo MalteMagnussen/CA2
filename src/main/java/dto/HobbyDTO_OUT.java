@@ -12,32 +12,23 @@ public class HobbyDTO_OUT {
     private String name;
     @Schema(required = true,example = "Rich People Game")
     private String description;
-    @Schema(example="None available")
-    private List<Person> persons;
 
     public HobbyDTO_OUT() {
     }
 
-    public HobbyDTO_OUT(HobbyDTO_OUT hobby) {
+    public HobbyDTO_OUT(HobbyDTO_IN hobby) {
         this.name = hobby.getName();
         this.description = hobby.getDescription();
-        this.persons = hobby.getPersons();
     }
 
     public HobbyDTO_OUT(Hobby hobby) {
         this.name = hobby.getName();
         this.description = hobby.getDescription();
-        this.persons = hobby.getPersons();
     }
 
     public HobbyDTO_OUT(String name, String description, List<Person> persons) {
         this.name = name;
         this.description = description;
-        this.persons = persons;
-    }
-    
-    public void addPerson(Person p){
-        this.persons.add(p);
     }
     
     public String getName() {
@@ -56,14 +47,6 @@ public class HobbyDTO_OUT {
         this.description = description;
     }
 
-    public List<Person> getPersons() {
-        return persons;
-    }
-
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
-    }
-    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -80,9 +63,6 @@ public class HobbyDTO_OUT {
             return false;
         }
         if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (!Objects.equals(this.persons, other.persons)) {
             return false;
         }
         return true;

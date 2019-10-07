@@ -15,15 +15,9 @@ public class HobbyDTO_IN {
     @Schema(required = true,example = "Rich People Game")
     private String description;
     @Schema(example="None available")
-    private List<Person> persons;
+    private List<Person> persons  = new ArrayList();
 
     public HobbyDTO_IN() {
-    }
-
-    public HobbyDTO_IN(HobbyDTO_OUT hobby) {
-        this.name = hobby.getName();
-        this.description = hobby.getDescription();
-        this.persons = hobby.getPersons();
     }
 
     public HobbyDTO_IN(Hobby hobby) {

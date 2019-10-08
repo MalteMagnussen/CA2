@@ -5,6 +5,7 @@
  */
 package dto;
 
+import entities.CityInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 
@@ -26,6 +27,20 @@ public class CityInfoDTO_IN
         this.id = id;
         this.zipCode = zipCode;
         this.city = city;
+    }
+
+    public CityInfoDTO_IN(CityInfo cityinfo)
+    {
+        this.id = cityinfo.getId();
+        this.zipCode = cityinfo.getZipCode();
+        this.city = cityinfo.getCity();
+    }
+    
+    public CityInfoDTO_IN(CityInfoDTO_OUT cityinfo)
+    {
+        this.id = cityinfo.getId();
+        this.zipCode = cityinfo.getZipCode();
+        this.city = cityinfo.getCity();
     }
 
     public Integer getId()

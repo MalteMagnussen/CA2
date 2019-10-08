@@ -47,7 +47,7 @@ public class Person implements Serializable {
             cascade = CascadeType.PERSIST
     )
     @JoinColumn(name = "phone_id")
-    private List<Phone> phoneNumbers;
+    private List<Phone> phones;
 
     @ManyToOne
     private Address address;
@@ -74,12 +74,12 @@ public class Person implements Serializable {
         this.lastName = person.getLastName();
     }
     
-    public List<Phone> getPhoneNumbers() {
-        return phoneNumbers;
+    public List<Phone> getPhones() {
+        return phones;
     }
 
-    public void setPhoneNumbers(List<Phone> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
     }
 
     public Address getAddress() {

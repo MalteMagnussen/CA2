@@ -11,20 +11,20 @@ import java.util.Objects;
 @Schema(name = "Person")
 public class PersonDTO_OUT {
 
-    @Schema(name = "ID", example = "1")
+    @Schema(description = "Unique Identifier", required = true, example = "1")
     private Integer id;
-    @Schema(name = "First Name", example = "Johnny")
+    @Schema(description = "First Name", required = true, example = "Johnny")
     private String firstName;
-    @Schema(name = "Last Name", example = "Reimar")
+    @Schema(description = "Last Name", required = true, example = "Reimar")
     private String lastName;
-    @Schema(name = "Email", example = "Johnny@Reimar.dk")
+    @Schema(description = "Email", required = true, example = "Johnny@Reimar.dk")
     private String email;
-    @Schema(example = "None available")
-    private List<HobbyDTO_OUT> hobbies = new ArrayList();
-    @Schema(example = "None available")
-    private List<PhoneDTO_OUT> phones = new ArrayList();
-    @Schema(name = "Address", example = "None available")
-    private AddressDTO_OUT address;
+    @Schema(example = "{\"name\":\"Lacrosse\",\"description\":\"Rich people game\"}")
+    private List<HobbyDTO_IN> hobbies = new ArrayList();
+    @Schema(example = "{\"number\":\"12345678\",\"description\":\"work\"}")
+    private List<PhoneDTO_IN> phones = new ArrayList();
+    @Schema(example = "[{\"street\":\"Vejnavn\",\"additionalInfo\":\"Nr. 12, 1tv\",\"cityInfo\":{\"zipCode\":\"2800\",\"city\":\"Lyngby\"}}]")
+    private AddressDTO_IN address;
 
     public PersonDTO_OUT() {
     }

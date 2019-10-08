@@ -1,5 +1,6 @@
 package facades;
 
+import dto.CityInfoDTO_IN;
 import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
@@ -191,6 +192,42 @@ public class SearchFacade_Impl implements ISearchFacade {
                 return results;
             }
         } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<PersonDTO_OUT> getPersonsInCity(CityInfoDTO_IN city) {
+        // Check if input is OK
+        if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
+            throw new WebApplicationException("Missing Input");
+        }
+        
+        EntityManager em = getEntityManager();
+        
+        try {
+            // Get a list of all persons living in given city.
+            List<Person> persons = em.createNamedQuery("CityInfo.getCitizens")
+                    .setParameter("city", city.getCity())
+                    .setParameter("zip", city.getZipCode())
+                    .getResultList();
+            
+            // Check if any people live in the city. 
+            if (persons == null || persons.isEmpty()) {
+                throw new WebApplicationException("No Persons lives in that city.");
+            }
+            
+            // Convert Persons to DTO.
+            List<PersonDTO_OUT> returnList = new ArrayList<>();
+            persons.forEach(person -> returnList.add(new PersonDTO_OUT(person)));
+            
+            // Return DTO list.
+            return returnList;
+            
+        } 
+        // Remember to close resources. 
+        // EntityManager sadly doesn't work with try-with resources. 
+        finally {
             em.close();
         }
     }

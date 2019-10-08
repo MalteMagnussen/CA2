@@ -1,9 +1,7 @@
 package rest;
 
-import com.google.gson.JsonObject;
 import dto.HobbyDTO_IN;
 import dto.HobbyDTO_OUT;
-import dto.MovieInfo;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import facades.ISearchFacade;
@@ -31,7 +29,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import utils.EMF_Creator;
 
 @OpenAPIDefinition(
@@ -317,41 +314,4 @@ public class SearchResource {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="DEPRECATED TO DELETE">
-    @Deprecated
-    @GET
-    @Path("/deprecated/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "MovieInfoGet - To be deleted", deprecated = true,
-            tags = {"Movies"},
-            responses = {
-                @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = MovieInfo.class))),
-                @ApiResponse(responseCode = "200", description = "The Requested Movie"),
-                @ApiResponse(responseCode = "404", description = "Movie not found")})
-
-    public MovieInfo getMovieInfo(@PathParam("id") int id) {
-        if (id == 13) {
-            throw new WebApplicationException("Requested movie not found.", 400);
-        }
-        return new MovieInfo("Forest Gump", "?", 2002, 10, null);
-    }
-
-    @Deprecated
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "MovieInfoPost - To be deleted", tags = {"Movies"}, deprecated = true,
-            responses = {
-                @ApiResponse(responseCode = "200", description = "The Newly created Movie"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
-            })
-    public MovieInfo createMovie(MovieInfo movie) {
-        if (movie.getTitle() == null || movie.getDirector() == null || movie.getYear() == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        movie.setId(464);
-        return movie;
-    }
-    //</editor-fold>
 }

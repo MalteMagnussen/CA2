@@ -1,5 +1,6 @@
 package entities;
 
+import dto.PersonDTO_IN;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
-/**
- *
- * @author
- */
 @Entity
 @NamedQueries({
     @NamedQuery(name = "Person.getAll", query = "SELECT p FROM Person p"),
@@ -40,8 +39,19 @@ public class Person implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hobby_id")
-    private List<Hobby> hobbies;
+    private List<Hobby> hobbies = new ArrayList();
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "person",
+            cascade = CascadeType.PERSIST
+    )
+    @JoinColumn(name = "phone_id")
+    private List<Phone> phones;
+
+    @ManyToOne
+    private Address address;
+    
     public Person() {
     }
 
@@ -51,14 +61,35 @@ public class Person implements Serializable {
         this.lastName = lastName;
         this.hobbies = hobbies;
     }
-    
+
     public Person(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.hobbies = new ArrayList();
     }
 
+    public Person(PersonDTO_IN person) {
+        this.email = person.getEmail();
+        this.firstName = person.getFirstName();
+        this.lastName = person.getLastName();
+    }
+    
+    public List<Phone> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+    
     public Integer getId() {
         return id;
     }

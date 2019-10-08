@@ -1,5 +1,6 @@
 package entities;
 
+import dto.HobbyDTO_IN;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,80 +16,71 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-/**
- *
- * @author
- */
 @Entity
 @NamedQueries({
-@NamedQuery(name = "Hobby.deleteAllRows", query = "DELETE FROM Hobby"),
-@NamedQuery(name = "Hobby.getAll", query = "SELECT h FROM Hobby h"),
-@NamedQuery(name = "Hobby.getHobbyByID", query = "SELECT h FROM Hobby h WHERE h.id = :id"),
-})
-public class Hobby implements Serializable
-{
+    @NamedQuery(name = "Hobby.deleteAllRows", query = "DELETE FROM Hobby"),
+    @NamedQuery(name = "Hobby.getAll", query = "SELECT h FROM Hobby h"),
+    @NamedQuery(name = "Hobby.getHobbyByID", query = "SELECT h FROM Hobby h WHERE h.id = :id"),})
+public class Hobby implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     private String name, description;
-    
+
     @ManyToMany(mappedBy = "hobbies", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     private List<Person> persons = new ArrayList();
 
-    public Hobby()
-    {}
+    public Hobby() {
+    }
 
     public Hobby(String name, String description) {
         this.name = name;
         this.description = description;
     }
     
-    public Integer getId()
-    {
+    public Hobby(HobbyDTO_IN hobby) {
+        this.id = hobby.getId();
+        this.name = hobby.getName();
+        this.description = hobby.getDescription();
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public List<Person> getPersons()
-    {
+    public List<Person> getPersons() {
         return persons;
     }
 
-    public void setPersons(List<Person> persons)
-    {
+    public void setPersons(List<Person> persons) {
         this.persons = persons;
     }
-    
-    public void addPerson(Person person)
-    {
+
+    public void addPerson(Person person) {
         this.persons.add(person);
     }
 
@@ -124,7 +116,5 @@ public class Hobby implements Serializable
         }
         return true;
     }
-    
-    
-    
+
 }

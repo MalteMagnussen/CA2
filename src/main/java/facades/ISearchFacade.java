@@ -1,6 +1,7 @@
 package facades;
 
 import dto.CityInfoDTO_IN;
+import dto.CityInfoDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import java.util.List;
@@ -61,15 +62,40 @@ public interface ISearchFacade {
 
     /**
      * Get all persons living in a given city (i.e. 2800 Lyngby)
-     * @param city 
+     *
+     * @param city
      * @return List of PersonDTO_OUT
      */
     public List<PersonDTO_OUT> getPersonsInCity(CityInfoDTO_IN city);
-    
+
     /**
      * Get a list of all zip codes in Denmark
+     *
      * @return List of Integers.
      */
     public List<Integer> getZipcodes();
+
+    /**
+     * Get all cities.
+     *
+     * @return a List of Cities.
+     */
+    public List<CityInfoDTO_OUT> getCities();
+
+    /**
+     * Get City by Name
+     *
+     * @param name of the city.
+     * @return List of CityDTO with the given name.
+     */
+    public List<CityInfoDTO_OUT> getCityByName(String name);
+
+    /**
+     * Get City by ZipCode
+     *
+     * @param zip of the city.
+     * @return List of CityDTO with the given ZipCode.
+     */
+    public List<CityInfoDTO_OUT> getCityByZipCode(String zip);
 
 }

@@ -1,9 +1,11 @@
 package facades;
 
 import dto.CityInfoDTO_IN;
+import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import java.util.ArrayList;
@@ -11,7 +13,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.WebApplicationException;
 
 public class SearchFacade_Impl implements ISearchFacade {
@@ -202,34 +203,60 @@ public class SearchFacade_Impl implements ISearchFacade {
         if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
             throw new WebApplicationException("Missing Input");
         }
-        
+
         EntityManager em = getEntityManager();
-        
+
         try {
             // Get a list of all persons living in given city.
             List<Person> persons = em.createNamedQuery("CityInfo.getCitizens")
                     .setParameter("city", city.getCity())
                     .setParameter("zip", city.getZipCode())
                     .getResultList();
-            
+
             // Check if any people live in the city. 
             if (persons == null || persons.isEmpty()) {
                 throw new WebApplicationException("No Persons lives in that city.");
             }
-            
+
             // Convert Persons to DTO.
             List<PersonDTO_OUT> returnList = new ArrayList<>();
             persons.forEach(person -> returnList.add(new PersonDTO_OUT(person)));
-            
+
             // Return DTO list.
             return returnList;
-            
-        } 
-        // Remember to close resources. 
+
+        } // Remember to close resources. 
         // EntityManager sadly doesn't work with try-with resources. 
         finally {
             em.close();
         }
+    }
+
+    @Override
+    public List<CityInfoDTO_OUT> getCities() {
+        EntityManager em = getEntityManager();
+        try {
+            List<CityInfo> cities = em.createNamedQuery("CityInfo.getAll").getResultList();
+            List<CityInfoDTO_OUT> citiesDTO = new ArrayList<>();
+            if (cities != null && !cities.isEmpty()) {
+                cities.forEach(city -> citiesDTO.add(new CityInfoDTO_OUT(city)));
+            } else {
+                throw new WebApplicationException("No cities in the database.");
+            }
+            return citiesDTO;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<CityInfoDTO_OUT> getCityByName(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CityInfoDTO_OUT> getCityByZipCode(String zip) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

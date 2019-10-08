@@ -5,6 +5,7 @@
  */
 package dto;
 
+import entities.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 
@@ -26,6 +27,20 @@ public class PhoneDTO_OUT
         this.id = id;
         this.number = number;
         this.description = description;
+    }
+
+    PhoneDTO_OUT(Phone phone)
+    {
+        this.id = phone.getId();
+        this.number = phone.getNumber();
+        this.description = phone.getDescription();
+    }
+
+    PhoneDTO_OUT(PhoneDTO_IN phone)
+    {
+        this.id = phone.getId();
+        this.number = phone.getNumber();
+        this.description = phone.getDescription();
     }
 
     public Integer getId()

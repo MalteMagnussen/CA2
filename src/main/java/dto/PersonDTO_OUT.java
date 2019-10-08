@@ -2,6 +2,7 @@ package dto;
 
 import entities.Hobby;
 import entities.Person;
+import entities.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,21 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        for (Hobby h : person.getHobbies()) {
-            this.hobbies.add(new HobbyDTO_OUT(h));
+        if (person.getHobbies() != null)
+        {
+            for (Hobby h : person.getHobbies())
+            {
+                this.hobbies.add(new HobbyDTO_OUT(h));
+            }
         }
+        if (person.getPhones() != null)
+        {
+            for (Phone p : person.getPhones()) {
+                this.phones.add(new PhoneDTO_OUT(p));
+            }
+        }
+        if (person.getAddress() != null)
+        this.address = new AddressDTO_OUT(person.getAddress());
     }
 
     public PersonDTO_OUT(PersonDTO_IN person) {
@@ -43,9 +56,20 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        for (HobbyDTO_IN h : person.getHobbies()) {
-            this.hobbies.add(new HobbyDTO_OUT(h));
+        if (person.getHobbies() != null)
+        {
+            for (HobbyDTO_IN h : person.getHobbies()) {
+                this.hobbies.add(new HobbyDTO_OUT(h));
+            }
         }
+        if (person.getPhones() != null)
+        {
+            for (PhoneDTO_IN p : person.getPhones()) {
+                this.phones.add(new PhoneDTO_OUT(p));
+            }
+        }
+        if (person.getAddress() != null)
+        this.address = new AddressDTO_OUT(person.getAddress());
     }
 
     public PersonDTO_OUT(String email, String firstName, String lastName, List<Hobby> hobbies) {
@@ -55,6 +79,27 @@ public class PersonDTO_OUT {
         for (Hobby h : hobbies) {
             this.hobbies.add(new HobbyDTO_OUT(h));
         }
+    }
+    
+    public PersonDTO_OUT(String email, String firstName, String lastName, 
+            List<HobbyDTO_OUT> hobbies, List<PhoneDTO_OUT> phones, AddressDTO_OUT address) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        if (hobbies != null)
+        {
+            for (HobbyDTO_OUT h : hobbies) {
+                this.hobbies.add(h);
+            }
+        }
+        if (phones != null)
+        {
+            for (PhoneDTO_OUT p : phones) {
+                this.phones.add(p);
+            }
+        }
+        if (address != null)
+        this.address = address;
     }
 
     public void addHobby(HobbyDTO_OUT h) {
@@ -99,6 +144,26 @@ public class PersonDTO_OUT {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<PhoneDTO_OUT> getPhones()
+    {
+        return phones;
+    }
+
+    public void setPhones(List<PhoneDTO_OUT> phones)
+    {
+        this.phones = phones;
+    }
+
+    public AddressDTO_OUT getAddress()
+    {
+        return address;
+    }
+
+    public void setAddress(AddressDTO_OUT address)
+    {
+        this.address = address;
     }
 
     @Override

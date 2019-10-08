@@ -5,6 +5,7 @@
  */
 package dto;
 
+import entities.Address;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 
@@ -20,12 +21,30 @@ public class AddressDTO_OUT
     private String street;
     @Schema(example = "Nr. 4")
     private String additionalInfo;
+    @Schema(example = "None available")
+    private CityInfoDTO_OUT cityInfo;
 
     public AddressDTO_OUT(Integer id, String street, String additionalInfo)
     {
         this.id = id;
         this.street = street;
         this.additionalInfo = additionalInfo;
+    }
+
+    AddressDTO_OUT(Address address)
+    {
+        this.id = address.getId();
+        this.street = address.getStreet();
+        this.additionalInfo = address.getAdditionalInfo();
+        this.cityInfo = new CityInfoDTO_OUT(address.getCityinfo());
+    }
+    
+    AddressDTO_OUT(AddressDTO_IN address)
+    {
+        this.id = address.getId();
+        this.street = address.getStreet();
+        this.additionalInfo = address.getAdditionalInfo();
+        this.cityInfo = new CityInfoDTO_OUT(address.getCityInfo());
     }
 
     public Integer getId()
@@ -56,6 +75,16 @@ public class AddressDTO_OUT
     public void setAdditionalInfo(String additionalInfo)
     {
         this.additionalInfo = additionalInfo;
+    }
+
+    public CityInfoDTO_OUT getCityInfo()
+    {
+        return cityInfo;
+    }
+
+    public void setCityInfo(CityInfoDTO_OUT cityInfo)
+    {
+        this.cityInfo = cityInfo;
     }
 
     @Override

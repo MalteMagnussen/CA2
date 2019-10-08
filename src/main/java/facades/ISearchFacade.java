@@ -11,26 +11,60 @@ Consider pages like:
  */
 public interface ISearchFacade {
 
+    /**
+     * Add a Person to the Database.
+     *
+     * @param personDTO - PersonDTO_IN
+     * @return PersonDTO_OUT
+     */
     public PersonDTO_OUT addPerson(PersonDTO_IN personDTO);
 
+    /**
+     * Get all Persons in the Database.
+     *
+     * @return List of PersonDTO_OUT
+     */
     public List<PersonDTO_OUT> getAllPersonDTO_OUT();
 
-    /* Get all persons with a given hobby */
+    /**
+     * Get all persons with a given hobby
+     *
+     * @param hobbyName - Name of the given hobby
+     * @return List of PersonDTO_OUT
+     */
     public List<PersonDTO_OUT> getPersonDTO_OUT_ByHobby(String hobbyName);
 
-    /* Get the count of people with a given hobby */
+    /**
+     * Get the count of people with a given hobby
+     *
+     * @param hobbyName - Name of the given hobby
+     * @return long - simple long type
+     */
     public long getCountPersonByHobby(String hobbyName);
 
-    /* Create a Person (with hobbies, phone, address etc.) */
+    /**
+     * Create a Person (with hobbies, phone, address etc.)
+     *
+     * @param personDTO - Containing all the info you want to persist.
+     * @return PersonDTO_OUT
+     */
     public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO);
 
+    /**
+     * Get a Person by their Full Name.
+     *
+     * @param name - Full Name of the person.
+     * @return PersonDTO_OUT
+     */
     public List<PersonDTO_OUT> getPersonByFullName(String name);
-    
+
     /* Get all persons living in a given city (i.e. 2800 Lyngby) */
     // public List<PersonDTO_OUT> getPersonsInCity(CityInfoDTO city);
     
-    /* Get a list of all zip codes in Denmark */
+    /**
+     * Get a list of all zip codes in Denmark
+     * @return List of Integers.
+     */
     public List<Integer> getZipcodes();
-    
-    
+
 }

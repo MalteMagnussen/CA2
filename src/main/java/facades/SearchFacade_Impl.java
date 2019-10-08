@@ -236,14 +236,19 @@ public class SearchFacade_Impl implements ISearchFacade {
     public List<CityInfoDTO_OUT> getCities() {
         EntityManager em = getEntityManager();
         try {
+            // Get a list of all cities.
             List<CityInfo> cities = em.createNamedQuery("CityInfo.getAll").getResultList();
-            List<CityInfoDTO_OUT> citiesDTO = new ArrayList<>();
+
+            // If there are cities in the database. 
             if (cities != null && !cities.isEmpty()) {
+                // Make empty DTO List
+                List<CityInfoDTO_OUT> citiesDTO = new ArrayList<>();
+                // Convert cities to DTO. 
                 cities.forEach(city -> citiesDTO.add(new CityInfoDTO_OUT(city)));
+                return citiesDTO;
             } else {
                 throw new WebApplicationException("No cities in the database.");
             }
-            return citiesDTO;
         } finally {
             em.close();
         }
@@ -251,7 +256,32 @@ public class SearchFacade_Impl implements ISearchFacade {
 
     @Override
     public List<CityInfoDTO_OUT> getCityByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Input Guard
+        if (name == null || name.isEmpty()) {
+            throw new WebApplicationException("Wrong Input.");
+        }
+
+        EntityManager em = getEntityManager();
+        try {
+            // Get all cities by name from database.
+            List<CityInfo> cities = em.createNamedQuery("CityInfo.getCityByName")
+                    .setParameter("city", name)
+                    .getResultList();
+
+            // Check if there exists any cities with that name.
+            if (cities == null || cities.isEmpty()) {
+                throw new WebApplicationException("No cities exists with that name.");
+            }
+            
+            // Convert Entity to DTO. 
+            List<CityInfoDTO_OUT> citiesDTO = new ArrayList<>();
+            cities.forEach(city -> citiesDTO.add(new CityInfoDTO_OUT(city)));
+            
+            return citiesDTO;
+
+        } finally {
+            em.close();
+        }
     }
 
     @Override

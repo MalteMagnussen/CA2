@@ -37,15 +37,14 @@ public class Person implements Serializable {
     private Integer id;
     private String email, firstName, lastName;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hobby_id")
     private List<Hobby> hobbies = new ArrayList();
 
     @OneToMany(
             fetch = FetchType.LAZY,
             mappedBy = "person",
-            cascade = CascadeType.PERSIST
-    )
+            cascade = CascadeType.ALL)
     @JoinColumn(name = "phone_id")
     private List<Phone> phones;
 
@@ -60,18 +59,32 @@ public class Person implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.hobbies = hobbies;
+        this.phones = new ArrayList();
     }
 
+    public Person(String email, String firstName, String lastName, List<Hobby> hobbies, List<Phone> phones, Address address) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.hobbies = hobbies;
+        this.phones = phones;
+        this.address = address;
+    }
+
+    
+    
     public Person(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phones = new ArrayList();
     }
 
     public Person(PersonDTO_IN person) {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
+        this.phones = new ArrayList();
     }
     
     public List<Phone> getPhones() {
@@ -132,6 +145,10 @@ public class Person implements Serializable {
 
     public void addHobby(Hobby hobby) {
         this.hobbies.add(hobby);
+    }
+    
+    public void addPhone(Phone phone) {
+        this.phones.add(phone);
     }
 
     @Override

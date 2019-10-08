@@ -29,7 +29,7 @@ public class PhoneDTO_IN
         this.description = description;
     }
 
-    PhoneDTO_IN(Phone phone)
+    public PhoneDTO_IN(Phone phone)
     {
         this.id = phone.getId();
         this.number = phone.getNumber();

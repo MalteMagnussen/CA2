@@ -31,7 +31,7 @@ public class AddressDTO_OUT
         this.additionalInfo = additionalInfo;
     }
 
-    AddressDTO_OUT(Address address)
+    public AddressDTO_OUT(Address address)
     {
         this.id = address.getId();
         this.street = address.getStreet();
@@ -39,7 +39,7 @@ public class AddressDTO_OUT
         this.cityInfo = new CityInfoDTO_OUT(address.getCityinfo());
     }
     
-    AddressDTO_OUT(AddressDTO_IN address)
+    public AddressDTO_OUT(AddressDTO_IN address)
     {
         this.id = address.getId();
         this.street = address.getStreet();

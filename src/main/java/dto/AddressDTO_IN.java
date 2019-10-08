@@ -31,7 +31,7 @@ public class AddressDTO_IN
         this.additionalInfo = additionalInfo;
     }
 
-    AddressDTO_IN(Address address)
+    public AddressDTO_IN(Address address)
     {
         this.id = address.getId();
         this.street = address.getStreet();

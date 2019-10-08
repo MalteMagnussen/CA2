@@ -29,14 +29,14 @@ public class PhoneDTO_OUT
         this.description = description;
     }
 
-    PhoneDTO_OUT(Phone phone)
+    public PhoneDTO_OUT(Phone phone)
     {
         this.id = phone.getId();
         this.number = phone.getNumber();
         this.description = phone.getDescription();
     }
 
-    PhoneDTO_OUT(PhoneDTO_IN phone)
+    public PhoneDTO_OUT(PhoneDTO_IN phone)
     {
         this.id = phone.getId();
         this.number = phone.getNumber();

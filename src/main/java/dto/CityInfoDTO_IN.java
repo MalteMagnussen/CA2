@@ -29,14 +29,14 @@ public class CityInfoDTO_IN
         this.city = city;
     }
 
-    CityInfoDTO_IN(CityInfo cityinfo)
+    public CityInfoDTO_IN(CityInfo cityinfo)
     {
         this.id = cityinfo.getId();
         this.zipCode = cityinfo.getZipCode();
         this.city = cityinfo.getCity();
     }
     
-    CityInfoDTO_IN(CityInfoDTO_OUT cityinfo)
+    public CityInfoDTO_IN(CityInfoDTO_OUT cityinfo)
     {
         this.id = cityinfo.getId();
         this.zipCode = cityinfo.getZipCode();

@@ -169,4 +169,9 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
+    public List<Integer> getZipcodes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

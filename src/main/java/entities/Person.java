@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -47,6 +48,9 @@ public class Person implements Serializable {
     @JoinColumn(name = "phone_id")
     private List<Phone> phoneNumbers;
 
+    @ManyToOne
+    private Address address;
+    
     public Person() {
     }
 
@@ -64,6 +68,24 @@ public class Person implements Serializable {
         this.hobbies = new ArrayList();
     }
 
+    public List<Phone> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<Phone> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    
+    
     public Integer getId() {
         return id;
     }

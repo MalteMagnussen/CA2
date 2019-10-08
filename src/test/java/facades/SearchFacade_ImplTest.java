@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import utils.EMF_Creator;
 
-public class SearchFacadeTest {
+public class SearchFacade_ImplTest {
 
     private static EntityManagerFactory emf;
     private static SearchFacade_Impl facade;
@@ -28,7 +28,7 @@ public class SearchFacadeTest {
     private static ArrayList<Hobby> hobbies2 = new ArrayList();
     private static ArrayList<Hobby> hobbies3 = new ArrayList();
 
-    public SearchFacadeTest() {
+    public SearchFacade_ImplTest() {
     }
 
     @BeforeAll
@@ -97,8 +97,6 @@ public class SearchFacadeTest {
         exp.add(new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1)));
         exp.add(new PersonDTO_OUT(new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2)));
         exp.add(new PersonDTO_OUT(new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3)));
-        System.out.println("EXP " + exp.size());
-        System.out.println("RES " + facade.getAllPersonDTO_OUT().size());
         assertEquals(exp, facade.getAllPersonDTO_OUT());
     }
 
@@ -143,5 +141,45 @@ public class SearchFacadeTest {
         PersonDTO_OUT expResult = new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1));
         List<PersonDTO_OUT> result = facade.getPersonByFullName("Rigmor Noggenfogger");
         assertEquals(expResult, result.get(0));
+    }
+    
+    @Test
+    public void testGetPersonsInCity() {
+        
+    }
+	
+	@Test
+    public void testGetZipcodes() {
+        
+    }
+	
+	@Test
+    public void testGetCities() {
+        
+    }
+	
+	@Test
+    public void testGetCityByName() {
+        
+    }
+	
+	@Test
+    public void testGetCityByZipCode() {
+        
+    }
+	
+	@Test
+    public void testCreateCity() {
+        
+    }
+	
+	@Test
+    public void testEditCity() {
+        
+    }
+	
+	@Test
+    public void testDeleteCity() {
+        
     }
 }

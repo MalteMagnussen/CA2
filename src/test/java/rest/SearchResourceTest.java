@@ -7,12 +7,10 @@ package rest;
 
 import dto.HobbyDTO_IN;
 import dto.HobbyDTO_OUT;
-import dto.MovieInfo;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Hobby;
 import entities.Person;
-import facades.SearchFacade_Impl;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -134,25 +132,42 @@ public class SearchResourceTest
     /**
      * Test of addPerson method, of class SearchResource.
      */
-//    @Test
-//    public void testAddPerson()
-//    {
-//    String payload = "{\n"
-//            + "  \"firstName\": \"Johnny\",\n"
-//            + "  \"lastName\": \"Ringo\",\n"
-//            + "  \"email\": \"the@king.com\",\n"
-//            + "}";
-//
-//        given()
-//        .contentType("application/json")
-//        .accept("application/json")
-//        .body(payload)
-//        .post("/create/person")
-//        .then()
-//        .assertThat()
-//        .statusCode(HttpStatus.OK_200.getStatusCode())
-//        .body("firstName", equalTo("Johnny"))
-//        .body("lastName", equalTo("Ringo"))
-//        .body("email", equalTo("the@king.com"));
-//    }
+    @Test
+    public void testAddPerson()
+    {
+    String payload = "{\n"
+            + "  \"firstName\": \"Johnny\",\n"
+            + "  \"lastName\": \"Ringo\",\n"
+            + "  \"email\": \"the@king.com\",\n"
+            + "}";
+
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(payload)
+        .post("/search/create/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Johnny"))
+        .body("lastName", equalTo("Ringo"))
+        .body("email", equalTo("the@king.com"));
+    }
+    
+    @Test
+    public void testGetPersonByFullName()
+    {
+        given()
+        .contentType("application/json")
+        .get("/search/person/Johnny Ringo")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Johnny"))
+        .body("lastName", equalTo("Ringo"))
+        .body("email", equalTo("the@king.com"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[1].description", equalTo("Warframe"));
+    }
 }

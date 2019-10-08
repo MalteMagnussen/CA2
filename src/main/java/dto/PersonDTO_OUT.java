@@ -20,6 +20,10 @@ public class PersonDTO_OUT {
     private String email;
     @Schema(example = "None available")
     private List<HobbyDTO_OUT> hobbies = new ArrayList();
+    @Schema(example = "None available")
+    private List<PhoneDTO_OUT> phones = new ArrayList();
+    @Schema(name = "Address", example = "None available")
+    private AddressDTO_OUT address;
 
     public PersonDTO_OUT() {
     }

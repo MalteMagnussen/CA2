@@ -1,5 +1,7 @@
 package rest;
 
+import dto.CityInfoDTO_IN;
+import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
 import dto.HobbyDTO_OUT;
 import dto.PersonDTO_IN;
@@ -42,7 +44,8 @@ import utils.EMF_Creator;
         tags = {
             @Tag(name = "General", description = "API related to CA2"),
             @Tag(name = "Persons", description = "CRUD-operations for Person"),
-            @Tag(name = "Hobbies", description = "CRUD-operations for Hobby")
+            @Tag(name = "Hobbies", description = "CRUD-operations for Hobby"),
+            @Tag(name = "Cities", description = "CRUD-operations for Cities")
         },
         servers = {
             @Server(
@@ -329,6 +332,103 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-    //</editor-fold>
+    
+    @GET
+    @Path("city/{city}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Gets city given a name", tags = {"Cities"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Returns city based on name if it exists"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
 
+    public CityInfoDTO_OUT getCityByName(@PathParam("city") String city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //Based on entity & DTO we might want first name + last name
+        //get from facade, return
+        CityInfoDTO_OUT returnItem = FACADE.getCityByName(city);
+        return returnItem;
+    }
+    
+    @GET
+    @Path("city/zip/{zip}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get city given a zip-code", tags = {"Cities"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "City based on zip code"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+
+    public CityInfoDTO_OUT getCityByZip(@PathParam("zip") String zip) {
+        if (zip == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //Based on entity & DTO we might want first name + last name
+        //get from facade, return
+        CityInfoDTO_OUT returnList = FACADE.getCityByZipCode(zip);
+        return returnList;
+    }
+
+    @POST
+    @Path("city")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new city", tags = {"Cities"},
+            requestBody = @RequestBody(description = "City Data (DTO) to be added.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The newly created City"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public CityInfoDTO_OUT addCity(CityInfoDTO_IN city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //add through facade, return
+        return new CityInfoDTO_OUT();
+    }
+
+    @PUT
+    @Path("city")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Edit existing city", tags = {"Cities"},
+            requestBody = @RequestBody(description = "City Data (DTO) to be edited.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The edited city"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public CityInfoDTO_OUT editCity(CityInfoDTO_IN city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //change through facade, return
+        return new CityInfoDTO_OUT();
+    }
+
+    @DELETE
+    @Path("city")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Delete existing city", tags = {"Cities"},
+            requestBody = @RequestBody(description = "City Data (DTO) to be deleted.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The deleted City"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public CityInfoDTO_OUT deleteCity(CityInfoDTO_IN city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //delete through facade, return
+        return new CityInfoDTO_OUT();
+    }
+    //</editor-fold>
 }

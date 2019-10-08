@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -127,6 +128,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
+            requestBody = @RequestBody(description = "Person Data (DTO) to be stored. Hobbies not included.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The Newly created Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -143,6 +147,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
+            requestBody = @RequestBody(description = "Person Data (DTO) to be stored. Include hobbies.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The Newly created Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -212,6 +219,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Edit existing person", tags = {"Persons"},
+            requestBody = @RequestBody(description = "Person Data (DTO) to be edited.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The edited Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -265,6 +275,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be added.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The Newly created Hobby"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -282,6 +295,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Edit existing hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be edited.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The edited Hobby"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")

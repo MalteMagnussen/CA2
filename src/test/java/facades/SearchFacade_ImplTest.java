@@ -195,7 +195,10 @@ public class SearchFacade_ImplTest {
     
     @Test
     public void testGetZipcodes() {
-     
+     List<String> exp = new ArrayList();
+     exp.add("3400");
+     exp.add("4000");
+     assertEquals(exp, facade.getZipcodes());
     }
     
     @Test

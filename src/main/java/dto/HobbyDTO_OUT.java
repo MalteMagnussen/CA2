@@ -8,9 +8,10 @@ import java.util.Objects;
 
 @Schema(name = "Hobby")
 public class HobbyDTO_OUT {
-    @Schema(required = true,example = "Lacrosse")
+
+    @Schema(required = true, example = "Lacrosse")
     private String name;
-    @Schema(required = true,example = "Rich People Game")
+    @Schema(required = true, example = "Rich People Game")
     private String description;
 
     public HobbyDTO_OUT() {
@@ -30,7 +31,7 @@ public class HobbyDTO_OUT {
         this.name = name;
         this.description = description;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -67,5 +68,5 @@ public class HobbyDTO_OUT {
         }
         return true;
     }
-    
+
 }

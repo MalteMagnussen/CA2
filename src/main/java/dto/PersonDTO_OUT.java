@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @Schema(name = "Person")
 public class PersonDTO_OUT {
+
     @Schema(name = "ID", example = "1")
     private Integer id;
     @Schema(name = "First Name", example = "Johnny")
@@ -17,10 +18,10 @@ public class PersonDTO_OUT {
     private String lastName;
     @Schema(name = "Email", example = "Johnny@Reimar.dk")
     private String email;
-    @Schema(example="None available")
+    @Schema(example = "None available")
     private List<HobbyDTO_OUT> hobbies = new ArrayList();
-    
-     public PersonDTO_OUT() {
+
+    public PersonDTO_OUT() {
     }
 
     public PersonDTO_OUT(Person person) {
@@ -28,8 +29,7 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        for (Hobby h : person.getHobbies())
-        {
+        for (Hobby h : person.getHobbies()) {
             this.hobbies.add(new HobbyDTO_OUT(h));
         }
     }
@@ -39,8 +39,7 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        for (Hobby h : person.getHobbies())
-        {
+        for (Hobby h : person.getHobbies()) {
             this.hobbies.add(new HobbyDTO_OUT(h));
         }
     }
@@ -49,16 +48,15 @@ public class PersonDTO_OUT {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        for (Hobby h : hobbies)
-        {
+        for (Hobby h : hobbies) {
             this.hobbies.add(new HobbyDTO_OUT(h));
         }
     }
-    
-    public void addHobby(HobbyDTO_OUT h){
+
+    public void addHobby(HobbyDTO_OUT h) {
         this.hobbies.add(h);
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -83,13 +81,11 @@ public class PersonDTO_OUT {
         this.lastName = lastName;
     }
 
-    public List<HobbyDTO_OUT> getHobbies()
-    {
+    public List<HobbyDTO_OUT> getHobbies() {
         return hobbies;
     }
 
-    public void setHobbies(List<HobbyDTO_OUT> hobbies)
-    {
+    public void setHobbies(List<HobbyDTO_OUT> hobbies) {
         this.hobbies = hobbies;
     }
 
@@ -100,7 +96,7 @@ public class PersonDTO_OUT {
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -139,9 +135,8 @@ public class PersonDTO_OUT {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "PersonDTO_OUT{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", hobbies=" + hobbies + '}';
     }
-    
+
 }

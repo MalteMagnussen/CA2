@@ -26,7 +26,7 @@ public class EMF_Creator {
             }
         }
     };
-    
+
     public enum DbSelector {
         DEV {
             @Override
@@ -42,60 +42,63 @@ public class EMF_Creator {
         }
     }
 
-
     /**
-     * Call this method before all tests, in integration tests that uses the Grizzly Server and the Test Database
-     * (in  @BeforeAll )
-     * Remember to call enRestTestWithDB() (in @AfterAll)
+     * Call this method before all tests, in integration tests that uses the
+     * Grizzly Server and the Test Database (in @BeforeAll ) Remember to call
+     * enRestTestWithDB() (in @AfterAll)
      */
-    public static void startREST_TestWithDB(){
+    public static void startREST_TestWithDB() {
         System.setProperty("IS_INTEGRATION_TEST_WITH_DB", "testing");
     }
 
     /*
       Call this method in your @AferAll method if startREST_TestWithDB() was previously called
-    */
-    public static void endREST_TestWithDB(){
-      System.clearProperty("IS_INTEGRATION_TEST_WITH_DB"); 
+     */
+    public static void endREST_TestWithDB() {
+        System.clearProperty("IS_INTEGRATION_TEST_WITH_DB");
     }
 
     /**
      * Create an EntityManagerFactory using values set in 'config.properties'
      * <p>
-     * Important: If used from a REST-test call this method before you start the test server
+     * Important: If used from a REST-test call this method before you start the
+     * test server
      * </p>
-     * @param dbType 
-     * @param strategy 
+     *
+     * @param dbType
+     * @param strategy
      * @return The new EntityManagerFactory
      */
-    public static EntityManagerFactory createEntityManagerFactory(DbSelector dbType,Strategy strategy){
-        String puName="pu"; //Only legal name
+    public static EntityManagerFactory createEntityManagerFactory(DbSelector dbType, Strategy strategy) {
+        String puName = "pu"; //Only legal name
         String connection_str;
         String user;
         String pw;
-        if(dbType == DbSelector.DEV){
+        if (dbType == DbSelector.DEV) {
             connection_str = Settings.getDEV_DBConnection();
             user = Settings.getPropertyValue("db.user");
             pw = Settings.getPropertyValue("db.password");
             System.clearProperty("IS_TEST");
-        } else{          
+        } else {
             connection_str = Settings.getTEST_DBConnection();
             //Will ensure REST code "switches" to this DB, even when running on a separate JVM
             System.setProperty("IS_TEST", connection_str);
-            user = Settings.getPropertyValue("dbtest.user")!= null ? Settings.getPropertyValue("dbtest.user") : Settings.getPropertyValue("db.user") ;
-            pw = Settings.getPropertyValue("dbtest.password")!= null ? Settings.getPropertyValue("dbtest.password") : Settings.getPropertyValue("db.password") ;
+            user = Settings.getPropertyValue("dbtest.user") != null ? Settings.getPropertyValue("dbtest.user") : Settings.getPropertyValue("db.user");
+            pw = Settings.getPropertyValue("dbtest.password") != null ? Settings.getPropertyValue("dbtest.password") : Settings.getPropertyValue("db.password");
         }
-        return createEntityManagerFactory(puName,connection_str,user,pw,strategy);
+        return createEntityManagerFactory(puName, connection_str, user, pw, strategy);
     }
+
     /**
      * Create an EntityManagerFactory using the supplied values
+     *
      * @param puName
      * @param connection_str
      * @param user
      * @param pw
      * @param strategy
-     * @return  The new EntityManagerFactory
-     */        
+     * @return The new EntityManagerFactory
+     */
     public static EntityManagerFactory createEntityManagerFactory(
             String puName,
             String connection_str,
@@ -112,9 +115,9 @@ public class EMF_Creator {
             user = System.getProperty("USER") != null ? System.getProperty("USER") : user;
             pw = System.getProperty("PW") != null ? System.getProperty("PW") : pw;
         }
-        
+
         //A deployment server MUST set the following values which will override the defaults
-        boolean isDeployed = (System.getenv("DEPLOYED") != null);      
+        boolean isDeployed = (System.getenv("DEPLOYED") != null);
         if (isDeployed) {
             String remoteUserKey = Settings.getPropertyValue("remote.db.user.key");
             String remotePwKey = Settings.getPropertyValue("remote.db.password.key");
@@ -134,13 +137,12 @@ public class EMF_Creator {
         export CONNECTION_STR="jdbc:mysql://localhost:3306/mydb"
         
         Then save the file, and restart tomcat: sudo systemctl restart tomcat
-        */
-        
-        System.out.println("USER ------------> "+user);
-        System.out.println("PW --------------> "+pw);
-        System.out.println("CONNECTION STR---> "+connection_str);
-        System.out.println("PU-Strategy---> "+strategy.toString());
-        
+         */
+        System.out.println("USER ------------> " + user);
+        System.out.println("PW --------------> " + pw);
+        System.out.println("CONNECTION STR---> " + connection_str);
+        System.out.println("PU-Strategy---> " + strategy.toString());
+
         props.setProperty("javax.persistence.jdbc.user", user);
         props.setProperty("javax.persistence.jdbc.password", pw);
         props.setProperty("javax.persistence.jdbc.url", connection_str);

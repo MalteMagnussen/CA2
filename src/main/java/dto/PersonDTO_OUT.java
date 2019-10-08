@@ -20,11 +20,11 @@ public class PersonDTO_OUT {
     @Schema(description = "Email", required = true, example = "Johnny@Reimar.dk")
     private String email;
     @Schema(example = "{\"name\":\"Lacrosse\",\"description\":\"Rich people game\"}")
-    private List<HobbyDTO_IN> hobbies = new ArrayList();
+    private List<HobbyDTO_OUT> hobbies = new ArrayList();
     @Schema(example = "{\"number\":\"12345678\",\"description\":\"work\"}")
-    private List<PhoneDTO_IN> phones = new ArrayList();
+    private List<PhoneDTO_OUT> phones = new ArrayList();
     @Schema(example = "[{\"street\":\"Vejnavn\",\"additionalInfo\":\"Nr. 12, 1tv\",\"cityInfo\":{\"zipCode\":\"2800\",\"city\":\"Lyngby\"}}]")
-    private AddressDTO_IN address;
+    private AddressDTO_OUT address;
 
     public PersonDTO_OUT() {
     }

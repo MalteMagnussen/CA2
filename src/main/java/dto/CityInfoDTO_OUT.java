@@ -28,6 +28,12 @@ public class CityInfoDTO_OUT
         this.zipCode = zipCode;
         this.city = city;
     }
+    
+    public CityInfoDTO_OUT(CityInfo city) {
+        this.id = city.getId();
+        this.city = city.getCity();
+        this.zipCode = city.getZipCode();
+    }
 
     CityInfoDTO_OUT(CityInfo cityinfo)
     {

@@ -2,6 +2,7 @@ package entities;
 
 import dto.AddressDTO_IN;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -10,13 +11,19 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
  *
- * @author Camilla
+ * @author
  */
+@NamedQueries({
+    @NamedQuery(name = "Address.deleteAllRows", query = "DELETE FROM Address"),})
+
 @Entity
 public class Address implements Serializable{
     private static final long serialVersionUID = 1L;
@@ -26,13 +33,15 @@ public class Address implements Serializable{
     private String street;
     private String additionalInfo;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "cityinfo_id")
     private CityInfo cityinfo;
     
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "address",
             cascade = CascadeType.PERSIST)
-    private List<Person> persons;
+    @JoinColumn(name = "person_id")
+    private List<Person> persons = new ArrayList();
 
 
     public Address() {
@@ -44,6 +53,22 @@ public class Address implements Serializable{
         this.cityinfo = cityinfo;
         this.persons = persons;
     }
+    
+    public Address(String street, String additionalInfo, CityInfo cityinfo) {
+        this.street = street;
+        this.additionalInfo = additionalInfo;
+        this.cityinfo = cityinfo;
+        this.persons = new ArrayList();
+    }
+
+    public Address(String street, String additionalInfo) {
+        this.street = street;
+        this.additionalInfo = additionalInfo;
+        this.cityinfo = new CityInfo();
+        this.persons = new ArrayList();
+    }
+    
+    
 
     public Address(AddressDTO_IN address) {
         this.id = address.getId();

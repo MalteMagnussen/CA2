@@ -2,6 +2,7 @@ package entities;
 
 import dto.CityInfoDTO_IN;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -10,17 +11,20 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
  *
- * @author Camilla
+ * @author
  */
+
 @Entity
 @NamedQueries({
     @NamedQuery(name = "CityInfo.getAll", query = "SELECT c FROM CityInfo c"),
+    @NamedQuery(name = "CityInfo.deleteAllRows", query = "DELETE FROM CityInfo"),
     @NamedQuery(name = "CityInfo.getCityByName", query = "SELECT c.city FROM CityInfo c WHERE c.city = :city"),
     @NamedQuery(name = "CityInfo.getCityByZip", query = "SELECT c.zipCode FROM CityInfo c WHERE c.zipCode = :zip"),
     @NamedQuery(name = "CityInfo.getZipCode", query = "SELECT c.zipCode FROM CityInfo c"),
@@ -35,10 +39,12 @@ public class CityInfo implements Serializable {
     private String zipCode;
     private String city;
     
-    @OneToMany(fetch = FetchType.LAZY,
+    @OneToMany(
+            fetch = FetchType.LAZY,
             mappedBy = "cityinfo",
             cascade = CascadeType.PERSIST)
-    private List<Address> addresses;
+    @JoinColumn(name = "address_id")
+    private List<Address> addresses = new ArrayList();
     
     public CityInfo() {
     }
@@ -49,10 +55,20 @@ public class CityInfo implements Serializable {
         this.addresses = addresses;
     }
     
+    public CityInfo(String zipCode, String city) {
+        this.zipCode = zipCode;
+        this.city = city;
+        this.addresses = new ArrayList();
+    }
+    
     public CityInfo(CityInfoDTO_IN cityInfo) {
         this.id = cityInfo.getId();
         this.zipCode = cityInfo.getZipCode();
         this.city = cityInfo.getCity();
+    }
+    
+    public void addAddress(Address address) {
+        this.addresses.add(address);
     }
 
     public Integer getId() {

@@ -44,11 +44,12 @@ public class Person implements Serializable {
     @OneToMany(
             fetch = FetchType.LAZY,
             mappedBy = "person",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.PERSIST)
     @JoinColumn(name = "phone_id")
     private List<Phone> phones;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "address_id")
     private Address address;
     
     public Person() {

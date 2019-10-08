@@ -41,9 +41,7 @@ import utils.EMF_Creator;
         tags = {
             @Tag(name = "General", description = "API related to CA2"),
             @Tag(name = "Persons", description = "CRUD-operations for Person"),
-            @Tag(name = "Hobbies", description = "CRUD-operations for Hobby"),
-            @Tag(name = "Movies", description = "Deprecated")
-
+            @Tag(name = "Hobbies", description = "CRUD-operations for Hobby")
         },
         servers = {
             @Server(

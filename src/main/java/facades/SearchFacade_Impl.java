@@ -364,4 +364,23 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
+    public String deleteCity(Integer ID) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            CityInfo city = em.find(CityInfo.class, ID);
+            em.remove(city);
+            em.getTransaction().commit();
+            return "Removed city with name: " + city.getCity() + " and ZipCode: " + city.getZipCode();
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Database error when deleting city.", 500);
+        } catch (IllegalArgumentException ex) {
+            throw new WebApplicationException("Wrong ID.");
+        } finally {
+            em.close();
+        }
+    }
+
 }

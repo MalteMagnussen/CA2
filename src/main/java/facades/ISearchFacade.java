@@ -120,4 +120,10 @@ public interface ISearchFacade {
      */
     public CityInfoDTO_OUT editCity(Integer ID, String name, String zipCode, List<Address> addresses);
 
+    /**
+     * Delete City.
+     * @param ID of the city.
+     * @return success message.
+     */
+    public String deleteCity(Integer ID);
 }

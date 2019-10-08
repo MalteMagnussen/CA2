@@ -315,6 +315,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete existing Hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be deleted.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The deleted Hobby"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")

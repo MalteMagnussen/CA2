@@ -1,5 +1,6 @@
 package entities;
 
+import dto.AddressDTO_IN;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +45,12 @@ public class Address implements Serializable{
         this.persons = persons;
     }
 
+    public Address(AddressDTO_IN address) {
+        this.id = address.getId();
+        this.street = address.getStreet();
+        this.additionalInfo = address.getAdditionalInfo();
+    }
+    
     public Integer getId() {
         return id;
     }

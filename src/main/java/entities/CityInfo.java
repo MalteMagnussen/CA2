@@ -1,5 +1,6 @@
 package entities;
 
+import dto.CityInfoDTO_IN;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +43,12 @@ public class CityInfo implements Serializable {
         this.zipCode = zipCode;
         this.city = city;
         this.addresses = addresses;
+    }
+    
+    public CityInfo(CityInfoDTO_IN cityInfo) {
+        this.id = cityInfo.getId();
+        this.zipCode = cityInfo.getZipCode();
+        this.city = cityInfo.getCity();
     }
 
     public Integer getId() {

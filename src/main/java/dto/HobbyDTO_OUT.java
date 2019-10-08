@@ -9,27 +9,42 @@ import java.util.Objects;
 @Schema(name = "Hobby")
 public class HobbyDTO_OUT {
 
-    @Schema(required = true, example = "Lacrosse")
+    @Schema(name = "ID", example = "1")
+    private Integer id;
+    @Schema(example = "Lacrosse")
     private String name;
-    @Schema(required = true, example = "Rich People Game")
+    @Schema(example = "Rich People Game")
     private String description;
 
     public HobbyDTO_OUT() {
     }
 
     public HobbyDTO_OUT(HobbyDTO_IN hobby) {
+        this.id = hobby.getId();
         this.name = hobby.getName();
         this.description = hobby.getDescription();
     }
 
     public HobbyDTO_OUT(Hobby hobby) {
+        this.id = hobby.getId();
         this.name = hobby.getName();
         this.description = hobby.getDescription();
     }
 
-    public HobbyDTO_OUT(String name, String description, List<Person> persons) {
+    public HobbyDTO_OUT(int id, String name, String description, List<Person> persons) {
+        this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
     }
 
     public String getName() {

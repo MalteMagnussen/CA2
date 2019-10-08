@@ -1,5 +1,6 @@
 package facades;
 
+import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Hobby;
@@ -120,7 +121,10 @@ public class SearchFacade_Impl implements ISearchFacade {
     @Override
     public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO) {
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
-        List<Hobby> hobbies = personDTO.getHobbies();
+        List<Hobby> hobbies = new ArrayList();
+        for (HobbyDTO_IN h : personDTO.getHobbies()) {
+            hobbies.add(new Hobby(h));
+        }
         EntityManager em = getEntityManager();
         if (person.getEmail() == null || person.getFirstName() == null
                 || person.getLastName() == null || hobbies == null

@@ -19,7 +19,7 @@ public class PersonDTO_IN {
     @Schema(name = "Email", required = true, example = "Johnny@Reimar.dk")
     private String email;
     @Schema(example = "None available")
-    private List<Hobby> hobbies = new ArrayList();
+    private List<HobbyDTO_IN> hobbies = new ArrayList();
 
     public PersonDTO_IN() {
     }
@@ -28,14 +28,18 @@ public class PersonDTO_IN {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        this.hobbies = person.getHobbies();
+        for (Hobby h : person.getHobbies()) {
+            this.hobbies.add(new HobbyDTO_IN(h));
+        }
     }
 
     public PersonDTO_IN(String email, String firstName, String lastName, List<Hobby> hobbies) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.hobbies = hobbies;
+        for (Hobby h : hobbies) {
+            this.hobbies.add(new HobbyDTO_IN(h));
+        }
     }
 
     public PersonDTO_IN(String email, String firstname, String lastname) {
@@ -45,7 +49,7 @@ public class PersonDTO_IN {
     }
 
     public void addHobby(Hobby h) {
-        this.hobbies.add(h);
+        this.hobbies.add(new HobbyDTO_IN(h));
     }
 
     public String getEmail() {
@@ -72,11 +76,13 @@ public class PersonDTO_IN {
         this.lastName = lastName;
     }
 
-    public List<Hobby> getHobbies() {
+    public List<HobbyDTO_IN> getHobbies()
+    {
         return hobbies;
     }
 
-    public void setHobbies(List<Hobby> hobbies) {
+    public void setHobbies(List<HobbyDTO_IN> hobbies)
+    {
         this.hobbies = hobbies;
     }
 

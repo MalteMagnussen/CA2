@@ -4,6 +4,7 @@ import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import entities.Address;
 import java.util.List;
 
 /* 
@@ -97,5 +98,26 @@ public interface ISearchFacade {
      * @return CityDTO with the given ZipCode.
      */
     public CityInfoDTO_OUT getCityByZipCode(String zip);
+
+    /**
+     * Create City.
+     *
+     * @param name of the city.
+     * @param zipCode of the city.
+     * @param addresses in the city. Can be empty.
+     * @return CityInfoDTO.
+     */
+    public CityInfoDTO_OUT createCity(String name, String zipCode, List<Address> addresses);
+
+    /**
+     * Edit City.
+     *
+     * @param ID of the city.
+     * @param name of the city.
+     * @param zipCode of the city.
+     * @param addresses in the city.
+     * @return CityInfoDTO.
+     */
+    public CityInfoDTO_OUT editCity(Integer ID, String name, String zipCode, List<Address> addresses);
 
 }

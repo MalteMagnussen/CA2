@@ -5,6 +5,7 @@ import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
@@ -12,7 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+import javax.persistence.RollbackException;
 import javax.ws.rs.WebApplicationException;
 
 public class SearchFacade_Impl implements ISearchFacade {
@@ -201,7 +205,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     public List<PersonDTO_OUT> getPersonsInCity(CityInfoDTO_IN city) {
         // Check if input is OK
         if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
-            throw new WebApplicationException("Missing Input");
+            throw new WebApplicationException("Missing Input", 400);
         }
 
         EntityManager em = getEntityManager();
@@ -215,7 +219,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Check if any people live in the city. 
             if (persons == null || persons.isEmpty()) {
-                throw new WebApplicationException("No Persons lives in that city.");
+                throw new WebApplicationException("No Persons lives in that city.", 400);
             }
 
             // Convert Persons to DTO.
@@ -247,7 +251,7 @@ public class SearchFacade_Impl implements ISearchFacade {
                 cities.forEach(city -> citiesDTO.add(new CityInfoDTO_OUT(city)));
                 return citiesDTO;
             } else {
-                throw new WebApplicationException("No cities in the database.");
+                throw new WebApplicationException("No cities in the database.", 400);
             }
         } finally {
             em.close();
@@ -258,7 +262,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     public CityInfoDTO_OUT getCityByName(String name) {
         // Input Guard
         if (name == null || name.isEmpty()) {
-            throw new WebApplicationException("Wrong Input.");
+            throw new WebApplicationException("Wrong Input.", 400);
         }
 
         EntityManager em = getEntityManager();
@@ -270,12 +274,16 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Check if there exists any city with that name.
             if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
-                throw new WebApplicationException("No cities exists with that name.");
+                throw new WebApplicationException("No cities exists with that name.", 400);
             }
 
             // Convert Entity to DTO. 
             return new CityInfoDTO_OUT(city);
 
+        } catch (NoResultException ex) { // Thrown by .getSingleResult()
+            throw new WebApplicationException("No cities exists with that name.", 400);
+        } catch (NonUniqueResultException ex) { // Thrown by .getSingleResult()
+            throw new WebApplicationException("More than one city exists with that name", 400);
         } finally {
             em.close();
         }
@@ -285,7 +293,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     public CityInfoDTO_OUT getCityByZipCode(String zip) {
         // Input Guard
         if (zip == null || zip.isEmpty()) {
-            throw new WebApplicationException("Wrong Input");
+            throw new WebApplicationException("Wrong Input", 400);
         }
 
         EntityManager em = getEntityManager();
@@ -296,10 +304,61 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Check if city exists.
             if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
-                throw new WebApplicationException("No cities exists with that name.");
+                throw new WebApplicationException("No cities exists with that zipCode.", 400);
             }
 
             return new CityInfoDTO_OUT(city);
+        } catch (NoResultException ex) { // Thrown by .getSingleResult()
+            throw new WebApplicationException("No cities exists with that zipCode.", 400);
+        } catch (NonUniqueResultException ex) { // Thrown by .getSingleResult()
+            throw new WebApplicationException("More than one city exists with that zipCode", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public CityInfoDTO_OUT createCity(String name, String zipCode, List<Address> addresses) {
+        // Input Guard
+        if (name == null || name.isEmpty() || zipCode == null || zipCode.isEmpty()) {
+            throw new WebApplicationException("Wrong Input", 400);
+        }
+
+        EntityManager em = getEntityManager();
+
+        try {
+            CityInfo city = new CityInfo(zipCode, name, addresses);
+            em.getTransaction().begin();
+            em.persist(city);
+            em.getTransaction().commit();
+            return new CityInfoDTO_OUT(city);
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Database error when persisting city.", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public CityInfoDTO_OUT editCity(Integer ID, String name, String zipCode, List<Address> addresses) {
+        // Input guard
+        if (ID == null || name == null || name.isEmpty() || zipCode == null || zipCode.isEmpty() || addresses == null) {
+            throw new WebApplicationException("Wrong Input", 400);
+        }
+
+        EntityManager em = getEntityManager();
+
+        try {
+            CityInfo city = new CityInfo(zipCode, name, addresses);
+            city.setId(ID);
+            em.getTransaction().begin();
+            em.merge(city);
+            em.getTransaction().commit();
+            return new CityInfoDTO_OUT(city);
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Database error when editing city.", 500);
         } finally {
             em.close();
         }

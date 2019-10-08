@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 @Entity
 @NamedQueries({
@@ -37,6 +38,14 @@ public class Person implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hobby_id")
     private List<Hobby> hobbies;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "person",
+            cascade = CascadeType.PERSIST
+    )
+    @JoinColumn(name = "phone_id")
+    private List<Phone> phoneNumbers;
 
     public Person() {
     }

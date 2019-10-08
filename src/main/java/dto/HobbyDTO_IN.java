@@ -9,37 +9,37 @@ import java.util.Objects;
 
 @Schema(name = "Hobby")
 public class HobbyDTO_IN {
-    
-    @Schema(required = true,example = "Lacrosse")
+
+    @Schema(name = "ID", example = "1")
+    private Integer id;
+    @Schema(required = true, example = "Lacrosse")
     private String name;
-    @Schema(required = true,example = "Rich People Game")
+    @Schema(required = true, example = "Rich People Game")
     private String description;
-    @Schema(example="None available")
-    private List<Person> persons;
 
     public HobbyDTO_IN() {
     }
 
-    public HobbyDTO_IN(HobbyDTO_OUT hobby) {
-        this.name = hobby.getName();
-        this.description = hobby.getDescription();
-        this.persons = hobby.getPersons();
-    }
-
     public HobbyDTO_IN(Hobby hobby) {
+        this.id = hobby.getId();
         this.name = hobby.getName();
         this.description = hobby.getDescription();
-        this.persons = hobby.getPersons();
     }
 
-    public HobbyDTO_IN(String name, String description, List<Person> persons) {
+    public HobbyDTO_IN(int id, String name, String description, List<Person> persons) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.persons = persons;
     }
-    
-    public void addPerson(Person p){
-        this.persons.add(p);
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
     }
 
     public String getName() {
@@ -56,14 +56,6 @@ public class HobbyDTO_IN {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Person> getPersons() {
-        return persons;
-    }
-
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
     }
 
     @Override
@@ -90,10 +82,7 @@ public class HobbyDTO_IN {
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
-        if (!Objects.equals(this.persons, other.persons)) {
-            return false;
-        }
         return true;
     }
-    
+
 }

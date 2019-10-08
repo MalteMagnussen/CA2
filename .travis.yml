@@ -12,7 +12,7 @@ cache:
 
 script:
   - mvn test
-  - mvn -Dremote.user=$REMOTE_USER -Dremote.password=$REMOTE_PW tomcat7:deploy
+  - mvn -Dremote.user=$REMOTE_USER -Dremote.password=$REMOTE_PW tomcat7:undeploy tomcat7:deploy
 
 services:
    - mysql

@@ -1,5 +1,6 @@
 package entities;
 
+import dto.HobbyDTO_IN;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,12 @@ public class Hobby implements Serializable {
     public Hobby(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+    
+    public Hobby(HobbyDTO_IN hobby) {
+        this.id = hobby.getId();
+        this.name = hobby.getName();
+        this.description = hobby.getDescription();
     }
 
     public Integer getId() {

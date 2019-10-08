@@ -5,9 +5,9 @@
  */
 package entities;
 
+import dto.PhoneDTO_IN;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -41,6 +41,12 @@ public class Phone implements Serializable {
         this.number = number;
         this.description = description;
         this.person = person;
+    }
+    
+    public Phone(PhoneDTO_IN phone) {
+        this.id = phone.getId();
+        this.number = phone.getNumber();
+        this.description = phone.getDescription();
     }
 
     /**

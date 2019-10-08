@@ -39,7 +39,7 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        for (Hobby h : person.getHobbies()) {
+        for (HobbyDTO_IN h : person.getHobbies()) {
             this.hobbies.add(new HobbyDTO_OUT(h));
         }
     }

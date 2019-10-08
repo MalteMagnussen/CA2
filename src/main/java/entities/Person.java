@@ -1,5 +1,6 @@
 package entities;
 
+import dto.PersonDTO_IN;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Person implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hobby_id")
-    private List<Hobby> hobbies;
+    private List<Hobby> hobbies = new ArrayList();
 
     @OneToMany(
             fetch = FetchType.LAZY,
@@ -65,9 +66,14 @@ public class Person implements Serializable {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.hobbies = new ArrayList();
     }
 
+    public Person(PersonDTO_IN person) {
+        this.email = person.getEmail();
+        this.firstName = person.getFirstName();
+        this.lastName = person.getLastName();
+    }
+    
     public List<Phone> getPhoneNumbers() {
         return phoneNumbers;
     }
@@ -83,8 +89,6 @@ public class Person implements Serializable {
     public void setAddress(Address address) {
         this.address = address;
     }
-
-    
     
     public Integer getId() {
         return id;

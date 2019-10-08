@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.WebApplicationException;
 
 public class SearchFacade_Impl implements ISearchFacade {
@@ -169,9 +170,25 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    /**
+     * Get a List of All ZipCodes.
+     *
+     * @return List of Integer
+     */
     @Override
     public List<Integer> getZipcodes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createNamedQuery("CityInfo.getZipCode");
+            List<Integer> results = query.getResultList();
+            if (results.isEmpty()) {
+                throw new WebApplicationException("No cities in the database.", 400);
+            } else {
+                return results;
+            }
+        } finally {
+            em.close();
+        }
     }
 
 }

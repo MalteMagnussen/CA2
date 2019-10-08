@@ -332,7 +332,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.persist(city);
             em.getTransaction().commit();
             return new CityInfoDTO_OUT(city);
-        } catch (RollbackException ex) {
+        } catch (RollbackException ex) { // Thrown by em.commit()
             em.getTransaction().rollback();
             throw new WebApplicationException("Database error when persisting city.", 500);
         } finally {
@@ -356,7 +356,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.merge(city);
             em.getTransaction().commit();
             return new CityInfoDTO_OUT(city);
-        } catch (RollbackException ex) {
+        } catch (RollbackException ex) { // Thrown by em.commit()
             em.getTransaction().rollback();
             throw new WebApplicationException("Database error when editing city.", 500);
         } finally {
@@ -373,10 +373,10 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.remove(city);
             em.getTransaction().commit();
             return "Removed city with name: " + city.getCity() + " and ZipCode: " + city.getZipCode();
-        } catch (RollbackException ex) {
+        } catch (RollbackException ex) { // Thrown by em.commit()
             em.getTransaction().rollback();
             throw new WebApplicationException("Database error when deleting city.", 500);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) { // Thrown by em.find()
             throw new WebApplicationException("Wrong ID.");
         } finally {
             em.close();

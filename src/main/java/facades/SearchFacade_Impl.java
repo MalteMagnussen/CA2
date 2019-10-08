@@ -255,7 +255,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public List<CityInfoDTO_OUT> getCityByName(String name) {
+    public CityInfoDTO_OUT getCityByName(String name) {
         // Input Guard
         if (name == null || name.isEmpty()) {
             throw new WebApplicationException("Wrong Input.");
@@ -264,20 +264,17 @@ public class SearchFacade_Impl implements ISearchFacade {
         EntityManager em = getEntityManager();
         try {
             // Get all cities by name from database.
-            List<CityInfo> cities = em.createNamedQuery("CityInfo.getCityByName")
+            CityInfo city = (CityInfo) em.createNamedQuery("CityInfo.getCityByName")
                     .setParameter("city", name)
-                    .getResultList();
+                    .getSingleResult();
 
-            // Check if there exists any cities with that name.
-            if (cities == null || cities.isEmpty()) {
+            // Check if there exists any city with that name.
+            if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
                 throw new WebApplicationException("No cities exists with that name.");
             }
-            
+
             // Convert Entity to DTO. 
-            List<CityInfoDTO_OUT> citiesDTO = new ArrayList<>();
-            cities.forEach(city -> citiesDTO.add(new CityInfoDTO_OUT(city)));
-            
-            return citiesDTO;
+            return new CityInfoDTO_OUT(city);
 
         } finally {
             em.close();
@@ -285,8 +282,27 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public List<CityInfoDTO_OUT> getCityByZipCode(String zip) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public CityInfoDTO_OUT getCityByZipCode(String zip) {
+        // Input Guard
+        if (zip == null || zip.isEmpty()) {
+            throw new WebApplicationException("Wrong Input");
+        }
+
+        EntityManager em = getEntityManager();
+
+        try {
+            // Get City from database.
+            CityInfo city = (CityInfo) em.createNamedQuery("CityInfo.getCityByZip").setParameter("zip", zip).getSingleResult();
+
+            // Check if city exists.
+            if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
+                throw new WebApplicationException("No cities exists with that name.");
+            }
+
+            return new CityInfoDTO_OUT(city);
+        } finally {
+            em.close();
+        }
     }
 
 }

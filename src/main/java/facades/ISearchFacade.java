@@ -86,16 +86,16 @@ public interface ISearchFacade {
      * Get City by Name
      *
      * @param name of the city.
-     * @return List of CityDTO with the given name.
+     * @return CityDTO with the given name.
      */
-    public List<CityInfoDTO_OUT> getCityByName(String name);
+    public CityInfoDTO_OUT getCityByName(String name);
 
     /**
      * Get City by ZipCode
      *
      * @param zip of the city.
-     * @return List of CityDTO with the given ZipCode.
+     * @return CityDTO with the given ZipCode.
      */
-    public List<CityInfoDTO_OUT> getCityByZipCode(String zip);
+    public CityInfoDTO_OUT getCityByZipCode(String zip);
 
 }

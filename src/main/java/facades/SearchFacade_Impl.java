@@ -296,7 +296,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
         try {
             // Get City from database.
-            CityInfo city = (CityInfo) em.createNamedQuery("CityInfo.getCityByZip").setParameter("zip", zip).getSingleResult();
+            CityInfo city = em.createNamedQuery("CityInfo.getCityByZip", CityInfo.class).setParameter("zip", zip).getSingleResult();
 
             // Check if city exists.
             if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {

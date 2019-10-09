@@ -229,7 +229,9 @@ public class SearchFacade_ImplTest {
 
     @Test
     public void testGetCityByZipCode() {
-
+        CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city1);
+        CityInfoDTO_OUT result = facade.getCityByZipCode("3400");
+        assertEquals(exp, result);
     }
 
     @Test

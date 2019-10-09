@@ -222,7 +222,9 @@ public class SearchFacade_ImplTest {
 
     @Test
     public void testGetCityByName() {
-
+        CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city1);
+        CityInfoDTO_OUT result = facade.getCityByName("Hillerød");
+        assertEquals(exp, result);
     }
 
     @Test

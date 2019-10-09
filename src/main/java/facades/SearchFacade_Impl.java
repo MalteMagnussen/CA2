@@ -268,15 +268,11 @@ public class SearchFacade_Impl implements ISearchFacade {
         EntityManager em = getEntityManager();
         try {
             // Get all cities by name from database.
-            CityInfo city = (CityInfo) em.createNamedQuery("CityInfo.getCityByName")
-                    .setParameter("city", name)
-                    .getSingleResult();
-
+            CityInfo city = em.createNamedQuery("CityInfo.getCityByName", CityInfo.class).setParameter("city", name).getSingleResult();
             // Check if there exists any city with that name.
             if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
                 throw new WebApplicationException("No cities exists with that name.", 400);
             }
-
             // Convert Entity to DTO. 
             return new CityInfoDTO_OUT(city);
 

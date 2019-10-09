@@ -25,7 +25,7 @@ import javax.persistence.OneToMany;
 @NamedQueries({
     @NamedQuery(name = "CityInfo.getAll", query = "SELECT c FROM CityInfo c"),
     @NamedQuery(name = "CityInfo.deleteAllRows", query = "DELETE FROM CityInfo"),
-    @NamedQuery(name = "CityInfo.getCityByName", query = "SELECT c.city FROM CityInfo c WHERE c.city = :city"),
+    @NamedQuery(name = "CityInfo.getCityByName", query = "SELECT c FROM CityInfo c WHERE c.city = :city"),
     @NamedQuery(name = "CityInfo.getCityByZip", query = "SELECT c.zipCode FROM CityInfo c WHERE c.zipCode = :zip"),
     @NamedQuery(name = "CityInfo.getZipCode", query = "SELECT c.zipCode FROM CityInfo c"),
     @NamedQuery(name = "CityInfo.getCitizens", query = "SELECT p FROM Person p WHERE p.address = (SELECT a FROM Address a WHERE a.cityinfo = (SELECT c FROM CityInfo c WHERE c.city = :city AND c.zipCode = :zip))")

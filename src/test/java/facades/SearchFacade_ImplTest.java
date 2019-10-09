@@ -1,6 +1,7 @@
 package facades;
 
 import dto.CityInfoDTO_IN;
+import dto.CityInfoDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Address;
@@ -212,7 +213,11 @@ public class SearchFacade_ImplTest {
 
     @Test
     public void testGetCities() {
-
+        List<CityInfoDTO_OUT> exp = new ArrayList();
+        exp.add(new CityInfoDTO_OUT(city1));
+        exp.add(new CityInfoDTO_OUT(city2));
+        List<CityInfoDTO_OUT> result = facade.getCities();
+        assertEquals(exp, result);
     }
 
     @Test

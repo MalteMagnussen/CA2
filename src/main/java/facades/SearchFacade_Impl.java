@@ -339,7 +339,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     @Override
     public CityInfoDTO_OUT editCity(Integer ID, String name, String zipCode, List<Address> addresses) {
         // Input guard
-        if (ID == null || name == null || name.isEmpty() || zipCode == null || zipCode.isEmpty() || addresses == null) {
+        if (ID == null || ID == 0 || name == null || name.isEmpty() || zipCode == null || zipCode.isEmpty() || addresses == null) {
             throw new WebApplicationException("Wrong Input", 400);
         }
 

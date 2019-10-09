@@ -229,12 +229,33 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.getCityByName("Hillerød");
         assertEquals(exp, result);
     }
+    
+    @Test
+    public void testGetCityByNameEMPTY_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getCityByName("");
+        });
+    }
 
     @Test
     public void testGetCityByZipCode() {
         CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city1);
         CityInfoDTO_OUT result = facade.getCityByZipCode("3400");
         assertEquals(exp, result);
+    }
+    
+    @Test
+    public void testGetCityByZipCodeEMPTY_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getCityByZipCode("");
+        });
+    }
+    
+    @Test
+    public void testGetCityByZipCodeWRONG_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getCityByZipCode("3333");
+        });
     }
 
     @Test
@@ -245,6 +266,24 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city);
         assertEquals(exp, facade.createCity("Hillerød", "3400", addressList));
     }
+    
+    @Test
+    public void testCreateCityWrongNAME_FAIL() throws Exception {
+        List<Address> addressList = new ArrayList();
+        addressList.add(address1);
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.createCity("", "3400", addressList);
+        });
+    }
+    
+    @Test
+    public void testCreateCityWrongZIP_FAIL() throws Exception {
+        List<Address> addressList = new ArrayList();
+        addressList.add(address1);
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.createCity("Hillerød", "", addressList);
+        });
+    }
 
     @Test
     public void testEditCity() {
@@ -253,9 +292,37 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.editCity(1, "Allerød", city1.getZipCode(), city1.getAddresses());
         assertEquals(exp, result);
     }
+    
+    @Test
+    public void testEditCityWrongID_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.editCity(0, "Allerød", city1.getZipCode(), city1.getAddresses());
+        });
+    }
+    
+    @Test
+    public void testEditCityWrongNAME_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.editCity(1, "", city1.getZipCode(), city1.getAddresses());
+        });
+    }
+    
+    @Test
+    public void testEditCityWrongZIP_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.editCity(1, "Allerød", "", city1.getAddresses());
+        });
+    }
+    
+    @Test
+    public void testEditCityWrongADDRESS_FAIL() throws Exception {
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.editCity(1, "Allerød", city1.getZipCode(), null);
+        });
+    }
 
     @Test
-    public void testDeleteCity() {
+    public void testDeleteCityWithoutAddresses() {
         int expID = facade.getCity("Silkeborg").getId();
         CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city3);
         CityInfoDTO_OUT result = facade.deleteCity(expID);
@@ -264,7 +331,7 @@ public class SearchFacade_ImplTest {
     }
 
     @Test
-    public void testDeleteCityWithAddress_FAIL() throws Exception {
+    public void testDeleteCityWithAddresses_FAIL() throws Exception {
         int expID = facade.getCity("Roskilde").getId();
         Assertions.assertThrows(IllegalStateException.class, () -> {
             facade.deleteCity(expID);

@@ -53,12 +53,6 @@ public class Address implements Serializable {
         this.cityinfo = cityinfo;
         this.persons = persons;
     }
-    
-    public Address(String street, String additionalInfo, CityInfo cityinfo) {
-        this.street = street;
-        this.additionalInfo = additionalInfo;
-        this.cityinfo = cityinfo;
-    }
 
     public Address(String street, String additionalInfo, CityInfo cityinfo) {
         this.street = street;

@@ -151,10 +151,6 @@ public class Person implements Serializable {
     public void addHobby(Hobby hobby) {
         this.hobbies.add(hobby);
     }
-    
-    public void addPhone(Phone phone) {
-        this.phones.add(phone);
-    }
 
     @Override
     public int hashCode() {

@@ -361,19 +361,37 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public String deleteCity(Integer ID) {
+    public CityInfoDTO_OUT deleteCity(int ID) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
             CityInfo city = em.find(CityInfo.class, ID);
+            
             em.remove(city);
             em.getTransaction().commit();
-            return "Removed city with name: " + city.getCity() + " and ZipCode: " + city.getZipCode();
+            return new CityInfoDTO_OUT(city);
         } catch (RollbackException ex) { // Thrown by em.commit()
             em.getTransaction().rollback();
             throw new WebApplicationException("Database error when deleting city.", 500);
         } catch (IllegalArgumentException ex) { // Thrown by em.find()
-            throw new WebApplicationException("Wrong ID.");
+            throw new WebApplicationException("Wrong input");
+        } finally {
+            em.close();
+        }
+    }
+
+    public CityInfo getCity(String name) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            CityInfo city = em.createNamedQuery("CityInfo.getCityByName", CityInfo.class).setParameter("city", name).getSingleResult();
+            if (city != null) {
+                return city;
+            } else {
+                throw new WebApplicationException("No cities exists with that name.", 400);
+            }
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
         } finally {
             em.close();
         }

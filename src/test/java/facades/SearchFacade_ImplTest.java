@@ -9,6 +9,7 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -46,6 +47,7 @@ public class SearchFacade_ImplTest {
 
     private static CityInfo city1 = new CityInfo("3400", "Hillerød");
     private static CityInfo city2 = new CityInfo("4000", "Roskilde");
+    private static CityInfo city3 = new CityInfo("8600", "Silkeborg");
     private static Address address1 = new Address("Kings Road 1", "By the Inn");
     private static Address address2 = new Address("Fishroad 7", "Next to the Lake");
     private static Address address3 = new Address("Fleabottom 69", "In the shitpit");
@@ -94,6 +96,25 @@ public class SearchFacade_ImplTest {
         testPersons.add(person4);
     }
 
+    @BeforeEach
+    public void setUp() throws Exception {
+        EntityManager em = emf.createEntityManager();
+        try {
+            for (Person p : testPersons) {
+                em.getTransaction().begin();
+                em.persist(p);
+                em.getTransaction().commit();
+            }
+            em.getTransaction().begin();
+            em.persist(city3);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+    }
+    
     @AfterEach
     public void tearDown() throws Exception {
         EntityManager em = emf.createEntityManager();
@@ -111,26 +132,6 @@ public class SearchFacade_ImplTest {
         } finally {
             em.close();
         }
-    }
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        EntityManager em = emf.createEntityManager();
-        try {
-            for (Person p : testPersons) {
-                em.getTransaction().begin();
-                em.persist(p);
-                em.getTransaction().commit();
-            }
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-        } finally {
-            em.close();
-        }
-    }
-
-    @AfterAll
-    public static void tearDownClass() throws Exception {
     }
 
     @Test
@@ -199,6 +200,7 @@ public class SearchFacade_ImplTest {
         List<String> exp = new ArrayList();
         exp.add("3400");
         exp.add("4000");
+        exp.add("8600");
         assertEquals(exp, facade.getZipcodes());
     }
 
@@ -216,6 +218,7 @@ public class SearchFacade_ImplTest {
         List<CityInfoDTO_OUT> exp = new ArrayList();
         exp.add(new CityInfoDTO_OUT(city1));
         exp.add(new CityInfoDTO_OUT(city2));
+        exp.add(new CityInfoDTO_OUT(city3));
         List<CityInfoDTO_OUT> result = facade.getCities();
         assertEquals(exp, result);
     }
@@ -240,23 +243,31 @@ public class SearchFacade_ImplTest {
         addressList.add(address1);
         CityInfo city = new CityInfo("3400", "Hillerød", addressList);
         CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city);
-        CityInfoDTO_IN addCity = new CityInfoDTO_IN(city);
         assertEquals(exp, facade.createCity("Hillerød", "3400", addressList));
-        
-//        Person preExp = new Person("testADD@email.dk", "testADD", "Deathwing");
-//        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
-//        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADD@email.dk", "testADD", "Deathwing");
-//        assertEquals(exp, facade.addPerson(addTESTpersonDTO))
-
     }
 
     @Test
     public void testEditCity() {
-
+        CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city1);
+        exp.setCity("Allerød");
+        CityInfoDTO_OUT result = facade.editCity(1, "Allerød", city1.getZipCode(), city1.getAddresses());
+        assertEquals(exp, result);
     }
 
     @Test
     public void testDeleteCity() {
+        int expID = facade.getCity("Silkeborg").getId();
+        CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city3);
+        CityInfoDTO_OUT result = facade.deleteCity(expID);
+        assertEquals(exp, result);
 
+    }
+
+    @Test
+    public void testDeleteCityWithAddress_FAIL() throws Exception {
+        int expID = facade.getCity("Roskilde").getId();
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            facade.deleteCity(expID);
+        });
     }
 }

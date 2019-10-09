@@ -25,24 +25,24 @@ import javax.persistence.OneToMany;
     @NamedQuery(name = "Address.deleteAllRows", query = "DELETE FROM Address"),})
 
 @Entity
-public class Address implements Serializable{
+public class Address implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String street;
     private String additionalInfo;
-    
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cityinfo_id")
     private CityInfo cityinfo;
-    
+
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "address",
             cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
     private List<Person> persons = new ArrayList();
-
 
     public Address() {
     }
@@ -53,7 +53,7 @@ public class Address implements Serializable{
         this.cityinfo = cityinfo;
         this.persons = persons;
     }
-    
+
     public Address(String street, String additionalInfo, CityInfo cityinfo) {
         this.street = street;
         this.additionalInfo = additionalInfo;
@@ -67,15 +67,13 @@ public class Address implements Serializable{
         this.cityinfo = new CityInfo();
         this.persons = new ArrayList();
     }
-    
-    
 
     public Address(AddressDTO_IN address) {
         this.id = address.getId();
         this.street = address.getStreet();
         this.additionalInfo = address.getAdditionalInfo();
     }
-    
+
     public Integer getId() {
         return id;
     }
@@ -157,5 +155,5 @@ public class Address implements Serializable{
     public String toString() {
         return "Address{" + "id=" + id + ", street=" + street + ", additionalInfo=" + additionalInfo + ", cityinfo=" + cityinfo + ", persons=" + persons + '}';
     }
-    
+
 }

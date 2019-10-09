@@ -11,7 +11,7 @@ import java.util.Objects;
 @Schema(name = "Person")
 public class PersonDTO_OUT {
 
-    @Schema(description = "Unique Identifier", required = true, example = "1")
+    @Schema(description = "Unique Identifier", example = "1")
     private Integer id;
     @Schema(description = "First Name", required = true, example = "Johnny")
     private String firstName;

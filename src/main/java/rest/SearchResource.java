@@ -37,7 +37,7 @@ import utils.EMF_Creator;
 @OpenAPIDefinition(
         info = @Info(
                 title = "CA2 API",
-                version = "1.0",
+                version = "1.2",
                 description = "API related to Cphbusiness 3rd semester CS assignment 'CA2'.",
                 contact = @Contact(name = "Github Contributors", url = "https://github.com/MalteMagnussen/CA2/")
         ),
@@ -45,12 +45,12 @@ import utils.EMF_Creator;
             @Tag(name = "General", description = "API related to CA2"),
             @Tag(name = "Persons", description = "CRUD-operations for Person"),
             @Tag(name = "Hobbies", description = "CRUD-operations for Hobby"),
-            @Tag(name = "Cities", description = "CRUD-operations for Cities")
+            @Tag(name = "Cities", description = "CRUD-operations for City")
         },
         servers = {
             @Server(
                     description = "For Local host testing",
-                    url = "http://localhost:8080/startcodeoas"
+                    url = "http://localhost:8080/CA2"
             ),
             @Server(
                     description = "Server API",
@@ -189,7 +189,7 @@ public class SearchResource {
             tags = {"General"},
             responses = {
                 @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons in that city found")})
     public List<PersonDTO_OUT> getPersonsByCity(@QueryParam("city") String city) {

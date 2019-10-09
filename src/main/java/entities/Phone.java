@@ -40,6 +40,11 @@ public class Phone implements Serializable {
         this.person = person;
     }
     
+    public Phone(int number, String description) {
+        this.number = number;
+        this.description = description;
+    }
+    
     public Phone(PhoneDTO_IN phone) {
         this.id = phone.getId();
         this.number = phone.getNumber();

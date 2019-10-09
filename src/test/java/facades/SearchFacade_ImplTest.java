@@ -236,6 +236,17 @@ public class SearchFacade_ImplTest {
 
     @Test
     public void testCreateCity() {
+        List<Address> addressList = new ArrayList();
+        addressList.add(address1);
+        CityInfo city = new CityInfo("3400", "Hillerød", addressList);
+        CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city);
+        CityInfoDTO_IN addCity = new CityInfoDTO_IN(city);
+        assertEquals(exp, facade.createCity("Hillerød", "3400", addressList));
+        
+//        Person preExp = new Person("testADD@email.dk", "testADD", "Deathwing");
+//        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
+//        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADD@email.dk", "testADD", "Deathwing");
+//        assertEquals(exp, facade.addPerson(addTESTpersonDTO))
 
     }
 

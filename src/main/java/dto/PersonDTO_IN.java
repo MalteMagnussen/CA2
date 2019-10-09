@@ -53,8 +53,11 @@ public class PersonDTO_IN {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        for (Hobby h : hobbies) {
-            this.hobbies.add(new HobbyDTO_IN(h));
+        if (hobbies != null)
+        {
+            for (Hobby h : hobbies) {
+                this.hobbies.add(new HobbyDTO_IN(h));
+            }
         }
     }
 

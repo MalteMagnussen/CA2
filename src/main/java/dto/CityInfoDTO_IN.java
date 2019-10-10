@@ -32,6 +32,11 @@ public class CityInfoDTO_IN
         this.city = city;
     }
 
+    public CityInfoDTO_IN(String zipCode, String city) {
+        this.zipCode = zipCode;
+        this.city = city;
+    }
+
     public CityInfoDTO_IN(CityInfo cityinfo)
     {
         this.id = cityinfo.getId();

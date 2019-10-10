@@ -151,11 +151,25 @@ public class SearchFacade_Impl implements ISearchFacade {
                 if (address == null) {
                     address = new Address(personDTO.getAddress());
                     em.persist(address);
-                    person_database.setAddress(address);
                 } else {
                     address = em.merge(address);
-                    person_database.setAddress(address);
                 }
+
+                // CityInfo
+                CityInfo city;
+                if (personDTO.getAddress().getCityInfo() != null) {
+                    city = em.find(CityInfo.class, personDTO.getAddress().getCityInfo().getId());
+                    if (city == null) {
+                        city = new CityInfo(personDTO.getAddress().getCityInfo());
+                        em.persist(city);
+                        address.setCityinfo(city);
+                    } else {
+                        city = em.merge(city);
+                        address.setCityinfo(city);
+                    }
+                }
+
+                person_database.setAddress(address);
             }
 
             // First Name
@@ -277,7 +291,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
         // Add Address
         Address address = new Address(personDTO.getAddress());
-        
+
         // Add City
         CityInfo city = new CityInfo(personDTO.getAddress().getCityInfo());
 
@@ -301,7 +315,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Merge Address
             address = em.merge(address);
-            
+
             // Merge City
             city = em.merge(city);
             address.setCityinfo(city);

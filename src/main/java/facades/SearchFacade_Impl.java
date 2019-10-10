@@ -94,7 +94,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         try {
             List<Person> persons = em.createNamedQuery("Person.getPersonsByHobby").setParameter("name", hobbyName).getResultList();
             if (persons.isEmpty()) {
-                throw new WebApplicationException("No persons with hobby in database", 400);
+                throw new WebApplicationException("No persons with hobby in database", 404);
             }
             List<PersonDTO_OUT> result = new ArrayList<>();
             persons.forEach((person) -> {
@@ -102,7 +102,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             });
             return result;
         } catch (Exception ex) {
-            throw new WebApplicationException(ex.getMessage(), 400);
+            throw new WebApplicationException(ex.getMessage(), 404);
         } finally {
             em.close();
         }
@@ -114,7 +114,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         try {
             Long result = (long) em.createNamedQuery("Person.countPersonsByHobby").setParameter("name", hobbyName).getSingleResult();
             if (result == 0) {
-                throw new WebApplicationException("No persons with hobby in database", 400);
+                throw new WebApplicationException("No persons with hobby in database", 404);
             }
             return result;
         } catch (Exception ex) {
@@ -166,7 +166,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             query.setParameter("lastName", names[1]);
             List<Person> results = query.getResultList();
             if (results.isEmpty()) {
-                throw new WebApplicationException("No persons with that name in database", 400);
+                throw new WebApplicationException("No persons with that name in database", 404);
             }
             List<PersonDTO_OUT> personDTOs = new ArrayList<>();
             for (Person person : results) {
@@ -174,7 +174,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             }
             return personDTOs;
         } catch (Exception ex) {
-            throw new WebApplicationException(ex.getMessage(), 400);
+            throw new WebApplicationException(ex.getMessage(), 404);
         } finally {
             em.close();
         }

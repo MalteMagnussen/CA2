@@ -195,6 +195,25 @@ public class SearchResourceTest
         httpServer.shutdownNow();
     }
 
+    @Test
+    public void testFailAddPerson_400()
+    {
+        String payload = "{\n"
+        + "  \"firstName\": \"Johnny\",\n"
+        + "  \"lastName\": \"Ringo\"\n"
+        + "}";
+
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(payload)
+        .post("/search/create/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+        .body("message", equalTo("Missing input"));
+    }
+    
     /**
      * Test of addPerson method, of class SearchResource.
      */
@@ -219,6 +238,19 @@ public class SearchResourceTest
         .body("lastName", equalTo("Ringo"))
         .body("email", equalTo("the@king.com"));
     }
+    
+    @Test
+    public void testFailGetPersonByFullName_404()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/person/Johnny Dingo")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+        .body("message", equalTo("No persons with that name in database"));
+    }
 
     @Test
     public void testGetPersonByFullName()
@@ -240,6 +272,19 @@ public class SearchResourceTest
         .body("[0].address.cityInfo.city", equalTo("Lyngby"))
         .body("[0].address.cityInfo.zipCode", equalTo("2800"))
         .body("[0].phones[0].number", equalTo(13371337));
+    }
+    
+    @Test
+    public void testFailGetPersonsByHobby_NoPersonsWithHobby()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/hobby/?hobby=LoL")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+        .body("message", equalTo("No persons with hobby in database"));
     }
     
     @Test
@@ -310,6 +355,20 @@ public class SearchResourceTest
         .assertThat()
         .statusCode(HttpStatus.OK_200.getStatusCode())
         .body("count", equalTo(2));
+    }
+    
+    @Test
+    public void testFailAddPersonWithEverything_MissingInput()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new Person())
+        .post("/search/create-with-hobby/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+        .body("message", equalTo("Missing input"));
     }
     
     @Test

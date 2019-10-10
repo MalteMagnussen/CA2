@@ -116,12 +116,11 @@ public class SearchResource {
     @Operation(summary = "Get person given a name (firstname lastname)", tags = {"Persons"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "List of persons with name"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+                @ApiResponse(responseCode = "404", description = "No person found")
             })
-
     public List<PersonDTO_OUT> getPersonByFullName(@PathParam("name") String name) {
         if (name == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
+            throw new WebApplicationException("No person found", 404);
         }
         List<PersonDTO_OUT> returnList = FACADE.getPersonByFullName(name);
         return returnList;

@@ -86,6 +86,14 @@ public class Phone implements Serializable {
         this.number = number;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+    
     public Integer getId() {
         return id;
     }

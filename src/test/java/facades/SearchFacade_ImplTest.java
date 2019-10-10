@@ -185,7 +185,7 @@ public class SearchFacade_ImplTest {
         Person preExp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
         PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
-        assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
+        assertEquals(exp, facade.addPersonWithEverything(addTESTpersonDTO));
     }
 
     @Test

@@ -264,6 +264,15 @@ public class SearchFacade_ImplTest {
 
     }
 
+    
+    @Test
+    public void testDeletePerson_FAIL() {
+        int expID = facade.getPersonByFullName("Rigmor Noggenfogger").get(0).getId();
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.deletePerson(expID);
+        });
+    }
+    
     @Test
     public void testGetPersonByFullName() {
         PersonDTO_OUT expResult = new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1, phones1, address1));

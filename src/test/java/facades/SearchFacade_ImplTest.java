@@ -200,27 +200,89 @@ public class SearchFacade_ImplTest {
     @Test
     public void testAddPersonWithEverything() {
         ArrayList<Hobby> addHobbies = new ArrayList();
-        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
         Hobby hobby = new Hobby("testhobby", "hobbytest");
         addHobbies.add(hobby);
-        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
-
         ArrayList<Phone> addPhones = new ArrayList();
-        ArrayList<PhoneDTO_IN> addPhonesDTO = new ArrayList();
         Phone phone = new Phone(1234, "phonetest");
         addPhones.add(phone);
-        addPhonesDTO.add(new PhoneDTO_IN(phone));
-
         CityInfo testCity = new CityInfo("testZip", "testCity");
-
         Address addAddress = new Address("addTestAddress", "testAddAddress", testCity);
-        AddressDTO_IN addAddressDTO = new AddressDTO_IN(addAddress);
-
         Person preExp = new Person("test@email.dk", "testFirstname", "testLastname", addHobbies, addPhones, addAddress);
+        
+        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
+        ArrayList<PhoneDTO_IN> addPhonesDTO = new ArrayList();
+        addPhonesDTO.add(new PhoneDTO_IN(phone));
+        AddressDTO_IN addAddressDTO = new AddressDTO_IN(addAddress);
         PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
 
         PersonDTO_IN addTestPersonDTO = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
         assertEquals(exp, facade.addPersonWithEverything(addTestPersonDTO));
+    }
+    
+    @Test
+    public void testAddPersonWithEverything_FAIL() {
+        ArrayList<Hobby> addHobbies = new ArrayList();
+        Hobby hobby = new Hobby("testhobby", "hobbytest");
+        addHobbies.add(hobby);
+        ArrayList<Phone> addPhones = new ArrayList();
+        Phone phone = new Phone(1234, "phonetest");
+        addPhones.add(phone);
+        CityInfo testCity = new CityInfo("testZip", "testCity");
+        Address addAddress = new Address("addTestAddress", "testAddAddress", testCity);
+        Person preExp = new Person("test@email.dk", "testFirstname", "testLastname", addHobbies, addPhones, addAddress);
+        
+        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
+        ArrayList<PhoneDTO_IN> addPhonesDTO = new ArrayList();
+        addPhonesDTO.add(new PhoneDTO_IN(phone));
+        AddressDTO_IN addAddressDTO = new AddressDTO_IN(addAddress);
+        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
+
+        PersonDTO_IN addTestPersonDTO_EMAIL_EMPTY = new PersonDTO_IN("", "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_EMAIL_null = new PersonDTO_IN(null, "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_FIRSTNAME_EMPTY = new PersonDTO_IN("test@email.dk", "", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_FIRSTNAME_NULL = new PersonDTO_IN("test@email.dk", null, "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_LASTNAME_EMPTY = new PersonDTO_IN("test@email.dk", "testFirstname", "", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_LASTNAME_NULL = new PersonDTO_IN("test@email.dk", "testFirstname", null, addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_ADDRESS_NULL = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, null);
+        PersonDTO_IN addTestPersonDTO_HOBBY_EMPTY = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", new ArrayList(), addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_HOBBY_NULL = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", null, addPhonesDTO, addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_PHONES_EMPTY = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, new ArrayList(), addAddressDTO);
+        PersonDTO_IN addTestPersonDTO_PHONES_NULL = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, null, addAddressDTO);
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_EMAIL_EMPTY);
+        }, "email empty");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_EMAIL_null);
+        }, "email null");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_FIRSTNAME_EMPTY);
+        }, "firstname empty");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_FIRSTNAME_NULL);
+        }, "firstname null");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_LASTNAME_EMPTY);
+        }, "lastname empty");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_LASTNAME_NULL);
+        }, "lastname null");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_ADDRESS_NULL);
+        }, "address null");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_HOBBY_EMPTY);
+        }, "hobby empty");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_HOBBY_NULL);
+        }, "hobby null");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_PHONES_EMPTY);
+        }, "phone empty");
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.addPersonWithEverything(addTestPersonDTO_PHONES_NULL);
+        }, "phone null");
     }
 
     @Test
@@ -253,10 +315,42 @@ public class SearchFacade_ImplTest {
         addTestPersonDTO.setId(exp.getId());
         assertEquals(exp, facade.editPerson(addTestPersonDTO));
     }
+    
+    @Test
+    public void testEditPerson_ID_ZERO_FAIL() {
+        PersonDTO_OUT exp = facade.getPersonByFullName("Rigmor Noggenfogger").get(0);
+        CityInfo city = facade.getCity("Roskilde");
+        exp.setLastName("Atramedes");
+        exp.getHobbies().get(0).setName("testhobby");
+        exp.getPhones().get(0).setDescription("testphone");
+        exp.getAddress().setAdditionalInfo("testaddress");
+        exp.getAddress().setCityInfo(new CityInfoDTO_OUT(city));
+        exp.getAddress().getCityInfo().setCity("testcity");
+
+        List<HobbyDTO_OUT> expHobbyOUT = exp.getHobbies();
+        List<HobbyDTO_IN> expHobbyIN = new ArrayList();
+        expHobbyOUT.forEach((hobby) -> {
+            expHobbyIN.add(new HobbyDTO_IN(hobby.getId(), hobby.getName(), hobby.getDescription()));
+        });
+
+        List<PhoneDTO_OUT> expPhoneOUT = exp.getPhones();
+        List<PhoneDTO_IN> expPhoneIN = new ArrayList();
+        expPhoneOUT.forEach((phone) -> {
+            expPhoneIN.add(new PhoneDTO_IN(phone.getId(), phone.getNumber(), phone.getDescription()));
+        });
+
+        AddressDTO_OUT expAddressOUT = exp.getAddress();
+        AddressDTO_IN addAddressDTO = new AddressDTO_IN(expAddressOUT.getId(), expAddressOUT.getStreet(), expAddressOUT.getAdditionalInfo());
+
+        PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(exp.getEmail(), exp.getFirstName(), exp.getLastName(), expHobbyIN, expPhoneIN, addAddressDTO);
+        addTestPersonDTO.setId(0);
+        Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.editPerson(addTestPersonDTO);
+        });
+    }
 
     @Test
     public void testDeletePerson() {
-        System.out.println("DELETE PERSON TEST");
         int expID = facade.getPersonByFullName("Arthas Menethil").get(0).getId();
         PersonDTO_OUT exp = new PersonDTO_OUT(person5);
         PersonDTO_OUT result = facade.deletePerson(expID);

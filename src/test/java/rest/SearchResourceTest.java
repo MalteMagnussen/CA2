@@ -299,12 +299,36 @@ public class SearchResourceTest
         //Act
          result = get("/search/phone?phone={phone}", phone). then()
                 .assertThat()
-                //.statusCode(HttpStatus.OK_200.getStatusCode())
+                .statusCode(HttpStatus.OK_200.getStatusCode())
                 .extract()
                 .as(PersonDTO_OUT.class);
 
         //Assert
         assertThat((result), equalTo(expResult));
+    }
+    
+    @Test
+    public void testGetPersonInfoByPhone_Exception1() {
+        long phone =  -1; //bad input
+        
+        given()
+                .get("/search/phone?phone={phone}", phone).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Bad phone input"));
+    }
+    
+    @Test
+    public void testGetPersonInfoByPhone_Exception2() {
+        long phone = 25252525; //good input but not found
+        
+        given()
+                .get("/search/phone?phone={phone}", phone).then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode()).
+                body("code", equalTo(404)).
+                body("message", equalTo("No user with that phone number exists"));
     }
     
     @Test

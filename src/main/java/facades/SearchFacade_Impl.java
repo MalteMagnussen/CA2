@@ -268,15 +268,11 @@ public class SearchFacade_Impl implements ISearchFacade {
         EntityManager em = getEntityManager();
         try {
             // Get all cities by name from database.
-            CityInfo city = (CityInfo) em.createNamedQuery("CityInfo.getCityByName")
-                    .setParameter("city", name)
-                    .getSingleResult();
-
+            CityInfo city = em.createNamedQuery("CityInfo.getCityByName", CityInfo.class).setParameter("city", name).getSingleResult();
             // Check if there exists any city with that name.
             if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
                 throw new WebApplicationException("No cities exists with that name.", 400);
             }
-
             // Convert Entity to DTO. 
             return new CityInfoDTO_OUT(city);
 
@@ -300,7 +296,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
         try {
             // Get City from database.
-            CityInfo city = (CityInfo) em.createNamedQuery("CityInfo.getCityByZip").setParameter("zip", zip).getSingleResult();
+            CityInfo city = em.createNamedQuery("CityInfo.getCityByZip", CityInfo.class).setParameter("zip", zip).getSingleResult();
 
             // Check if city exists.
             if (city == null || city.getCity() == null || city.getCity().isEmpty() || city.getZipCode() == null || city.getZipCode().isEmpty()) {
@@ -343,7 +339,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     @Override
     public CityInfoDTO_OUT editCity(Integer ID, String name, String zipCode, List<Address> addresses) {
         // Input guard
-        if (ID == null || name == null || name.isEmpty() || zipCode == null || zipCode.isEmpty() || addresses == null) {
+        if (ID == null || ID == 0 || name == null || name.isEmpty() || zipCode == null || zipCode.isEmpty() || addresses == null) {
             throw new WebApplicationException("Wrong Input", 400);
         }
 
@@ -365,19 +361,37 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public String deleteCity(Integer ID) {
+    public CityInfoDTO_OUT deleteCity(int ID) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
             CityInfo city = em.find(CityInfo.class, ID);
+            
             em.remove(city);
             em.getTransaction().commit();
-            return "Removed city with name: " + city.getCity() + " and ZipCode: " + city.getZipCode();
+            return new CityInfoDTO_OUT(city);
         } catch (RollbackException ex) { // Thrown by em.commit()
             em.getTransaction().rollback();
             throw new WebApplicationException("Database error when deleting city.", 500);
         } catch (IllegalArgumentException ex) { // Thrown by em.find()
-            throw new WebApplicationException("Wrong ID.");
+            throw new WebApplicationException("Wrong input");
+        } finally {
+            em.close();
+        }
+    }
+
+    public CityInfo getCity(String name) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            CityInfo city = em.createNamedQuery("CityInfo.getCityByName", CityInfo.class).setParameter("city", name).getSingleResult();
+            if (city != null) {
+                return city;
+            } else {
+                throw new WebApplicationException("No cities exists with that name.", 400);
+            }
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
         } finally {
             em.close();
         }

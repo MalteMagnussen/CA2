@@ -1,5 +1,7 @@
 package rest;
 
+import dto.CityInfoDTO_IN;
+import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
 import dto.HobbyDTO_OUT;
 import dto.PersonDTO_IN;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +38,7 @@ import com.google.gson.JsonObject;
 @OpenAPIDefinition(
         info = @Info(
                 title = "CA2 API",
-                version = "1.0",
+                version = "1.2",
                 description = "API related to Cphbusiness 3rd semester CS assignment 'CA2'.",
                 contact = @Contact(name = "Github Contributors", url = "https://github.com/MalteMagnussen/CA2/")
         ),
@@ -43,13 +46,12 @@ import com.google.gson.JsonObject;
             @Tag(name = "General", description = "API related to CA2"),
             @Tag(name = "Persons", description = "CRUD-operations for Person"),
             @Tag(name = "Hobbies", description = "CRUD-operations for Hobby"),
-            @Tag(name = "Movies", description = "Deprecated")
-
+            @Tag(name = "Cities", description = "CRUD-operations for City")
         },
         servers = {
             @Server(
                     description = "For Local host testing",
-                    url = "http://localhost:8080/startcodeoas"
+                    url = "http://localhost:8080/CA2"
             ),
             @Server(
                     description = "Server API",
@@ -131,6 +133,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
+            requestBody = @RequestBody(description = "Person Data (DTO) to be stored. Hobbies not included.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The Newly created Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -147,6 +152,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
+            requestBody = @RequestBody(description = "Person Data (DTO) to be stored. Include hobbies.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The Newly created Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -183,7 +191,7 @@ public class SearchResource {
             tags = {"General"},
             responses = {
                 @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons in that city found")})
     public List<PersonDTO_OUT> getPersonsByCity(@QueryParam("city") String city) {
@@ -216,6 +224,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Edit existing person", tags = {"Persons"},
+            requestBody = @RequestBody(description = "Person Data (DTO) to be edited.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The edited Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -269,6 +280,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be added.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The Newly created Hobby"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -286,6 +300,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Edit existing hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be edited.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The edited Hobby"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -303,6 +320,9 @@ public class SearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete existing Hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be deleted.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
             responses = {
                 @ApiResponse(responseCode = "200", description = "The deleted Hobby"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -314,6 +334,103 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-    //</editor-fold>
+    
+    @GET
+    @Path("city/{city}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Gets city given a name", tags = {"Cities"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Returns city based on name if it exists"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
 
+    public CityInfoDTO_OUT getCityByName(@PathParam("city") String city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //Based on entity & DTO we might want first name + last name
+        //get from facade, return
+        CityInfoDTO_OUT returnItem = FACADE.getCityByName(city);
+        return returnItem;
+    }
+    
+    @GET
+    @Path("city/zip/{zip}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get city given a zip-code", tags = {"Cities"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "City based on zip code"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+
+    public CityInfoDTO_OUT getCityByZip(@PathParam("zip") String zip) {
+        if (zip == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //Based on entity & DTO we might want first name + last name
+        //get from facade, return
+        CityInfoDTO_OUT returnList = FACADE.getCityByZipCode(zip);
+        return returnList;
+    }
+
+    @POST
+    @Path("city")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add new city", tags = {"Cities"},
+            requestBody = @RequestBody(description = "City Data (DTO) to be added.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The newly created City"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public CityInfoDTO_OUT addCity(CityInfoDTO_IN city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //add through facade, return
+        return new CityInfoDTO_OUT();
+    }
+
+    @PUT
+    @Path("city")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Edit existing city", tags = {"Cities"},
+            requestBody = @RequestBody(description = "City Data (DTO) to be edited.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The edited city"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public CityInfoDTO_OUT editCity(CityInfoDTO_IN city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //change through facade, return
+        return new CityInfoDTO_OUT();
+    }
+
+    @DELETE
+    @Path("city")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Delete existing city", tags = {"Cities"},
+            requestBody = @RequestBody(description = "City Data (DTO) to be deleted.",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The deleted City"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public CityInfoDTO_OUT deleteCity(CityInfoDTO_IN city) {
+        if (city == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //delete through facade, return
+        return new CityInfoDTO_OUT();
+    }
+    //</editor-fold>
 }

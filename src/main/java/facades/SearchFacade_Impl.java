@@ -9,6 +9,7 @@ import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
+import entities.Phone;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -125,32 +126,68 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO) {
+    public PersonDTO_OUT addPersonWithEverything(PersonDTO_IN personDTO) {
+        // Guard for PersonDTO being null / empty
+        if (personDTO == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()
+                || personDTO.getFirstName() == null || personDTO.getFirstName().isEmpty()
+                || personDTO.getLastName() == null || personDTO.getLastName().isEmpty()
+                || personDTO.getAddress() == null || personDTO.getHobbies() == null || personDTO.getHobbies().isEmpty()
+                || personDTO.getPhones() == null || personDTO.getPhones().isEmpty()) {
+            throw new WebApplicationException("Missing Input", 400);
+        }
+
+        // Create Person
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
+
+        // Add Hobbies to Person
         List<Hobby> hobbies = new ArrayList();
-        for (HobbyDTO_IN h : personDTO.getHobbies()) {
+        personDTO.getHobbies().forEach((h) -> {
             hobbies.add(new Hobby(h));
-        }
+        });
+        person.setHobbies(hobbies);
+
+        // Add Phones to Person
+        List<Phone> phoneNumbers = new ArrayList();
+        personDTO.getPhones().forEach((p) -> {
+            phoneNumbers.add(new Phone(p));
+        });
+        person.setPhones(phoneNumbers);
+
+        // Add Address to Person
+        Address address = new Address(personDTO.getAddress());
+        person.setAddress(address);
+
         EntityManager em = getEntityManager();
-        if (person.getEmail() == null || person.getFirstName() == null
-                || person.getLastName() == null || hobbies == null
-                || hobbies.isEmpty() || person.getEmail().trim().equals("")
-                || person.getFirstName().trim().equals("") || person.getLastName().trim().equals("")) {
-            throw new WebApplicationException("Missing input", 400);
-        }
+
         try {
+            // Begin Transaction
             em.getTransaction().begin();
 
+            // Merge Hobbies
             hobbies.forEach((hobby) -> {
-                Hobby mergeHobby = em.merge(hobby);
-                person.addHobby(mergeHobby);
+                em.merge(hobby);
             });
+
+            // Persist Phone Numbers
+            phoneNumbers.forEach((phoneNumber) -> {
+                em.persist(phoneNumber);
+            });
+
+            // Merge Address
+            em.merge(address);
+
+            // Persist person
             em.persist(person);
+
+            // Commit. 
             em.getTransaction().commit();
-            PersonDTO_OUT pOUT = new PersonDTO_OUT(person);
-            return pOUT;
-        } catch (Exception ex) {
-            throw new WebApplicationException(ex.getMessage(), 400);
+
+            // Make return DTO and return it. 
+            return new PersonDTO_OUT(person);
+
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Persisting person failed.", 500);
         } finally {
             em.close();
         }
@@ -366,7 +403,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         try {
             em.getTransaction().begin();
             CityInfo city = em.find(CityInfo.class, ID);
-            
+
             em.remove(city);
             em.getTransaction().commit();
             return new CityInfoDTO_OUT(city);

@@ -153,7 +153,7 @@ public class SearchResource {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        return FACADE.addPersonWithHobbies(person);
+        return FACADE.addPersonWithEverything(person);
     }
 
     //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">

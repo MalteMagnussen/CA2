@@ -51,7 +51,7 @@ public interface ISearchFacade {
      * @param personDTO - Containing all the info you want to persist.
      * @return PersonDTO_OUT
      */
-    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO);
+    public PersonDTO_OUT addPersonWithEverything(PersonDTO_IN personDTO);
 
     /**
      * Get a Person by their Full Name.

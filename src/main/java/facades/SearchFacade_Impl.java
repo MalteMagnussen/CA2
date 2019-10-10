@@ -277,6 +277,9 @@ public class SearchFacade_Impl implements ISearchFacade {
 
         // Add Address
         Address address = new Address(personDTO.getAddress());
+        
+        // Add City
+        CityInfo city = new CityInfo(personDTO.getAddress().getCityInfo());
 
         EntityManager em = getEntityManager();
 
@@ -298,6 +301,10 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Merge Address
             address = em.merge(address);
+            
+            // Merge City
+            city = em.merge(city);
+            address.setCityinfo(city);
             person.setAddress(address);
 
             // Persist person

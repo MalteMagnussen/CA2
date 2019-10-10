@@ -129,18 +129,18 @@ public class SearchFacadeTest {
         });
     }
 
-    @Test
-    public void testAddPersonWithHobbies() {
-        ArrayList<Hobby> addHobbies = new ArrayList();
-        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
-        Hobby hobby = new Hobby("Testhobby", "hobbytest");
-        addHobbies.add(hobby);
-        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
-        Person preExp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
-        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
-        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbiesDTO);
-        assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
-    }
+//    @Test
+//    public void testAddPersonWithHobbies() {
+//        ArrayList<Hobby> addHobbies = new ArrayList();
+//        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+//        Hobby hobby = new Hobby("Testhobby", "hobbytest");
+//        addHobbies.add(hobby);
+//        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
+//        Person preExp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+//        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
+//        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbiesDTO);
+//        assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
+//    }
 
     @Test
     public void testGetPersonByFullName() {

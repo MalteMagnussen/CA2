@@ -5,10 +5,12 @@ import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import dto.PhoneDTO_IN;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
+import entities.Phone;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -125,32 +127,212 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
-    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN personDTO) {
-        Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
-        List<Hobby> hobbies = new ArrayList();
-        for (HobbyDTO_IN h : personDTO.getHobbies()) {
-            hobbies.add(new Hobby(h));
+    public PersonDTO_OUT editPerson(PersonDTO_IN personDTO) {
+        if (personDTO.getId() == 0) {
+            throw new WebApplicationException("Person ID was not set.", 400);
         }
+
         EntityManager em = getEntityManager();
-        if (person.getEmail() == null || person.getFirstName() == null
-                || person.getLastName() == null || hobbies == null
-                || hobbies.isEmpty() || person.getEmail().trim().equals("")
-                || person.getFirstName().trim().equals("") || person.getLastName().trim().equals("")) {
-            throw new WebApplicationException("Missing input", 400);
-        }
+
         try {
             em.getTransaction().begin();
+            // Get person.
+            Person person_database = em.find(Person.class, personDTO.getId());
 
-            hobbies.forEach((hobby) -> {
-                Hobby mergeHobby = em.merge(hobby);
-                person.addHobby(mergeHobby);
-            });
-            em.persist(person);
+            if (person_database == null) {
+                throw new WebApplicationException("Could not find Person. Provided ID does not exist.", 400);
+            }
+
+            // Change all fields from the given DTO.
+            // Address
+            Address address;
+            if (personDTO.getAddress() != null) {
+                address = em.find(Address.class, personDTO.getAddress().getId());
+                if (address == null) {
+                    address = new Address(personDTO.getAddress());
+                    em.persist(address);
+                } else {
+                    address = em.merge(address);
+                }
+
+                // CityInfo
+                CityInfo city;
+                if (personDTO.getAddress().getCityInfo() != null) {
+                    city = em.find(CityInfo.class, personDTO.getAddress().getCityInfo().getId());
+                    if (city == null) {
+                        city = new CityInfo(personDTO.getAddress().getCityInfo());
+                        em.persist(city);
+                        address.setCityinfo(city);
+                    } else {
+                        city = em.merge(city);
+                        address.setCityinfo(city);
+                    }
+                }
+
+                person_database.setAddress(address);
+            }
+
+            // First Name
+            if (personDTO.getFirstName() != null && !personDTO.getFirstName().isEmpty()) {
+                person_database.setFirstName(personDTO.getFirstName());
+            }
+
+            // Last Name
+            if (personDTO.getLastName() != null && !personDTO.getLastName().isEmpty()) {
+                person_database.setLastName(personDTO.getLastName());
+            }
+
+            // Email
+            if (personDTO.getEmail() != null && !personDTO.getEmail().isEmpty()) {
+                person_database.setEmail(personDTO.getEmail());
+            }
+
+            // Hobbies
+            List<HobbyDTO_IN> hobbies = personDTO.getHobbies();
+            if (hobbies != null) {
+                hobbies.forEach((hobbyDTO) -> {
+                    Hobby hobby;
+                    hobby = em.find(Hobby.class, hobbyDTO.getId());
+                    if (hobby != null) {
+                        hobby.setDescription(hobbyDTO.getDescription());
+                        hobby.setName(hobbyDTO.getName());
+                        em.merge(hobby);
+                    } else {
+                        hobby = new Hobby(hobbyDTO);
+                        em.persist(hobby);
+                    }
+                    if (!person_database.getHobbies().contains(hobby)) {
+                        person_database.addHobby(hobby);
+                    }
+                });
+            }
+
+            // Phone
+            List<PhoneDTO_IN> phones = personDTO.getPhones();
+            if (phones != null) {
+                phones.forEach((phoneDTO) -> {
+                    Phone phone;
+                    phone = em.find(Phone.class, phoneDTO.getId());
+                    if (phone != null) {
+                        phone.setDescription(phoneDTO.getDescription());
+                        phone.setNumber(phoneDTO.getNumber());
+                        em.merge(phone);
+                    } else {
+                        phone = new Phone(phoneDTO);
+                        em.persist(phone);
+                    }
+                    if (!person_database.getPhones().contains(phone)) {
+                        person_database.addPhone(phone);
+                    }
+                });
+            }
+
+            Person mergedPerson = em.merge(person_database);
             em.getTransaction().commit();
-            PersonDTO_OUT pOUT = new PersonDTO_OUT(person);
-            return pOUT;
-        } catch (Exception ex) {
-            throw new WebApplicationException(ex.getMessage(), 400);
+            return new PersonDTO_OUT(mergedPerson);
+
+        } catch (RollbackException ex) {
+            throw new WebApplicationException("Something went wrong while editing person.", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public PersonDTO_OUT deletePerson(Integer id) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            // Find Person from ID
+            Person person = em.find(Person.class, id);
+            if (person == null) {
+                throw new WebApplicationException("Could not delete Person. Provided ID does not exist.", 400);
+            }
+            // Remove all the phones
+            person.getPhones().forEach((phone) -> {
+                em.remove(phone);
+            });
+            em.remove(person);
+            em.getTransaction().commit();
+            return new PersonDTO_OUT(person);
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Error when removing person.", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public PersonDTO_OUT addPersonWithEverything(PersonDTO_IN personDTO) {
+        // Guard for PersonDTO being null / empty
+        if (personDTO == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()
+                || personDTO.getFirstName() == null || personDTO.getFirstName().isEmpty()
+                || personDTO.getLastName() == null || personDTO.getLastName().isEmpty()
+                || personDTO.getAddress() == null || personDTO.getHobbies() == null || personDTO.getHobbies().isEmpty()
+                || personDTO.getPhones() == null || personDTO.getPhones().isEmpty()) {
+            throw new WebApplicationException("Missing Input", 400);
+        }
+
+        // Create Person
+        Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
+
+        // Add Hobbies
+        List<Hobby> hobbies = new ArrayList();
+        personDTO.getHobbies().forEach((h) -> {
+            hobbies.add(new Hobby(h));
+        });
+
+        // Add Phones
+        List<Phone> phoneNumbers = new ArrayList();
+        personDTO.getPhones().forEach((p) -> {
+            phoneNumbers.add(new Phone(p));
+        });
+
+        // Add Address
+        Address address = new Address(personDTO.getAddress());
+
+        // Add City
+        CityInfo city = new CityInfo(personDTO.getAddress().getCityInfo());
+
+        EntityManager em = getEntityManager();
+
+        try {
+            // Begin Transaction
+            em.getTransaction().begin();
+
+            // Merge Hobbies
+            hobbies.forEach((hobby) -> {
+                em.merge(hobby);
+                person.addHobby(hobby);
+            });
+
+            // Persist Phone Numbers
+            phoneNumbers.forEach((phoneNumber) -> {
+                em.persist(phoneNumber);
+                person.addPhone(phoneNumber);
+            });
+
+            // Merge Address
+            address = em.merge(address);
+
+            // Merge City
+            city = em.merge(city);
+            address.setCityinfo(city);
+            person.setAddress(address);
+
+            // Persist person
+            em.persist(person);
+
+            // Commit. 
+            em.getTransaction().commit();
+
+            // Make return DTO and return it. 
+            return new PersonDTO_OUT(person);
+
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Persisting person failed.", 500);
         } finally {
             em.close();
         }
@@ -366,7 +548,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         try {
             em.getTransaction().begin();
             CityInfo city = em.find(CityInfo.class, ID);
-            
+
             em.remove(city);
             em.getTransaction().commit();
             return new CityInfoDTO_OUT(city);

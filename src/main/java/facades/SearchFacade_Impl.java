@@ -248,13 +248,9 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.getTransaction().begin();
             // Find Person from ID
             Person person = em.find(Person.class, id);
-            if (person == null) {
+            if (person == null || person.getAddress() != null) {
                 throw new WebApplicationException("Could not delete Person. Provided ID does not exist.", 400);
             }
-            // Remove all the phones
-            person.getPhones().forEach((phone) -> {
-                em.remove(phone);
-            });
             em.remove(person);
             em.getTransaction().commit();
             return new PersonDTO_OUT(person);

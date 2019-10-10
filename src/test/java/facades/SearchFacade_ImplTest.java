@@ -43,11 +43,13 @@ public class SearchFacade_ImplTest {
     private static ArrayList<Phone> phones2 = new ArrayList();
     private static ArrayList<Phone> phones3 = new ArrayList();
     private static ArrayList<Phone> phones4 = new ArrayList();
+    private static ArrayList<Phone> phones5 = new ArrayList();
 
     private static Person person1 = new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1);
     private static Person person2 = new Person("boris@email.dk", "Boris", "Ragnaros", hobbies2);
     private static Person person3 = new Person("zacharias@email.dk", "Zacharias", "Onyxia", hobbies3);
     private static Person person4 = new Person("flemse@email.dk", "Flemming", "Atramedes", hobbies4);
+    private static Person person5 = new Person("lich@king.dk", "Arthas", "Menethil");
 
     private static CityInfo city1 = new CityInfo("3400", "Hillerød");
     private static CityInfo city2 = new CityInfo("4000", "Roskilde");
@@ -77,6 +79,8 @@ public class SearchFacade_ImplTest {
         phones2.add(new Phone(365478, "Work", person2));
         phones3.add(new Phone(456789, "Mobile", person3));
         phones4.add(new Phone(333333, "Work", person4));
+        phones5.add(new Phone(22, "Citadel", person5));
+        phones5.add(new Phone(33, "Mobile", person5));
 
         person1.addPhone(phones1.get(0));
         person1.addPhone(phones1.get(1));
@@ -84,6 +88,8 @@ public class SearchFacade_ImplTest {
         person2.addPhone(phones2.get(1));
         person3.addPhone(phones3.get(0));
         person4.addPhone(phones4.get(0));
+        person5.addPhone(phones5.get(0));
+        person5.addPhone(phones5.get(1));
 
         address1.setCityinfo(city1);
         address2.setCityinfo(city2);
@@ -93,16 +99,19 @@ public class SearchFacade_ImplTest {
         person2.setAddress(address2);
         person3.setAddress(address3);
         person4.setAddress(address1);
+        person5.setAddress(null);
 
         person1.setHobbies(hobbies1);
         person2.setHobbies(hobbies2);
         person3.setHobbies(hobbies3);
         person4.setHobbies(hobbies4);
+        person5.setHobbies(null);
 
         testPersons.add(person1);
         testPersons.add(person2);
         testPersons.add(person3);
         testPersons.add(person4);
+        testPersons.add(person5);
     }
 
     @BeforeEach
@@ -158,6 +167,7 @@ public class SearchFacade_ImplTest {
         exp.add(new PersonDTO_OUT(person2));
         exp.add(new PersonDTO_OUT(person3));
         exp.add(new PersonDTO_OUT(person4));
+        exp.add(new PersonDTO_OUT(person5));
         assertEquals(exp, facade.getAllPersonDTO_OUT());
     }
 
@@ -223,7 +233,7 @@ public class SearchFacade_ImplTest {
         exp.getAddress().setAdditionalInfo("testaddress");
         exp.getAddress().setCityInfo(new CityInfoDTO_OUT(city));
         exp.getAddress().getCityInfo().setCity("testcity");
-        
+
         List<HobbyDTO_OUT> expHobbyOUT = exp.getHobbies();
         List<HobbyDTO_IN> expHobbyIN = new ArrayList();
         expHobbyOUT.forEach((hobby) -> {
@@ -242,6 +252,16 @@ public class SearchFacade_ImplTest {
         PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(exp.getEmail(), exp.getFirstName(), exp.getLastName(), expHobbyIN, expPhoneIN, addAddressDTO);
         addTestPersonDTO.setId(exp.getId());
         assertEquals(exp, facade.editPerson(addTestPersonDTO));
+    }
+
+    @Test
+    public void testDeletePerson() {
+        System.out.println("DELETE PERSON TEST");
+        int expID = facade.getPersonByFullName("Arthas Menethil").get(0).getId();
+        PersonDTO_OUT exp = new PersonDTO_OUT(person5);
+        PersonDTO_OUT result = facade.deletePerson(expID);
+        assertEquals(exp, result);
+
     }
 
     @Test

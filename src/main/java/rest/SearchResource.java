@@ -30,6 +30,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import utils.EMF_Creator;
+import com.google.gson.JsonObject;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -88,7 +89,7 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons found")})
-    public List<PersonDTO_OUT> getPersonsByHobby() {
+    public List<PersonDTO_OUT> getAllPersons() {
         List<PersonDTO_OUT> returnList = FACADE.getAllPersonDTO_OUT();
         return returnList;
     }
@@ -103,8 +104,10 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
                 @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
-    public long getPersonsCountByHobby(@PathParam("hobby") String hobby) {
-        return FACADE.getCountPersonByHobby(hobby);
+    public String getPersonsCountByHobby(@PathParam("hobby") String hobby) {
+        JsonObject dbMsg = new JsonObject();
+        dbMsg.addProperty("count", FACADE.getCountPersonByHobby(hobby)); //returned from query
+        return dbMsg.toString();
     }
 
     @GET

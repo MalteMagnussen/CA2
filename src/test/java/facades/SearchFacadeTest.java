@@ -1,5 +1,6 @@
 package facades;
 
+import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Hobby;
@@ -131,10 +132,13 @@ public class SearchFacadeTest {
     @Test
     public void testAddPersonWithHobbies() {
         ArrayList<Hobby> addHobbies = new ArrayList();
-        addHobbies.add(new Hobby("Testhobby", "hobbytest"));
+        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+        Hobby hobby = new Hobby("Testhobby", "hobbytest");
+        addHobbies.add(hobby);
+        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
         Person preExp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
-        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbiesDTO);
         assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
     }
 

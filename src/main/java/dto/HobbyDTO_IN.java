@@ -31,6 +31,17 @@ public class HobbyDTO_IN {
         this.name = name;
         this.description = description;
     }
+    
+    public HobbyDTO_IN(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+    
+    public HobbyDTO_IN(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     public Integer getId()
     {

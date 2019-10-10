@@ -24,6 +24,9 @@ public class AddressDTO_IN
     @Schema(required = true, example = "None available")
     private CityInfoDTO_IN cityInfo;
 
+    public AddressDTO_IN()
+    {}
+    
     public AddressDTO_IN(Integer id, String street, String additionalInfo)
     {
         this.id = id;

@@ -43,17 +43,22 @@ public class SearchResourceTest
     private static Person person1 = new Person();
     private static Person person2 = new Person();
     private static Person person3 = new Person();
+    private static Person person4 = new Person();
     private static Phone phone1 = new Phone();
     private static Phone phone2 = new Phone();
     private static Phone phone3 = new Phone();
     private static Phone phone4 = new Phone();
+    private static Phone phone5 = new Phone();
     private static CityInfo city1 = new CityInfo();
     private static CityInfo city2 = new CityInfo();
+    private static CityInfo city3 = new CityInfo();
     private static Address address1 = new Address();
     private static Address address2 = new Address();
+    private static Address address3 = new Address();
     private static ArrayList<Hobby> hobbies1 = new ArrayList();
     private static ArrayList<Hobby> hobbies2 = new ArrayList();
     private static ArrayList<Hobby> hobbies3 = new ArrayList();
+    private static ArrayList<Hobby> hobbies4 = new ArrayList();
 
     static HttpServer startServer()
     {
@@ -80,38 +85,53 @@ public class SearchResourceTest
         RestAssured.defaultParser = Parser.JSON;
 
         //Hobbies
-        hobbies1.add(new Hobby("MHW", "Monster Hunter World"));
-        hobbies1.add(new Hobby("WF", "Warframe"));
-        hobbies2.add(new Hobby("Origami", "The art of folding paper"));
-        hobbies2.add(new Hobby("MHW", "Monster Hunter World"));
-        hobbies3.add(new Hobby("Living", "Eating and sleeping"));
+        Hobby h1 = new Hobby("MHW", "Monster Hunter World");
+        Hobby h2 = new Hobby("WF", "Warframe");
+        Hobby h3 = new Hobby("Origami", "The art of folding paper");
+        Hobby h4 = new Hobby("Living", "Eating and sleeping");
+        h1.setId(1);
+        h2.setId(2);
+        h3.setId(3);
+        h4.setId(4);
+        hobbies1.add(h1);
+        hobbies1.add(h2);
+        hobbies2.add(h1);
+        hobbies2.add(h3);
+        hobbies3.add(h4);
+        hobbies4.add(h1);
 
         //Phones
         phone1 = new Phone(13371337, "Cellphone");
         phone2 = new Phone(13376887, "Cellphone");
         phone3 = new Phone(12345678, "Home");
         phone4 = new Phone(98765432, "Cellphone");
+        phone5 = new Phone(88888888, "Cellphone");
 
         //City info
         city1 = new CityInfo("2800", "Lyngby");
         city2 = new CityInfo("8000", "Århus");
+        city3 = new CityInfo("9990", "Skagen");
 
         //Addresses
         address1 = new Address("Klampenborgvej", "Nr. 16, 1. sal tv.", city1);
         address2 = new Address("Busgaden", "Under broen", city2);
+        address3 = new Address("Savvej", "Ingen info", city3);
 
         //Persons
         person1 = new Person("the@king.com", "Johnny", "Ringo", hobbies1);
         person2 = new Person("dimwit@email.com", "Dimwit", "DaBoi", hobbies2);
         person3 = new Person("george@pres.com", "George", "Washington", hobbies3);
+        person4 = new Person("legendary@weare.com", "Iza", "Evelynn", hobbies4);
 
         person1.addPhone(phone1);
         person1.addPhone(phone2);
         person3.addPhone(phone3);
         person2.addPhone(phone4);
+        person4.addPhone(phone5);
         person1.setAddress(address1);
         person2.setAddress(address1);
         person3.setAddress(address2);
+        person4.setAddress(address3);
         
     }
 
@@ -123,15 +143,19 @@ public class SearchResourceTest
         {
             em.getTransaction().begin();
             em.persist(person1);
-            em.persist(person2);
-            em.persist(person3);
+            em.persist(city1);
             em.persist(phone1);
             em.persist(phone2);
-            em.persist(phone3);
-            em.persist(phone4);
-            em.persist(city1);
-            em.persist(city2);
             em.persist(address1);
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            em.persist(person2);
+            em.persist(phone4);
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            em.persist(person3);
+            em.persist(phone3);
+            em.persist(city2);
             em.persist(address2);
             em.getTransaction().commit();
         } catch (Exception e)
@@ -171,6 +195,25 @@ public class SearchResourceTest
         httpServer.shutdownNow();
     }
 
+    @Test
+    public void testFailAddPerson_400()
+    {
+        String payload = "{\n"
+        + "  \"firstName\": \"Johnny\",\n"
+        + "  \"lastName\": \"Ringo\"\n"
+        + "}";
+
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(payload)
+        .post("/search/create/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+        .body("message", equalTo("Missing input"));
+    }
+    
     /**
      * Test of addPerson method, of class SearchResource.
      */
@@ -195,6 +238,19 @@ public class SearchResourceTest
         .body("lastName", equalTo("Ringo"))
         .body("email", equalTo("the@king.com"));
     }
+    
+    @Test
+    public void testFailGetPersonByFullName_404()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/person/Johnny Dingo")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+        .body("message", equalTo("No persons with that name in database"));
+    }
 
     @Test
     public void testGetPersonByFullName()
@@ -216,5 +272,120 @@ public class SearchResourceTest
         .body("[0].address.cityInfo.city", equalTo("Lyngby"))
         .body("[0].address.cityInfo.zipCode", equalTo("2800"))
         .body("[0].phones[0].number", equalTo(13371337));
+    }
+    
+    @Test
+    public void testFailGetPersonsByHobby_NoPersonsWithHobby()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/hobby/?hobby=LoL")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+        .body("message", equalTo("No persons with hobby in database"));
+    }
+    
+    @Test
+    public void testGetPersonsByHobby()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/hobby/?hobby=MHW")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("[0].firstName", equalTo("Johnny"))
+        .body("[1].firstName", equalTo("Dimwit"))
+        .body("[0].lastName", equalTo("Ringo"))
+        .body("[1].lastName", equalTo("DaBoi"))
+        .body("[0].email", equalTo("the@king.com"))
+        .body("[0].hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("[0].hobbies[0].name", equalTo("MHW"))
+        .body("[1].hobbies[1].name", equalTo("Origami"))
+        .body("[0].hobbies[1].description", equalTo("Warframe"))
+        .body("[0].address.street", equalTo("Klampenborgvej"))
+        .body("[0].address.cityInfo.city", equalTo("Lyngby"))
+        .body("[0].address.cityInfo.zipCode", equalTo("2800"))
+        .body("[0].phones[0].number", equalTo(13371337))
+        .body("[1].phones[0].description", equalTo("Cellphone"))
+        .body("[1].phones[0].number", equalTo(98765432));
+    }
+    
+    @Test
+    public void testGetAllPersons()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/allpersons")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("[0].firstName", equalTo("Johnny"))
+        .body("[1].firstName", equalTo("Dimwit"))
+        .body("[2].firstName", equalTo("George"))
+        .body("[0].lastName", equalTo("Ringo"))
+        .body("[1].lastName", equalTo("DaBoi"))
+        .body("[2].lastName", equalTo("Washington"))
+        .body("[0].email", equalTo("the@king.com"))
+        .body("[0].hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("[0].hobbies[0].name", equalTo("MHW"))
+        .body("[1].hobbies[1].name", equalTo("Origami"))
+        .body("[2].hobbies[0].name", equalTo("Living"))
+        .body("[0].hobbies[1].description", equalTo("Warframe"))
+        .body("[0].address.street", equalTo("Klampenborgvej"))
+        .body("[0].address.cityInfo.city", equalTo("Lyngby"))
+        .body("[0].address.cityInfo.zipCode", equalTo("2800"))
+        .body("[0].phones[0].number", equalTo(13371337))
+        .body("[1].phones[0].description", equalTo("Cellphone"))
+        .body("[1].phones[0].number", equalTo(98765432));
+    }
+    
+    @Test
+    public void testPersonsCountByHobby()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/hobby/MHW/count")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("count", equalTo(2));
+    }
+    
+    @Test
+    public void testFailAddPersonWithEverything_MissingInput()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new Person())
+        .post("/search/create-with-hobby/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+        .body("message", equalTo("Missing input"));
+    }
+    
+    @Test
+    public void testAddPersonWithEverything()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(person4)
+        .post("/search/create-with-hobby/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Iza"))
+        .body("lastName", equalTo("Evelynn"))
+        .body("email", equalTo("legendary@weare.com"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"));
     }
 }

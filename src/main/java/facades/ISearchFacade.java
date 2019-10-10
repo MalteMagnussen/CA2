@@ -21,6 +21,20 @@ public interface ISearchFacade {
      * @return PersonDTO_OUT
      */
     public PersonDTO_OUT addPerson(PersonDTO_IN personDTO);
+    
+    /**
+     * Edit a Person.
+     * @param personDTO - PersonDTO_IN
+     * @return PersonDTO_OUT
+     */
+    public PersonDTO_OUT editPerson(PersonDTO_IN personDTO);
+    
+    /**
+     * Delete a Person
+     * @param id of the Person
+     * @return PersonDTO_OUT
+     */
+    public PersonDTO_OUT deletePerson(Integer id);
 
     /**
      * Get all Persons in the Database.

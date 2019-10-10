@@ -126,6 +126,33 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     @Override
+    public PersonDTO_OUT editPerson(PersonDTO_IN personDTO) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PersonDTO_OUT deletePerson(Integer id) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            // Find Person from ID
+            Person person = em.find(Person.class, id);
+            // Remove all the phones
+            person.getPhones().forEach((phone) -> {
+                em.remove(phone);
+            });
+            em.remove(person);
+            em.getTransaction().commit();
+            return new PersonDTO_OUT(person);
+        } catch (RollbackException ex) {
+            em.getTransaction().rollback();
+            throw new WebApplicationException("Error when removing person.", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public PersonDTO_OUT addPersonWithEverything(PersonDTO_IN personDTO) {
         // Guard for PersonDTO being null / empty
         if (personDTO == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()

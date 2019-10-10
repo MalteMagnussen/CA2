@@ -67,6 +67,14 @@ public interface ISearchFacade {
      * @param city
      * @return List of PersonDTO_OUT
      */
+    
+    /**
+     * Get a person by their phone number. (i.e. 12345678)
+     * @param phone phonenumber
+     * @return person in question
+     */
+    public PersonDTO_OUT getPersonByPhone(long phone);
+    
     public List<PersonDTO_OUT> getPersonsInCity(CityInfoDTO_IN city);
 
     /**
@@ -126,4 +134,5 @@ public interface ISearchFacade {
      * @return success message.
      */
     public CityInfoDTO_OUT deleteCity(int ID);
+
 }

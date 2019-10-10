@@ -163,8 +163,7 @@ public class SearchResource {
         }
         return FACADE.addPersonWithHobbies(person);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
+    
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -175,12 +174,13 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested Person"),
                 @ApiResponse(responseCode = "404", description = "Person not found")})
-
     public PersonDTO_OUT getPersonInfoByPhone(@QueryParam("phone") long phone) {
         //    /api/search/phone?phone=<phone>
-        //get from facade
-        return new PersonDTO_OUT();
+        return FACADE.getPersonByPhone(phone);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
+    
 
     @GET
     @Path("/city")

@@ -152,6 +152,8 @@ public class SearchFacade_Impl implements ISearchFacade {
                     address = new Address(personDTO.getAddress());
                     em.persist(address);
                 } else {
+                    address.setAdditionalInfo(personDTO.getAddress().getAdditionalInfo());
+                    address.setStreet(personDTO.getAddress().getStreet());
                     address = em.merge(address);
                 }
 
@@ -164,8 +166,9 @@ public class SearchFacade_Impl implements ISearchFacade {
                         em.persist(city);
                         address.setCityinfo(city);
                     } else {
+                        city.setCity(personDTO.getAddress().getCityInfo().getCity());
+                        city.setZipCode(personDTO.getAddress().getCityInfo().getZipCode());
                         city = em.merge(city);
-                        address.setCityinfo(city);
                     }
                 }
 

@@ -1,12 +1,15 @@
 package facades;
 
 import dto.AddressDTO_IN;
+import dto.AddressDTO_OUT;
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
+import dto.HobbyDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import dto.PhoneDTO_IN;
+import dto.PhoneDTO_OUT;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -90,7 +93,7 @@ public class SearchFacade_ImplTest {
         person2.setAddress(address2);
         person3.setAddress(address3);
         person4.setAddress(address1);
-        
+
         person1.setHobbies(hobbies1);
         person2.setHobbies(hobbies2);
         person3.setHobbies(hobbies3);
@@ -120,7 +123,7 @@ public class SearchFacade_ImplTest {
             em.close();
         }
     }
-    
+
     @AfterEach
     public void tearDown() throws Exception {
         EntityManager em = emf.createEntityManager();
@@ -197,33 +200,62 @@ public class SearchFacade_ImplTest {
 //        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
 //        assertEquals(exp, facade.addPersonWithEverything(addTESTpersonDTO));
 //    }
-    
     @Test
-    public void testAddPersonWithEverything(){
+    public void testAddPersonWithEverything() {
         ArrayList<Hobby> addHobbies = new ArrayList();
         ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
         Hobby hobby = new Hobby("testhobby", "hobbytest");
-        addHobbies.add(hobby);        
+        addHobbies.add(hobby);
         addHobbiesDTO.add(new HobbyDTO_IN(hobby));
-        
+
         ArrayList<Phone> addPhones = new ArrayList();
         ArrayList<PhoneDTO_IN> addPhonesDTO = new ArrayList();
         Phone phone = new Phone(1234, "phonetest");
-        addPhones.add(phone);        
+        addPhones.add(phone);
         addPhonesDTO.add(new PhoneDTO_IN(phone));
-        
+
         CityInfo testCity = new CityInfo("testZip", "testCity");
-        
+
         Address addAddress = new Address("addTestAddress", "testAddAddress", testCity);
         AddressDTO_IN addAddressDTO = new AddressDTO_IN(addAddress);
-        
+
         Person preExp = new Person("test@email.dk", "testFirstname", "testLastname", addHobbies, addPhones, addAddress);
         PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
-        
+
         PersonDTO_IN addTestPersonDTO = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
         assertEquals(exp, facade.addPersonWithEverything(addTestPersonDTO));
     }
-    
+
+    @Test
+    public void testEditPerson() {
+        PersonDTO_OUT exp = facade.getPersonByFullName("Rigmor Noggenfogger").get(0);
+        CityInfo city = facade.getCity("Roskilde");
+        exp.setLastName("Atramedes");
+        exp.getHobbies().get(0).setName("testhobby");
+        exp.getPhones().get(0).setDescription("testphone");
+        exp.getAddress().setAdditionalInfo("testaddress");
+        exp.getAddress().setCityInfo(new CityInfoDTO_OUT(city));
+        exp.getAddress().getCityInfo().setCity("testcity");
+        
+        List<HobbyDTO_OUT> expHobbyOUT = exp.getHobbies();
+        List<HobbyDTO_IN> expHobbyIN = new ArrayList();
+        expHobbyOUT.forEach((hobby) -> {
+            expHobbyIN.add(new HobbyDTO_IN(hobby.getId(), hobby.getName(), hobby.getDescription()));
+        });
+
+        List<PhoneDTO_OUT> expPhoneOUT = exp.getPhones();
+        List<PhoneDTO_IN> expPhoneIN = new ArrayList();
+        expPhoneOUT.forEach((phone) -> {
+            expPhoneIN.add(new PhoneDTO_IN(phone.getId(), phone.getNumber(), phone.getDescription()));
+        });
+
+        AddressDTO_OUT expAddressOUT = exp.getAddress();
+        AddressDTO_IN addAddressDTO = new AddressDTO_IN(expAddressOUT.getId(), expAddressOUT.getStreet(), expAddressOUT.getAdditionalInfo());
+
+        PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(exp.getEmail(), exp.getFirstName(), exp.getLastName(), expHobbyIN, expPhoneIN, addAddressDTO);
+        addTestPersonDTO.setId(exp.getId());
+        assertEquals(exp, facade.editPerson(addTestPersonDTO));
+    }
 
     @Test
     public void testGetPersonByFullName() {
@@ -266,7 +298,7 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.getCityByName("Hillerød");
         assertEquals(exp, result);
     }
-    
+
     @Test
     public void testGetCityByNameEMPTY_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
@@ -280,14 +312,14 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.getCityByZipCode("3400");
         assertEquals(exp, result);
     }
-    
+
     @Test
     public void testGetCityByZipCodeEMPTY_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.getCityByZipCode("");
         });
     }
-    
+
     @Test
     public void testGetCityByZipCodeWRONG_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
@@ -303,7 +335,7 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city);
         assertEquals(exp, facade.createCity("Hillerød", "3400", addressList));
     }
-    
+
     @Test
     public void testCreateCityWrongNAME_FAIL() throws Exception {
         List<Address> addressList = new ArrayList();
@@ -312,7 +344,7 @@ public class SearchFacade_ImplTest {
             facade.createCity("", "3400", addressList);
         });
     }
-    
+
     @Test
     public void testCreateCityWrongZIP_FAIL() throws Exception {
         List<Address> addressList = new ArrayList();
@@ -329,28 +361,28 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.editCity(1, "Allerød", city1.getZipCode(), city1.getAddresses());
         assertEquals(exp, result);
     }
-    
+
     @Test
     public void testEditCityWrongID_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.editCity(0, "Allerød", city1.getZipCode(), city1.getAddresses());
         });
     }
-    
+
     @Test
     public void testEditCityWrongNAME_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.editCity(1, "", city1.getZipCode(), city1.getAddresses());
         });
     }
-    
+
     @Test
     public void testEditCityWrongZIP_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.editCity(1, "Allerød", "", city1.getAddresses());
         });
     }
-    
+
     @Test
     public void testEditCityWrongADDRESS_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {

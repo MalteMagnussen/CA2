@@ -34,6 +34,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import utils.EMF_Creator;
 import com.google.gson.JsonObject;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -180,28 +182,24 @@ public class SearchResource {
         //    /api/search/phone?phone=<phone>
         return FACADE.getPersonByPhone(phone);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     
-
     @GET
     @Path("/city")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Get all persons living in a given city (i.e. 2800 Lyngby)",
-            tags = {"General"},
+            tags = {"General"},parameters = @Parameter(array = @ArraySchema(schema = @Schema(implementation = CityInfoDTO_IN.class))),
             responses = {
                 @ApiResponse(
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons in that city found")})
-    public List<PersonDTO_OUT> getPersonsByCity(@QueryParam("city") String city) {
-        //    /api/search/city?city=<city>
-        //example mentions both zip & city?
-        //get from facade
-        List<PersonDTO_OUT> returnList = new ArrayList();
-        return returnList;
+    public List<PersonDTO_OUT> getPersonsByCity(@QueryParam("zip") String zip, @QueryParam("city") String city) {
+        //    /api/search/city?zip=<zip>&city=<city>
+        return FACADE.getPersonsInCity(new CityInfoDTO_IN(zip, city));
     }
 
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
+    
     @GET
     @Path("/zip/")
     @Produces(MediaType.APPLICATION_JSON)

@@ -125,5 +125,5 @@ public interface ISearchFacade {
      * @param ID of the city.
      * @return success message.
      */
-    public String deleteCity(Integer ID);
+    public CityInfoDTO_OUT deleteCity(int ID);
 }

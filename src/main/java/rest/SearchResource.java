@@ -90,7 +90,7 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons found")})
-    public List<PersonDTO_OUT> getPersonsByHobby() {
+    public List<PersonDTO_OUT> getAllPersons() {
         List<PersonDTO_OUT> returnList = FACADE.getAllPersonDTO_OUT();
         return returnList;
     }

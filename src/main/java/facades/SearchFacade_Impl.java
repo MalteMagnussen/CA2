@@ -164,12 +164,12 @@ public class SearchFacade_Impl implements ISearchFacade {
                     if (city == null) {
                         city = new CityInfo(personDTO.getAddress().getCityInfo());
                         em.persist(city);
-                        address.setCityinfo(city);
                     } else {
                         city.setCity(personDTO.getAddress().getCityInfo().getCity());
                         city.setZipCode(personDTO.getAddress().getCityInfo().getZipCode());
                         city = em.merge(city);
                     }
+                    address.setCityinfo(city);
                 }
 
                 person_database.setAddress(address);

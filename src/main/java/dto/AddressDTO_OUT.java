@@ -13,9 +13,9 @@ import java.util.Objects;
  *
  * @author
  */
-public class AddressDTO_OUT
-{
-    @Schema(name="ID", example = "1")
+public class AddressDTO_OUT {
+
+    @Schema(name = "ID", example = "1")
     private Integer id;
     @Schema(example = "Mågevej")
     private String street;
@@ -24,72 +24,60 @@ public class AddressDTO_OUT
     @Schema(example = "None available")
     private CityInfoDTO_OUT cityInfo;
 
-    public AddressDTO_OUT(Integer id, String street, String additionalInfo)
-    {
+    public AddressDTO_OUT(Integer id, String street, String additionalInfo) {
         this.id = id;
         this.street = street;
         this.additionalInfo = additionalInfo;
     }
 
-    public AddressDTO_OUT(Address address)
-    {
+    public AddressDTO_OUT(Address address) {
         this.id = address.getId();
         this.street = address.getStreet();
         this.additionalInfo = address.getAdditionalInfo();
         this.cityInfo = new CityInfoDTO_OUT(address.getCityinfo());
     }
-    
-    public AddressDTO_OUT(AddressDTO_IN address)
-    {
+
+    public AddressDTO_OUT(AddressDTO_IN address) {
         this.id = address.getId();
         this.street = address.getStreet();
         this.additionalInfo = address.getAdditionalInfo();
         this.cityInfo = new CityInfoDTO_OUT(address.getCityInfo());
     }
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public String getAdditionalInfo()
-    {
+    public String getAdditionalInfo() {
         return additionalInfo;
     }
 
-    public void setAdditionalInfo(String additionalInfo)
-    {
+    public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
 
-    public CityInfoDTO_OUT getCityInfo()
-    {
+    public CityInfoDTO_OUT getCityInfo() {
         return cityInfo;
     }
 
-    public void setCityInfo(CityInfoDTO_OUT cityInfo)
-    {
+    public void setCityInfo(CityInfoDTO_OUT cityInfo) {
         this.cityInfo = cityInfo;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 3;
         hash = 53 * hash + Objects.hashCode(this.street);
         hash = 53 * hash + Objects.hashCode(this.additionalInfo);
@@ -97,30 +85,29 @@ public class AddressDTO_OUT
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final AddressDTO_OUT other = (AddressDTO_OUT) obj;
-        if (!Objects.equals(this.street, other.street))
-        {
+        if (!Objects.equals(this.street, other.street)) {
             return false;
         }
-        if (!Objects.equals(this.additionalInfo, other.additionalInfo))
-        {
+        if (!Objects.equals(this.additionalInfo, other.additionalInfo)) {
             return false;
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "AddressDTO_OUT{" + "id=" + id + ", street=" + street + ", additionalInfo=" + additionalInfo + ", cityInfo=" + cityInfo + '}';
+    }
+
 }

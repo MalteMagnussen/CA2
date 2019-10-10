@@ -263,23 +263,20 @@ public class SearchFacade_Impl implements ISearchFacade {
         // Create Person
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
 
-        // Add Hobbies to Person
+        // Add Hobbies
         List<Hobby> hobbies = new ArrayList();
         personDTO.getHobbies().forEach((h) -> {
             hobbies.add(new Hobby(h));
         });
-        person.setHobbies(hobbies);
 
-        // Add Phones to Person
+        // Add Phones
         List<Phone> phoneNumbers = new ArrayList();
         personDTO.getPhones().forEach((p) -> {
             phoneNumbers.add(new Phone(p));
         });
-        person.setPhones(phoneNumbers);
 
-        // Add Address to Person
+        // Add Address
         Address address = new Address(personDTO.getAddress());
-        person.setAddress(address);
 
         EntityManager em = getEntityManager();
 
@@ -290,15 +287,18 @@ public class SearchFacade_Impl implements ISearchFacade {
             // Merge Hobbies
             hobbies.forEach((hobby) -> {
                 em.merge(hobby);
+                person.addHobby(hobby);
             });
 
             // Persist Phone Numbers
             phoneNumbers.forEach((phoneNumber) -> {
                 em.persist(phoneNumber);
+                person.addPhone(phoneNumber);
             });
 
             // Merge Address
-            em.merge(address);
+            address = em.merge(address);
+            person.setAddress(address);
 
             // Persist person
             em.persist(person);

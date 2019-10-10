@@ -34,21 +34,19 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        if (person.getHobbies() != null)
-        {
-            for (Hobby h : person.getHobbies())
-            {
+        if (person.getHobbies() != null) {
+            for (Hobby h : person.getHobbies()) {
                 this.hobbies.add(new HobbyDTO_OUT(h));
             }
         }
-        if (person.getPhones() != null)
-        {
+        if (person.getPhones() != null) {
             for (Phone p : person.getPhones()) {
                 this.phones.add(new PhoneDTO_OUT(p));
             }
         }
-        if (person.getAddress() != null)
-        this.address = new AddressDTO_OUT(person.getAddress());
+        if (person.getAddress() != null) {
+            this.address = new AddressDTO_OUT(person.getAddress());
+        }
     }
 
     public PersonDTO_OUT(PersonDTO_IN person) {
@@ -56,53 +54,50 @@ public class PersonDTO_OUT {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        if (person.getHobbies() != null)
-        {
+        if (person.getHobbies() != null) {
             for (HobbyDTO_IN h : person.getHobbies()) {
                 this.hobbies.add(new HobbyDTO_OUT(h));
             }
         }
-        if (person.getPhones() != null)
-        {
+        if (person.getPhones() != null) {
             for (PhoneDTO_IN p : person.getPhones()) {
                 this.phones.add(new PhoneDTO_OUT(p));
             }
         }
-        if (person.getAddress() != null)
-        this.address = new AddressDTO_OUT(person.getAddress());
+        if (person.getAddress() != null) {
+            this.address = new AddressDTO_OUT(person.getAddress());
+        }
     }
 
     public PersonDTO_OUT(String email, String firstName, String lastName, List<Hobby> hobbies) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        if (hobbies != null)
-        {
+        if (hobbies != null) {
             for (Hobby h : hobbies) {
                 this.hobbies.add(new HobbyDTO_OUT(h));
             }
         }
     }
-    
-    public PersonDTO_OUT(String email, String firstName, String lastName, 
+
+    public PersonDTO_OUT(String email, String firstName, String lastName,
             List<HobbyDTO_OUT> hobbies, List<PhoneDTO_OUT> phones, AddressDTO_OUT address) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        if (hobbies != null)
-        {
+        if (hobbies != null) {
             for (HobbyDTO_OUT h : hobbies) {
                 this.hobbies.add(h);
             }
         }
-        if (phones != null)
-        {
+        if (phones != null) {
             for (PhoneDTO_OUT p : phones) {
                 this.phones.add(p);
             }
         }
-        if (address != null)
-        this.address = address;
+        if (address != null) {
+            this.address = address;
+        }
     }
 
     public void addHobby(HobbyDTO_OUT h) {
@@ -149,24 +144,32 @@ public class PersonDTO_OUT {
         this.id = id;
     }
 
-    public List<PhoneDTO_OUT> getPhones()
-    {
+    public List<PhoneDTO_OUT> getPhones() {
         return phones;
     }
 
-    public void setPhones(List<PhoneDTO_OUT> phones)
-    {
+    public void setPhones(List<PhoneDTO_OUT> phones) {
         this.phones = phones;
     }
 
-    public AddressDTO_OUT getAddress()
-    {
+    public AddressDTO_OUT getAddress() {
         return address;
     }
 
-    public void setAddress(AddressDTO_OUT address)
-    {
+    public void setAddress(AddressDTO_OUT address) {
         this.address = address;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.firstName);
+        hash = 97 * hash + Objects.hashCode(this.lastName);
+        hash = 97 * hash + Objects.hashCode(this.email);
+        hash = 97 * hash + Objects.hashCode(this.hobbies);
+        hash = 97 * hash + Objects.hashCode(this.phones);
+        hash = 97 * hash + Objects.hashCode(this.address);
+        return hash;
     }
 
     @Override
@@ -181,34 +184,30 @@ public class PersonDTO_OUT {
             return false;
         }
         final PersonDTO_OUT other = (PersonDTO_OUT) obj;
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
         if (!Objects.equals(this.firstName, other.firstName)) {
             return false;
         }
         if (!Objects.equals(this.lastName, other.lastName)) {
             return false;
         }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
         if (!Objects.equals(this.hobbies, other.hobbies)) {
+            return false;
+        }
+        if (!Objects.equals(this.phones, other.phones)) {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + Objects.hashCode(this.firstName);
-        hash = 61 * hash + Objects.hashCode(this.lastName);
-        hash = 61 * hash + Objects.hashCode(this.email);
-        hash = 61 * hash + Objects.hashCode(this.hobbies);
-        return hash;
-    }
-
-    @Override
     public String toString() {
-        return "PersonDTO_OUT{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", hobbies=" + hobbies + '}';
+        return "PersonDTO_OUT{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", hobbies=" + hobbies + ", phones=" + phones + ", address=" + address + '}';
     }
 
 }

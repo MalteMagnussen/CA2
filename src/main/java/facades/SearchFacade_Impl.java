@@ -127,7 +127,46 @@ public class SearchFacade_Impl implements ISearchFacade {
 
     @Override
     public PersonDTO_OUT editPerson(PersonDTO_IN personDTO) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Guard for PersonDTO being null / empty
+        if (personDTO == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()
+                || personDTO.getFirstName() == null || personDTO.getFirstName().isEmpty()
+                || personDTO.getLastName() == null || personDTO.getLastName().isEmpty()
+                || personDTO.getAddress() == null || personDTO.getHobbies() == null || personDTO.getHobbies().isEmpty()
+                || personDTO.getPhones() == null || personDTO.getPhones().isEmpty()) {
+            throw new WebApplicationException("Missing Input", 400);
+        }
+
+        EntityManager em = getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            // Get person.
+            Person person = em.find(Person.class, personDTO.getId());
+
+            // Merge city.
+            em.merge(person.getAddress().getCityinfo());
+
+            // Merge Address
+            em.merge(person.getAddress());
+
+            // Merge Phones
+            person.getPhones().forEach((phone) -> {
+                em.merge(phone);
+            });
+
+            // Merge Hobbies
+            person.getHobbies().forEach((hobby) -> {
+                em.merge(hobby);
+            });
+
+            // Merge Person
+            em.merge(person);
+
+            return new PersonDTO_OUT(person);
+
+        } finally {
+            em.close();
+        }
     }
 
     @Override

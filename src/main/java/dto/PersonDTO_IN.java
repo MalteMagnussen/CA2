@@ -48,15 +48,15 @@ public class PersonDTO_IN {
             this.address = new AddressDTO_IN(person.getAddress());
         }
     }
-
-    public PersonDTO_IN(String email, String firstName, String lastName, List<Hobby> hobbies) {
+    
+    public PersonDTO_IN(String email, String firstName, String lastName, List<HobbyDTO_IN> hobbies) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         if (hobbies != null)
         {
-            for (Hobby h : hobbies) {
-                this.hobbies.add(new HobbyDTO_IN(h));
+            for (HobbyDTO_IN h : hobbies) {
+                this.hobbies.add(h);
             }
         }
     }
@@ -191,5 +191,4 @@ public class PersonDTO_IN {
         }
         return true;
     }
-
 }

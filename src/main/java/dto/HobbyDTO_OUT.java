@@ -37,13 +37,11 @@ public class HobbyDTO_OUT {
         this.description = description;
     }
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -61,6 +59,14 @@ public class HobbyDTO_OUT {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.name);
+        hash = 79 * hash + Objects.hashCode(this.description);
+        return hash;
     }
 
     @Override
@@ -82,6 +88,11 @@ public class HobbyDTO_OUT {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "HobbyDTO_OUT{" + "id=" + id + ", name=" + name + ", description=" + description + '}';
     }
 
 }

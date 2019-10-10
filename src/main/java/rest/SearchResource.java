@@ -33,6 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import utils.EMF_Creator;
+import com.google.gson.JsonObject;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -105,8 +106,10 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
                 @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
-    public long getPersonsCountByHobby(@PathParam("hobby") String hobby) {
-        return FACADE.getCountPersonByHobby(hobby);
+    public String getPersonsCountByHobby(@PathParam("hobby") String hobby) {
+        JsonObject dbMsg = new JsonObject();
+        dbMsg.addProperty("count", FACADE.getCountPersonByHobby(hobby)); //returned from query
+        return dbMsg.toString();
     }
 
     @GET
@@ -115,12 +118,11 @@ public class SearchResource {
     @Operation(summary = "Get person given a name (firstname lastname)", tags = {"Persons"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "List of persons with name"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+                @ApiResponse(responseCode = "404", description = "No person found")
             })
-
     public List<PersonDTO_OUT> getPersonByFullName(@PathParam("name") String name) {
         if (name == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
+            throw new WebApplicationException("No person found", 404);
         }
         List<PersonDTO_OUT> returnList = FACADE.getPersonByFullName(name);
         return returnList;
@@ -161,7 +163,7 @@ public class SearchResource {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        return FACADE.addPersonWithHobbies(person);
+        return FACADE.addPersonWithEverything(person);
     }
     
     @GET

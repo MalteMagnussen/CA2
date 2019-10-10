@@ -38,6 +38,9 @@ public class CityInfoDTO_OUT
         this.city = cityinfo.getCity();
     }
 
+    public CityInfoDTO_OUT() {
+    }
+    
     public Integer getId()
     {
         return id;

@@ -12,6 +12,7 @@ import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -324,6 +325,55 @@ public class SearchResourceTest
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode()).
                 body("code", equalTo(404)).
                 body("message", equalTo("No user with that phone number exists"));
+    }
+    
+    @Test
+    public void testGetPersonsByCity(){
+        //Arrange
+        List<PersonDTO_OUT> expResult = new ArrayList();
+        expResult.add(new PersonDTO_OUT(person1)); //both from city1
+        expResult.add(new PersonDTO_OUT(person2)); //both from city1
+        String zip = city1.getZipCode(); //2800
+        String city = city1.getCity(); //Lyngby
+        List<PersonDTO_OUT> result;
+        
+        //Act
+         result = get("search/city?zip={zip}&city={city}", zip, city). then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .extract().body()
+                .jsonPath().getList(".", PersonDTO_OUT.class); //https://stackoverflow.com/a/53006523
+
+        //Assert
+        assertThat((result), equalTo(expResult));
+    }
+    
+    @Test
+    public void testGetPersonsByCity_Exception1(){
+        //Arrange
+        String zip = ""; //bad input
+        String city = ""; 
+        
+        given()
+                .get("search/city?zip={zip}&city={city}", zip, city).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Missing Input"));
+    }
+    
+     @Test
+    public void testGetPersonsByCity_Exception2(){
+        //Arrange
+        String zip = "123"; //Incorrect input
+        String city = "NoCity"; 
+        
+        given()
+                .get("search/city?zip={zip}&city={city}", zip, city).then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode()).
+                body("code", equalTo(404)).
+                body("message", equalTo("No Persons lives in that city."));
     }
     
     @Test

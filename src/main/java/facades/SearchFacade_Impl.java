@@ -424,7 +424,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Check if any people live in the city. 
             if (persons == null || persons.isEmpty()) {
-                throw new WebApplicationException("No Persons lives in that city.", 400);
+                throw new WebApplicationException("No Persons lives in that city.", 404);
             }
 
             // Convert Persons to DTO.

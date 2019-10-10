@@ -9,13 +9,11 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -114,7 +112,7 @@ public class SearchFacade_ImplTest {
             em.close();
         }
     }
-    
+
     @AfterEach
     public void tearDown() throws Exception {
         EntityManager em = emf.createEntityManager();
@@ -196,6 +194,37 @@ public class SearchFacade_ImplTest {
     }
 
     @Test
+    public void testgetPersonByPhone() {
+        //Arrange
+        PersonDTO_OUT expResult = new PersonDTO_OUT(testPersons.get(0));
+        long phone = testPersons.get(0).getPhones().get(0).getNumber();
+        PersonDTO_OUT result;
+
+        //Act
+        result = facade.getPersonByPhone(phone);
+
+        //Assert
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testgetPersonByPhone_FAIL1() {
+        Throwable result = Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonByPhone(-1); //bad input
+        });
+        assertTrue(result.getMessage().contains("Bad phone input"));
+        //assertTrue(result.getMessage().contains("400")); //dont work
+    }
+
+    @Test
+    public void testgetPersonByPhone_FAIL2() {
+        Throwable result = Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonByPhone(1337); //bad input - but it is within borders. (>0)
+        });
+        assertTrue(result.getMessage().contains("No user with that phone number exists"));
+    }
+
+    @Test
     public void testGetZipcodes() {
         List<String> exp = new ArrayList();
         exp.add("3400");
@@ -229,7 +258,7 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.getCityByName("Hillerød");
         assertEquals(exp, result);
     }
-    
+
     @Test
     public void testGetCityByNameEMPTY_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
@@ -243,14 +272,14 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.getCityByZipCode("3400");
         assertEquals(exp, result);
     }
-    
+
     @Test
     public void testGetCityByZipCodeEMPTY_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.getCityByZipCode("");
         });
     }
-    
+
     @Test
     public void testGetCityByZipCodeWRONG_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
@@ -266,7 +295,7 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT exp = new CityInfoDTO_OUT(city);
         assertEquals(exp, facade.createCity("Hillerød", "3400", addressList));
     }
-    
+
     @Test
     public void testCreateCityWrongNAME_FAIL() throws Exception {
         List<Address> addressList = new ArrayList();
@@ -275,7 +304,7 @@ public class SearchFacade_ImplTest {
             facade.createCity("", "3400", addressList);
         });
     }
-    
+
     @Test
     public void testCreateCityWrongZIP_FAIL() throws Exception {
         List<Address> addressList = new ArrayList();
@@ -292,28 +321,28 @@ public class SearchFacade_ImplTest {
         CityInfoDTO_OUT result = facade.editCity(1, "Allerød", city1.getZipCode(), city1.getAddresses());
         assertEquals(exp, result);
     }
-    
+
     @Test
     public void testEditCityWrongID_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.editCity(0, "Allerød", city1.getZipCode(), city1.getAddresses());
         });
     }
-    
+
     @Test
     public void testEditCityWrongNAME_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.editCity(1, "", city1.getZipCode(), city1.getAddresses());
         });
     }
-    
+
     @Test
     public void testEditCityWrongZIP_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.editCity(1, "Allerød", "", city1.getAddresses());
         });
     }
-    
+
     @Test
     public void testEditCityWrongADDRESS_FAIL() throws Exception {
         Assertions.assertThrows(WebApplicationException.class, () -> {

@@ -2,6 +2,7 @@ package facades;
 
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
+import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Address;
@@ -9,13 +10,11 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -181,10 +180,13 @@ public class SearchFacade_ImplTest {
     @Test
     public void testAddPersonWithHobbies() {
         ArrayList<Hobby> addHobbies = new ArrayList();
-        addHobbies.add(new Hobby("Testhobby", "hobbytest"));
+        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+        Hobby hobby = new Hobby("Testhobby", "hobbytest");
+        addHobbies.add(hobby);
+        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
         Person preExp = new Person("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
         PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
-        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
+        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbiesDTO);
         assertEquals(exp, facade.addPersonWithHobbies(addTESTpersonDTO));
     }
 

@@ -22,9 +22,18 @@ public class PhoneDTO_IN
     @Schema(required = true, example = "Cell phone")
     private String description;
 
+    public PhoneDTO_IN() 
+    {}
+    
     public PhoneDTO_IN(Integer id, int number, String description)
     {
         this.id = id;
+        this.number = number;
+        this.description = description;
+    }
+    
+    public PhoneDTO_IN(int number, String description)
+    {
         this.number = number;
         this.description = description;
     }

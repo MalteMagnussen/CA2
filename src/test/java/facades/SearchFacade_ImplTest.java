@@ -182,8 +182,9 @@ public class SearchFacade_ImplTest {
         });
     }
 
+    // TODO - Update following refactor of method. 
 //    @Test
-//    public void testAddPersonWithHobbies() {
+//    public void testAddPersonWithEverything() {
 //        ArrayList<Hobby> addHobbies = new ArrayList();
 //        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
 //        Hobby hobby = new Hobby("Testhobby", "hobbytest");

@@ -168,7 +168,6 @@ public class SearchFacade_Impl implements ISearchFacade {
                         city.setCity(personDTO.getAddress().getCityInfo().getCity());
                         city.setZipCode(personDTO.getAddress().getCityInfo().getZipCode());
                         city = em.merge(city);
-                        address.setCityinfo(city);
                     }
                     address.setCityinfo(city);
                 }

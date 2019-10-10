@@ -1,10 +1,12 @@
 package facades;
 
+import dto.AddressDTO_IN;
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
+import dto.PhoneDTO_IN;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -195,6 +197,33 @@ public class SearchFacade_ImplTest {
 //        PersonDTO_IN addTESTpersonDTO = new PersonDTO_IN("testADDwithhobby@email.dk", "testADDwithhobby", "Deathwingwithhobby", addHobbies);
 //        assertEquals(exp, facade.addPersonWithEverything(addTESTpersonDTO));
 //    }
+    
+    @Test
+    public void testAddPersonWithEverything(){
+        ArrayList<Hobby> addHobbies = new ArrayList();
+        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+        Hobby hobby = new Hobby("testhobby", "hobbytest");
+        addHobbies.add(hobby);        
+        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
+        
+        ArrayList<Phone> addPhones = new ArrayList();
+        ArrayList<PhoneDTO_IN> addPhonesDTO = new ArrayList();
+        Phone phone = new Phone(1234, "phonetest");
+        addPhones.add(phone);        
+        addPhonesDTO.add(new PhoneDTO_IN(phone));
+        
+        CityInfo testCity = new CityInfo("testZip", "testCity");
+        
+        Address addAddress = new Address("addTestAddress", "testAddAddress", testCity);
+        AddressDTO_IN addAddressDTO = new AddressDTO_IN(addAddress);
+        
+        Person preExp = new Person("test@email.dk", "testFirstname", "testLastname", addHobbies, addPhones, addAddress);
+        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
+        
+        PersonDTO_IN addTestPersonDTO = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        assertEquals(exp, facade.addPersonWithEverything(addTestPersonDTO));
+    }
+    
 
     @Test
     public void testGetPersonByFullName() {

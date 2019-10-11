@@ -376,6 +376,27 @@ public class SearchResourceTest
                 body("message", equalTo("No Persons lives in that city."));
     }
     
+    @Test public void testGetAllZipCodes(){
+        //Arrange
+        List<Integer> expResult = new ArrayList();
+        expResult.add(Integer.valueOf(city1.getZipCode())); //2800
+        expResult.add(Integer.valueOf(city2.getZipCode())); //8000
+        expResult.add(Integer.valueOf(city3.getZipCode())); //9900
+        List<Integer> result;
+        
+        //Act
+         result = get("/search/zip/"). then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .extract().body()
+                .jsonPath().getList(""); //https://stackoverflow.com/a/53006523
+
+        //Assert
+        System.out.println(expResult);
+        System.out.println(result);
+        assertThat((result), equalTo(expResult));
+    }
+    
     @Test
     public void testFailGetPersonsByHobby_NoPersonsWithHobby()
     {

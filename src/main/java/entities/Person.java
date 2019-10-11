@@ -44,7 +44,9 @@ public class Person implements Serializable {
     @OneToMany(
             fetch = FetchType.LAZY,
             mappedBy = "person",
-            cascade = CascadeType.PERSIST)
+            cascade = CascadeType.PERSIST,
+            orphanRemoval = true)
+    
     @JoinColumn(name = "phone_id")
     private List<Phone> phones = new ArrayList();
 

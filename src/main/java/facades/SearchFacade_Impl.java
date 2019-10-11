@@ -152,6 +152,8 @@ public class SearchFacade_Impl implements ISearchFacade {
                     address = new Address(personDTO.getAddress());
                     em.persist(address);
                 } else {
+                    address.setAdditionalInfo(personDTO.getAddress().getAdditionalInfo());
+                    address.setStreet(personDTO.getAddress().getStreet());
                     address = em.merge(address);
                 }
 
@@ -162,11 +164,12 @@ public class SearchFacade_Impl implements ISearchFacade {
                     if (city == null) {
                         city = new CityInfo(personDTO.getAddress().getCityInfo());
                         em.persist(city);
-                        address.setCityinfo(city);
                     } else {
+                        city.setCity(personDTO.getAddress().getCityInfo().getCity());
+                        city.setZipCode(personDTO.getAddress().getCityInfo().getZipCode());
                         city = em.merge(city);
-                        address.setCityinfo(city);
                     }
+                    address.setCityinfo(city);
                 }
 
                 person_database.setAddress(address);
@@ -245,13 +248,9 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.getTransaction().begin();
             // Find Person from ID
             Person person = em.find(Person.class, id);
-            if (person == null) {
+            if (person == null || person.getAddress() != null) {
                 throw new WebApplicationException("Could not delete Person. Provided ID does not exist.", 400);
             }
-            // Remove all the phones
-            person.getPhones().forEach((phone) -> {
-                em.remove(phone);
-            });
             em.remove(person);
             em.getTransaction().commit();
             return new PersonDTO_OUT(person);

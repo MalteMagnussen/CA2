@@ -165,6 +165,8 @@ public class SearchResourceTest
             em.persist(phone3);
             em.persist(city2);
             em.persist(address2);
+            em.persist(city3);
+            em.persist(address3);
             em.getTransaction().commit();
         } catch (Exception e)
         {
@@ -389,11 +391,9 @@ public class SearchResourceTest
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .extract().body()
-                .jsonPath().getList(""); //https://stackoverflow.com/a/53006523
+                .jsonPath().getList(".", Integer.class); //https://stackoverflow.com/a/53006523
 
         //Assert
-        System.out.println(expResult);
-        System.out.println(result);
         assertThat((result), equalTo(expResult));
     }
     

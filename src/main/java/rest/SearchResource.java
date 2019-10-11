@@ -167,7 +167,7 @@ public class SearchResource {
         }
         return FACADE.addPersonWithEverything(person);
     }
-    
+
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -182,12 +182,12 @@ public class SearchResource {
         //    /api/search/phone?phone=<phone>
         return FACADE.getPersonByPhone(phone);
     }
-    
+
     @GET
     @Path("/city")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Get all persons living in a given city (i.e. 2800 Lyngby)",
-            tags = {"General"},parameters = @Parameter(array = @ArraySchema(schema = @Schema(implementation = CityInfoDTO_IN.class))),
+            tags = {"General"}, parameters = @Parameter(array = @ArraySchema(schema = @Schema(implementation = CityInfoDTO_IN.class))),
             responses = {
                 @ApiResponse(
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
@@ -198,8 +198,6 @@ public class SearchResource {
         return FACADE.getPersonsInCity(new CityInfoDTO_IN(zip, city));
     }
 
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
-    
     @GET
     @Path("/zip/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -207,16 +205,15 @@ public class SearchResource {
             tags = {"General"},
             responses = {
                 @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
-                @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
-                @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
-    public List<String> getAllZipCodes() {
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
+                @ApiResponse(responseCode = "200", description = "An list of all the zipcodes"),
+                @ApiResponse(responseCode = "400", description = "No zipcodes found")})
+    public List<Integer> getAllZipCodes() {
         //    /api/search/zip
-        //get from facade. Not sure if we want this to be string, object or ?
-        List<String> returnList = new ArrayList();
-        return returnList;
+        return FACADE.getZipcodes();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @PUT
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
@@ -332,7 +329,7 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-    
+
     @GET
     @Path("city/{city}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -351,7 +348,7 @@ public class SearchResource {
         CityInfoDTO_OUT returnItem = FACADE.getCityByName(city);
         return returnItem;
     }
-    
+
     @GET
     @Path("city/zip/{zip}")
     @Produces(MediaType.APPLICATION_JSON)

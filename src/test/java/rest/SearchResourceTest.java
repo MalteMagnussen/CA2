@@ -22,11 +22,14 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import utils.EMF_Creator;
 
 public class SearchResourceTest
@@ -144,8 +147,12 @@ public class SearchResourceTest
     }
 
     @BeforeEach
-    public void setUp() throws Exception
+    public void setUp(TestInfo testInfo) throws Exception
     {
+        if (testInfo.getTags().contains("skipBeforeEach")){
+            return; //do not perform SetUp
+        } //else set it up (https://stackoverflow.com/a/49694288)
+            
         EntityManager em = emf.createEntityManager();
         try
         {
@@ -364,7 +371,7 @@ public class SearchResourceTest
                 body("message", equalTo("Missing Input"));
     }
     
-     @Test
+    @Test
     public void testGetPersonsByCity_Exception2(){
         //Arrange
         String zip = "123"; //Incorrect input
@@ -378,7 +385,8 @@ public class SearchResourceTest
                 body("message", equalTo("No Persons lives in that city."));
     }
     
-    @Test public void testGetAllZipCodes(){
+    @Test 
+    public void testGetAllZipCodes(){
         //Arrange
         List<Integer> expResult = new ArrayList();
         expResult.add(Integer.valueOf(city1.getZipCode())); //2800
@@ -387,14 +395,37 @@ public class SearchResourceTest
         List<Integer> result;
         
         //Act
-         result = get("/search/zip/"). then()
+        result = get("/search/zip/").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .extract().body()
-                .jsonPath().getList(".", Integer.class); //https://stackoverflow.com/a/53006523
+                .jsonPath().getList("", int.class); //could probably be Integer.class but I'm scared to change anything now that it works.
 
         //Assert
-        assertThat((result), equalTo(expResult));
+////        System.out.println(result.getClass());
+////        System.out.println(expResult.getClass());
+////        System.out.println(expResult.get(0).getClass());
+////        System.out.println(result.get(0).getClass());
+////        System.out.println(result);
+////        System.out.println(expResult);
+        //assertThat((result), equalTo(expResult));
+        //assertEquals(expResult, result);
+        //assertThat(expResult, Matchers.containsInAnyOrder(result.get(0), result.get(1), result.get(2)));
+        assertThat("ARE THEY EQUAL", result, containsInAnyOrder(expResult.toArray()));
+    }
+    
+    /**
+     * Simulates an empty db
+     */
+    @Tag("skipBeforeEach")
+    @Test public void testGetAllZipCodes_Exception1(){
+        //Assert
+        given().
+                get("/search/zip/").then().
+                statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                assertThat().
+                body("code", equalTo(400)).
+                body("message", equalTo("No cities in the database."));
     }
     
     @Test

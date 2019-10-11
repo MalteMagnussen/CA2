@@ -276,23 +276,11 @@ public class SearchFacade_Impl implements ISearchFacade {
         // Create Person
         Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
 
-        // Add Hobbies
-        List<Hobby> hobbies = new ArrayList();
-        personDTO.getHobbies().forEach((h) -> {
-            hobbies.add(new Hobby(h));
-        });
-
-        // Add Phones
-        List<Phone> phoneNumbers = new ArrayList();
+        // Add Phones to Person. 
+        // They are unique for each person, so no need to check DB for these. 
         personDTO.getPhones().forEach((p) -> {
-            phoneNumbers.add(new Phone(p));
+            person.addPhone(new Phone(p));
         });
-
-        // Add Address
-        Address address = new Address(personDTO.getAddress());
-
-        // Add City
-        CityInfo city = new CityInfo(personDTO.getAddress().getCityInfo());
 
         EntityManager em = getEntityManager();
 
@@ -300,24 +288,38 @@ public class SearchFacade_Impl implements ISearchFacade {
             // Begin Transaction
             em.getTransaction().begin();
 
-            // Merge Hobbies
-            hobbies.forEach((hobby) -> {
-                em.merge(hobby);
+            // Check if Hobby already exists to avoid duplicates.
+            // If it does, we manage it with JPA. 
+            personDTO.getHobbies().forEach((hobbyDTO) -> {
+                String description = hobbyDTO.getDescription();
+                String name = hobbyDTO.getName();
+                Hobby hobby = getHobby(name, description);
+                if (hobby == null) {
+                    hobby = new Hobby(name, description);
+                }
+                // Add Hobby to person. 
                 person.addHobby(hobby);
             });
 
-            // Persist Phone Numbers
-            phoneNumbers.forEach((phoneNumber) -> {
-                em.persist(phoneNumber);
-                person.addPhone(phoneNumber);
-            });
+            // Check if address already exists. 
+            String street = personDTO.getAddress().getStreet();
+            String additionalInfo = personDTO.getAddress().getAdditionalInfo();
+            Address address = getAddress(street, additionalInfo);
+            if (address == null) {
+                address = new Address(street, additionalInfo);
+            }
 
-            // Merge Address
-            address = em.merge(address);
+            // Check if City already exists. 
+            String zipCode = personDTO.getAddress().getCityInfo().getZipCode();
+            String cityName = personDTO.getAddress().getCityInfo().getCity();
+            CityInfo cityInfo = getCity(cityName, zipCode);
+            if (cityInfo == null) {
+                cityInfo = new CityInfo(zipCode, cityName);
+            }
+            // Set City on address. 
+            address.setCityinfo(cityInfo);
 
-            // Merge City
-            city = em.merge(city);
-            address.setCityinfo(city);
+            // Set address on Person. 
             person.setAddress(address);
 
             // Persist person
@@ -564,7 +566,6 @@ public class SearchFacade_Impl implements ISearchFacade {
     public CityInfo getCity(String name) {
         EntityManager em = getEntityManager();
         try {
-            em.getTransaction().begin();
             CityInfo city = em.createNamedQuery("CityInfo.getCityByName", CityInfo.class).setParameter("city", name).getSingleResult();
             if (city != null) {
                 return city;
@@ -576,6 +577,52 @@ public class SearchFacade_Impl implements ISearchFacade {
         } finally {
             em.close();
         }
+    }
+
+    // Next 3 methods are helpmethods for Edit and Add person. Can also be used for other things, but were made for that purpose. 
+    public CityInfo getCity(String city, String zip) {
+        EntityManager em = getEntityManager();
+        try {
+            CityInfo cityInfo = em.createNamedQuery("CityInfo.getCity", CityInfo.class).setParameter("city", city).setParameter("zip", zip).getSingleResult();
+            if (cityInfo != null) {
+                return cityInfo;
+            }
+        } catch (NoResultException ex) {
+            return null;
+        } finally {
+            em.close();
+        }
+        return null;
+    }
+
+    public Address getAddress(String street, String info) {
+        EntityManager em = getEntityManager();
+        try {
+            Address address = em.createNamedQuery("Address.getAddress", Address.class).setParameter("info", info).setParameter("street", street).getSingleResult();
+            if (address != null) {
+                return address;
+            }
+        } catch (NoResultException ex) {
+            return null;
+        } finally {
+            em.close();
+        }
+        return null;
+    }
+
+    public Hobby getHobby(String name, String desc) {
+        EntityManager em = getEntityManager();
+        try {
+            Hobby hobby = em.createNamedQuery("Hobby.getHobby", Hobby.class).setParameter("name", name).setParameter("desc", desc).getSingleResult();
+            if (hobby != null) {
+                return hobby;
+            }
+        } catch (NoResultException ex) {
+            return null;
+        } finally {
+            em.close();
+        }
+        return null;
     }
 
 }

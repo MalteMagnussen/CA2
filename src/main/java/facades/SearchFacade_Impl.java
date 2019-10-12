@@ -1,5 +1,6 @@
 package facades;
 
+import dto.AddressDTO_IN;
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
@@ -128,111 +129,128 @@ public class SearchFacade_Impl implements ISearchFacade {
 
     @Override
     public PersonDTO_OUT editPerson(PersonDTO_IN personDTO) {
+        System.out.println("1");
+        if (personDTO == null || personDTO.getAddress().getCityInfo() == null) {
+            throw new WebApplicationException("Wrong input", 400);
+        }
+        System.out.println("2");
+
         if (personDTO.getId() == 0) {
             throw new WebApplicationException("Person ID was not set.", 400);
         }
+        System.out.println("3");
 
         EntityManager em = getEntityManager();
 
         try {
             em.getTransaction().begin();
-            // Get person.
+
+            // Find Person by the ID. We have to assume that the person exists, since this is edit. 
             Person person_database = em.find(Person.class, personDTO.getId());
 
-            if (person_database == null) {
-                throw new WebApplicationException("Could not find Person. Provided ID does not exist.", 400);
-            }
+            System.out.println("4");
+            // Edit fields in person:
+            person_database.setEmail(personDTO.getEmail());
+            person_database.setFirstName(personDTO.getFirstName());
+            person_database.setLastName(personDTO.getLastName());
 
-            // Change all fields from the given DTO.
-            // Address
-            Address address;
-            if (personDTO.getAddress() != null) {
-                address = em.find(Address.class, personDTO.getAddress().getId());
-                if (address == null) {
-                    address = new Address(personDTO.getAddress());
-                    em.persist(address);
-                } else {
-                    address.setAdditionalInfo(personDTO.getAddress().getAdditionalInfo());
-                    address.setStreet(personDTO.getAddress().getStreet());
-                    address = em.merge(address);
+            System.out.println("5");
+            // Handle Phones
+            // Get DTO List from PersonDTO
+            List<PhoneDTO_IN> phonesDTO = personDTO.getPhones();
+
+            System.out.println("6");
+            // Delete old phonenumbers from database:
+            person_database.getPhones().forEach((phone) -> {
+                em.remove(phone);
+            });
+            // Empty out his phones.
+            person_database.setPhones(new ArrayList<>());
+
+            System.out.println("7");
+            // For each phone number:
+            phonesDTO.forEach((phoneDTO) -> {
+                // Get number and description
+                int numberDTO = phoneDTO.getNumber();
+                String descriptionDTO = phoneDTO.getDescription();
+                // Add Phones to Person:
+                Phone phone = new Phone(numberDTO, descriptionDTO);
+                em.persist(phone); // Maybe not? Maybe it cascades?
+                person_database.addPhone(phone);
+            });
+            // Phone done.
+
+            System.out.println("8");
+            // Handle Hobbies
+            // Old hobbies
+            List<Hobby> hobbies = person_database.getHobbies();
+            // New hobbies
+            List<HobbyDTO_IN> hobbiesDTO = personDTO.getHobbies();
+            // Empty out old hobbies
+            person_database.setHobbies(new ArrayList<>());
+            // Try to find hobbies in DB.
+            hobbiesDTO.forEach((hobbyDTO) -> {
+                // Get Description and name
+                String descriptionDTO = hobbyDTO.getDescription();
+                String nameDTO = hobbyDTO.getName();
+                // Get Hobby from DB if it exists.
+                Hobby hobby = getHobby(nameDTO, descriptionDTO);
+                // If it doesn't exist.
+                if (hobby == null) {
+                    hobby = new Hobby(nameDTO, descriptionDTO);
+                    em.persist(hobby); // Maybe not? Maybe it cascades?
                 }
+                // Add hobby to person. 
+                person_database.addHobby(hobby);
+            });
+            // Hobby done. 
 
-                // CityInfo
-                CityInfo city;
-                if (personDTO.getAddress().getCityInfo() != null) {
-                    city = em.find(CityInfo.class, personDTO.getAddress().getCityInfo().getId());
-                    if (city == null) {
-                        city = new CityInfo(personDTO.getAddress().getCityInfo());
-                        em.persist(city);
-                    } else {
-                        city.setCity(personDTO.getAddress().getCityInfo().getCity());
-                        city.setZipCode(personDTO.getAddress().getCityInfo().getZipCode());
-                        city = em.merge(city);
-                    }
-                    address.setCityinfo(city);
-                }
-
-                person_database.setAddress(address);
+            System.out.println("9");
+            // Handle address and city
+            AddressDTO_IN addressDTO = personDTO.getAddress();
+            System.out.println("9.1");
+            CityInfoDTO_IN cityInfoDTO = addressDTO.getCityInfo();
+            System.out.println("9.2");
+            // Check if they exist already
+            // Check city exists
+            String cityDTO = cityInfoDTO.getCity();
+            System.out.println("9.3");
+            String zipCodeDTO = cityInfoDTO.getZipCode();
+            System.out.println("9.4");
+            // Get the CityInfo from the Database
+            CityInfo cityInfo = getCity(cityDTO, zipCodeDTO);
+            System.out.println("9.5");
+            if (cityInfo == null) {
+                cityInfo = new CityInfo(zipCodeDTO, cityDTO);
             }
 
-            // First Name
-            if (personDTO.getFirstName() != null && !personDTO.getFirstName().isEmpty()) {
-                person_database.setFirstName(personDTO.getFirstName());
+            System.out.println("10");
+            // Get street and info
+            String streetDTO = addressDTO.getStreet();
+            String additionalInfoDTO = addressDTO.getAdditionalInfo();
+            // Get the address from Database
+            Address address = getAddress(streetDTO, additionalInfoDTO);
+            // If it doesn't exist yet
+            if (address == null) {
+                address = new Address(streetDTO, additionalInfoDTO);
             }
+            // Set info on each other.
+//            cityInfo.addAddress(address); Caused stackoverflow
+            address.setCityinfo(cityInfo);
+            // Handle person on address:
+            // Merge them
+            em.merge(cityInfo);
+            em.merge(address);
+            // Place address on person:
+            person_database.setAddress(address);
+            // Address and City done. 
 
-            // Last Name
-            if (personDTO.getLastName() != null && !personDTO.getLastName().isEmpty()) {
-                person_database.setLastName(personDTO.getLastName());
-            }
+            // Merge Person
+            em.merge(person_database);
 
-            // Email
-            if (personDTO.getEmail() != null && !personDTO.getEmail().isEmpty()) {
-                person_database.setEmail(personDTO.getEmail());
-            }
-
-            // Hobbies
-            List<HobbyDTO_IN> hobbies = personDTO.getHobbies();
-            if (hobbies != null) {
-                hobbies.forEach((hobbyDTO) -> {
-                    Hobby hobby;
-                    hobby = em.find(Hobby.class, hobbyDTO.getId());
-                    if (hobby != null) {
-                        hobby.setDescription(hobbyDTO.getDescription());
-                        hobby.setName(hobbyDTO.getName());
-                        em.merge(hobby);
-                    } else {
-                        hobby = new Hobby(hobbyDTO);
-                        em.persist(hobby);
-                    }
-                    if (!person_database.getHobbies().contains(hobby)) {
-                        person_database.addHobby(hobby);
-                    }
-                });
-            }
-
-            // Phone
-            List<PhoneDTO_IN> phones = personDTO.getPhones();
-            if (phones != null) {
-                phones.forEach((phoneDTO) -> {
-                    Phone phone;
-                    phone = em.find(Phone.class, phoneDTO.getId());
-                    if (phone != null) {
-                        phone.setDescription(phoneDTO.getDescription());
-                        phone.setNumber(phoneDTO.getNumber());
-                        em.merge(phone);
-                    } else {
-                        phone = new Phone(phoneDTO);
-                        em.persist(phone);
-                    }
-                    if (!person_database.getPhones().contains(phone)) {
-                        person_database.addPhone(phone);
-                    }
-                });
-            }
-
-            Person mergedPerson = em.merge(person_database);
             em.getTransaction().commit();
-            return new PersonDTO_OUT(mergedPerson);
+
+            return new PersonDTO_OUT(person_database);
 
         } catch (RollbackException ex) {
             throw new WebApplicationException("Something went wrong while editing person.", 500);

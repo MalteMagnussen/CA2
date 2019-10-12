@@ -625,4 +625,19 @@ public class SearchFacade_Impl implements ISearchFacade {
         return null;
     }
 
+    public Phone getPhone(String description, int phoneNumber) {
+        EntityManager em = getEntityManager();
+        try {
+            Phone phone = em.createNamedQuery("Phone.getPhone", Phone.class).setParameter("number", phoneNumber).setParameter("description", description).getSingleResult();
+            if (phone != null) {
+                return phone;
+            }
+        } catch (NoResultException ex) {
+            return null;
+        } finally {
+            em.close();
+        }
+        return null;
+    }
+
 }

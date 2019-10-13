@@ -129,16 +129,18 @@ public class SearchFacade_Impl implements ISearchFacade {
 
     @Override
     public PersonDTO_OUT editPerson(PersonDTO_IN personDTO) {
-        System.out.println("1");
-        if (personDTO == null || personDTO.getAddress().getCityInfo() == null) {
-            throw new WebApplicationException("Wrong input", 400);
+        // Guard for PersonDTO being null / empty
+        if (personDTO == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()
+                || personDTO.getFirstName() == null || personDTO.getFirstName().isEmpty()
+                || personDTO.getLastName() == null || personDTO.getLastName().isEmpty()
+                || personDTO.getAddress() == null || personDTO.getHobbies() == null || personDTO.getHobbies().isEmpty()
+                || personDTO.getPhones() == null || personDTO.getPhones().isEmpty()) {
+            throw new WebApplicationException("Missing Input", 400);
         }
-        System.out.println("2");
 
         if (personDTO.getId() == 0) {
             throw new WebApplicationException("Person ID was not set.", 400);
         }
-        System.out.println("3");
 
         EntityManager em = getEntityManager();
 
@@ -148,18 +150,15 @@ public class SearchFacade_Impl implements ISearchFacade {
             // Find Person by the ID. We have to assume that the person exists, since this is edit. 
             Person person_database = em.find(Person.class, personDTO.getId());
 
-            System.out.println("4");
-            // Edit fields in person:
+            // Edit String fields in person:
             person_database.setEmail(personDTO.getEmail());
             person_database.setFirstName(personDTO.getFirstName());
             person_database.setLastName(personDTO.getLastName());
 
-            System.out.println("5");
             // Handle Phones
             // Get DTO List from PersonDTO
             List<PhoneDTO_IN> phonesDTO = personDTO.getPhones();
 
-            System.out.println("6");
             // Delete old phonenumbers from database:
             person_database.getPhones().forEach((phone) -> {
                 em.remove(phone);
@@ -167,7 +166,6 @@ public class SearchFacade_Impl implements ISearchFacade {
             // Empty out his phones.
             person_database.setPhones(new ArrayList<>());
 
-            System.out.println("7");
             // For each phone number:
             phonesDTO.forEach((phoneDTO) -> {
                 // Get number and description
@@ -180,7 +178,6 @@ public class SearchFacade_Impl implements ISearchFacade {
             });
             // Phone done.
 
-            System.out.println("8");
             // Handle Hobbies
             // Old hobbies
             List<Hobby> hobbies = person_database.getHobbies();
@@ -205,21 +202,15 @@ public class SearchFacade_Impl implements ISearchFacade {
             });
             // Hobby done. 
 
-            System.out.println("9");
             // Handle address and city
             AddressDTO_IN addressDTO = personDTO.getAddress();
-            System.out.println("9.1");
             CityInfoDTO_IN cityInfoDTO = addressDTO.getCityInfo();
-            System.out.println("9.2");
             // Check if they exist already
             // Check city exists
             String cityDTO = cityInfoDTO.getCity();
-            System.out.println("9.3");
             String zipCodeDTO = cityInfoDTO.getZipCode();
-            System.out.println("9.4");
             // Get the CityInfo from the Database
             CityInfo cityInfo = getCity(cityDTO, zipCodeDTO);
-            System.out.println("9.5");
             if (cityInfo == null) {
                 cityInfo = new CityInfo(zipCodeDTO, cityDTO);
             }
@@ -312,6 +303,7 @@ public class SearchFacade_Impl implements ISearchFacade {
                 String description = hobbyDTO.getDescription();
                 String name = hobbyDTO.getName();
                 Hobby hobby = getHobby(name, description);
+                // If Hobby doesn't exist in database.
                 if (hobby == null) {
                     hobby = new Hobby(name, description);
                 }

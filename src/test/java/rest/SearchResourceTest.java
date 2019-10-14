@@ -364,7 +364,7 @@ public class SearchResourceTest
         .contentType("application/json")
         .accept("application/json")
         .body(new Person())
-        .post("/search/create-with-hobby/person")
+        .post("/search/create-all")
         .then()
         .assertThat()
         .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())

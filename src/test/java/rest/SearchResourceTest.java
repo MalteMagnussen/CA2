@@ -379,7 +379,7 @@ public class SearchResourceTest
         .contentType("application/json")
         .accept("application/json")
         .body(new PersonDTO_IN(person4))
-        .post("/search/create-with-hobby/person")
+        .post("/search/create-all")
         .then()
         .assertThat()
         .statusCode(HttpStatus.OK_200.getStatusCode())
@@ -387,6 +387,11 @@ public class SearchResourceTest
         .body("lastName", equalTo("Evelynn"))
         .body("email", equalTo("legendary@weare.com"))
         .body("hobbies[0].name", equalTo("MHW"))
-        .body("hobbies[0].description", equalTo("Monster Hunter World"));
+        .body("hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("address.street", equalTo("Savvej"))
+        .body("address.cityInfo.city", equalTo("Skagen"))
+        .body("address.cityInfo.zipCode", equalTo("9990"))
+        .body("phones[0].number", equalTo(88888888))
+        .body("phones[0].description", equalTo("Cellphone"));
     }
 }

@@ -5,6 +5,7 @@
  */
 package rest;
 
+import dto.PersonDTO_IN;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -371,22 +372,21 @@ public class SearchResourceTest
         .body("message", equalTo("Missing Input"));
     }
     
-    // TODO - Update following refactor of the method. 
-//    @Test
-//    public void testAddPersonWithEverything()
-//    {
-//        given()
-//        .contentType("application/json")
-//        .accept("application/json")
-//        .body(person4)
-//        .post("/search/create-with-hobby/person")
-//        .then()
-//        .assertThat()
-//        .statusCode(HttpStatus.OK_200.getStatusCode())
-//        .body("firstName", equalTo("Iza"))
-//        .body("lastName", equalTo("Evelynn"))
-//        .body("email", equalTo("legendary@weare.com"))
-//        .body("hobbies[0].name", equalTo("MHW"))
-//        .body("hobbies[0].description", equalTo("Monster Hunter World"));
-//    }
+    @Test
+    public void testAddPersonWithEverything()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new PersonDTO_IN(person4))
+        .post("/search/create-with-hobby/person")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Iza"))
+        .body("lastName", equalTo("Evelynn"))
+        .body("email", equalTo("legendary@weare.com"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"));
+    }
 }

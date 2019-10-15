@@ -63,9 +63,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             PersonDTO_OUT pOUT = new PersonDTO_OUT(p);
             return pOUT;
         } catch (Exception ex) {
-            System.out.println("Failed to persist object");
-            //ex.printStackTrace();
-            return null;
+            throw new WebApplicationException("Failed to persist object", 500);
         } finally {
             em.close();
         }
@@ -215,7 +213,6 @@ public class SearchFacade_Impl implements ISearchFacade {
                 cityInfo = new CityInfo(zipCodeDTO, cityDTO);
             }
 
-            System.out.println("10");
             // Get street and info
             String streetDTO = addressDTO.getStreet();
             String additionalInfoDTO = addressDTO.getAdditionalInfo();

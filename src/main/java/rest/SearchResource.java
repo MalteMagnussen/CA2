@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 @OpenAPIDefinition(
         info = @Info(
                 title = "CA2 API",
-                version = "1.2",
+                version = "1.3",
                 description = "API related to Cphbusiness 3rd semester CS assignment 'CA2'.",
                 contact = @Contact(name = "Github Contributors", url = "https://github.com/MalteMagnussen/CA2/")
         ),
@@ -218,8 +218,8 @@ public class SearchResource {
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Edit existing person", tags = {"Persons"},
-            requestBody = @RequestBody(description = "Person Data (DTO) to be edited.",
+    @Operation(summary = "Edit existing person", tags = {"Persons"}, deprecated = true,
+            requestBody = @RequestBody(description = "Person Data (DTO) to be edited.", 
                     required = true,
                     content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
@@ -238,7 +238,7 @@ public class SearchResource {
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete existing person", tags = {"Persons"},
+    @Operation(summary = "Delete existing person", tags = {"Persons"}, deprecated = true,
             responses = {
                 @ApiResponse(responseCode = "200", description = "The deleted Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -254,7 +254,7 @@ public class SearchResource {
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get hobbies given a name", tags = {"Hobbies"},
+    @Operation(summary = "Get hobbies given a name", tags = {"Hobbies"}, deprecated = true,
             responses = {
                 @ApiResponse(responseCode = "200", description = "List of hobbies with name"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -274,7 +274,7 @@ public class SearchResource {
     @Path("hobby")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add new hobby", tags = {"Hobbies"},
+    @Operation(summary = "Add new hobby", tags = {"Hobbies"}, deprecated = true,
             requestBody = @RequestBody(description = "Hobby Data (DTO) to be added.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
@@ -294,7 +294,7 @@ public class SearchResource {
     @Path("hobby")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Edit existing hobby", tags = {"Hobbies"},
+    @Operation(summary = "Edit existing hobby", tags = {"Hobbies"}, deprecated = true,
             requestBody = @RequestBody(description = "Hobby Data (DTO) to be edited.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
@@ -314,7 +314,7 @@ public class SearchResource {
     @Path("hobby")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete existing Hobby", tags = {"Hobbies"},
+    @Operation(summary = "Delete existing Hobby", tags = {"Hobbies"}, deprecated = true,
             requestBody = @RequestBody(description = "Hobby Data (DTO) to be deleted.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
@@ -333,7 +333,7 @@ public class SearchResource {
     @GET
     @Path("city/{city}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Gets city given a name", tags = {"Cities"},
+    @Operation(summary = "Gets city given a name", tags = {"Cities"}, deprecated = true,
             responses = {
                 @ApiResponse(responseCode = "200", description = "Returns city based on name if it exists"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -352,7 +352,7 @@ public class SearchResource {
     @GET
     @Path("city/zip/{zip}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get city given a zip-code", tags = {"Cities"},
+    @Operation(summary = "Get city given a zip-code", tags = {"Cities"}, deprecated = true,
             responses = {
                 @ApiResponse(responseCode = "200", description = "City based on zip code"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
@@ -372,7 +372,7 @@ public class SearchResource {
     @Path("city")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add new city", tags = {"Cities"},
+    @Operation(summary = "Add new city", tags = {"Cities"}, deprecated = true,
             requestBody = @RequestBody(description = "City Data (DTO) to be added.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
@@ -392,7 +392,7 @@ public class SearchResource {
     @Path("city")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Edit existing city", tags = {"Cities"},
+    @Operation(summary = "Edit existing city", tags = {"Cities"}, deprecated = true,
             requestBody = @RequestBody(description = "City Data (DTO) to be edited.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),
@@ -412,7 +412,7 @@ public class SearchResource {
     @Path("city")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete existing city", tags = {"Cities"},
+    @Operation(summary = "Delete existing city", tags = {"Cities"}, deprecated = true,
             requestBody = @RequestBody(description = "City Data (DTO) to be deleted.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = CityInfoDTO_IN.class))),

@@ -375,6 +375,37 @@ public class SearchFacade_ImplTest {
     }
 
     @Test
+    public void testgetPersonByPhone() {
+        //Arrange
+        PersonDTO_OUT expResult = new PersonDTO_OUT(testPersons.get(0));
+        long phone = testPersons.get(0).getPhones().get(0).getNumber();
+        PersonDTO_OUT result;
+
+        //Act
+        result = facade.getPersonByPhone(phone);
+
+        //Assert
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testgetPersonByPhone_FAIL1() {
+        Throwable result = Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonByPhone(-1); //bad input
+        });
+        assertTrue(result.getMessage().contains("Bad phone input"));
+        //assertTrue(result.getMessage().contains("400")); //dont work
+    }
+
+    @Test
+    public void testgetPersonByPhone_FAIL2() {
+        Throwable result = Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonByPhone(1337); //bad input - but it is within borders. (>0)
+        });
+        assertTrue(result.getMessage().contains("No user with that phone number exists"));
+    }
+
+    @Test
     public void testGetZipcodes() {
         List<String> exp = new ArrayList();
         exp.add("3400");

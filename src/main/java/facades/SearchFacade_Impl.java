@@ -362,6 +362,29 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     /**
+     * Get a person by their phone number
+     *
+     * @param phone phonenumber in question
+     * @return person in question
+     */
+    @Override
+    public PersonDTO_OUT getPersonByPhone(long phone) {
+        if (phone < 0) {
+            throw new WebApplicationException("Bad phone input", 400); //could be more detailed(?)
+        }
+        EntityManager em = getEntityManager();
+        try {
+            return new PersonDTO_OUT(em.createNamedQuery("Person.getPersonByPhoneNumber", Person.class).setParameter("phone", phone).getSingleResult());
+        } catch (NoResultException e) {
+            throw new WebApplicationException("No user with that phone number exists", 404);
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 400);
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
      * Get a List of All ZipCodes.
      *
      * @return List of Integer
@@ -400,7 +423,7 @@ public class SearchFacade_Impl implements ISearchFacade {
 
             // Check if any people live in the city. 
             if (persons == null || persons.isEmpty()) {
-                throw new WebApplicationException("No Persons lives in that city.", 400);
+                throw new WebApplicationException("No Persons lives in that city.", 404);
             }
 
             // Convert Persons to DTO.

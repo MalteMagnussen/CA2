@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -87,6 +86,14 @@ public class Phone implements Serializable {
         this.number = number;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+    
     public Integer getId() {
         return id;
     }

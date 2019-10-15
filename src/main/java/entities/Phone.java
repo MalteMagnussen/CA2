@@ -14,7 +14,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @NamedQueries({
-    @NamedQuery(name = "Phone.deleteAllRows", query = "DELETE FROM Phone"),})
+    @NamedQuery(name = "Phone.deleteAllRows", query = "DELETE FROM Phone"),
+    @NamedQuery(name = "Phone.getPhone", query = "SELECT p FROM Phone p WHERE p.description = :description AND p.number = :number")})
 
 @Entity
 public class Phone implements Serializable {

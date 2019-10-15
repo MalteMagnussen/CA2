@@ -310,10 +310,14 @@ public class SearchFacade_ImplTest {
 
         AddressDTO_OUT expAddressOUT = exp.getAddress();
         AddressDTO_IN addAddressDTO = new AddressDTO_IN(expAddressOUT.getId(), expAddressOUT.getStreet(), expAddressOUT.getAdditionalInfo());
+        addAddressDTO.setCityInfo(new CityInfoDTO_IN(exp.getAddress().getCityInfo()));
 
         PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(exp.getEmail(), exp.getFirstName(), exp.getLastName(), expHobbyIN, expPhoneIN, addAddressDTO);
         addTestPersonDTO.setId(exp.getId());
-        assertEquals(exp, facade.editPerson(addTestPersonDTO));
+        PersonDTO_OUT result = facade.editPerson(addTestPersonDTO);
+        System.out.println("EXP: " + exp.toString());
+        System.out.println("RESULT: " + result.toString());
+        assertEquals(exp, result);
     }
     
     @Test

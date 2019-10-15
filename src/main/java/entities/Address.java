@@ -21,10 +21,10 @@ import javax.persistence.OneToMany;
  *
  * @author
  */
-@NamedQueries({
-    @NamedQuery(name = "Address.deleteAllRows", query = "DELETE FROM Address"),})
-
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Address.deleteAllRows", query = "DELETE FROM Address"),
+    @NamedQuery(name = "Address.getAddress", query = "SELECT a FROM Address a WHERE a.additionalInfo = :info AND a.street = :street")})
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;

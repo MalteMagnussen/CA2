@@ -150,7 +150,7 @@ public class SearchResource {
     }
 
     @POST
-    @Path("/create-with-hobby/person")
+    @Path("/create-all")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add new person", tags = {"Persons"},
@@ -161,7 +161,7 @@ public class SearchResource {
                 @ApiResponse(responseCode = "200", description = "The Newly created Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
-    public PersonDTO_OUT addPersonWithHobbies(PersonDTO_IN person) {
+    public PersonDTO_OUT addPersonWithEverything(PersonDTO_IN person) {
         if (person == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }

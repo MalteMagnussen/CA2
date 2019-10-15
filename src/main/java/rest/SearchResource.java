@@ -227,11 +227,7 @@ public class SearchResource {
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
     public PersonDTO_OUT editPerson(PersonDTO_IN person) {
-        if (person == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        //change through facade, return
-        return new PersonDTO_OUT();
+       return FACADE.editPerson(person);
     }
 
     @DELETE

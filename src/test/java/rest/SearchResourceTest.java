@@ -1,5 +1,6 @@
 package rest;
 
+import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Address;
 import entities.CityInfo;
@@ -525,22 +526,51 @@ public class SearchResourceTest
         .body("message", equalTo("Missing Input"));
     }
     
-    // TODO - Update following refactor of the method. 
-//    @Test
-//    public void testAddPersonWithEverything()
-//    {
-//        given()
-//        .contentType("application/json")
-//        .accept("application/json")
-//        .body(person4)
-//        .post("/search/create-with-hobby/person")
-//        .then()
-//        .assertThat()
-//        .statusCode(HttpStatus.OK_200.getStatusCode())
-//        .body("firstName", equalTo("Iza"))
-//        .body("lastName", equalTo("Evelynn"))
-//        .body("email", equalTo("legendary@weare.com"))
-//        .body("hobbies[0].name", equalTo("MHW"))
-//        .body("hobbies[0].description", equalTo("Monster Hunter World"));
-//    }
+    @Test
+    public void testAddPersonWithEverything()
+    {
+        person4.setAddress(address3);
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new PersonDTO_IN(person4))
+        .post("/search/create-all")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Iza"))
+        .body("lastName", equalTo("Evelynn"))
+        .body("email", equalTo("legendary@weare.com"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("address.street", equalTo("Savvej"))
+        .body("address.cityInfo.city", equalTo("Skagen"))
+        .body("address.cityInfo.zipCode", equalTo("9990"))
+        .body("phones[0].number", equalTo(88888888))
+        .body("phones[0].description", equalTo("Cellphone"));
+    }
+    
+    @Test
+    public void testAddPersonWithEverything2()
+    {
+        person4.setAddress(address1);
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new PersonDTO_IN(person4))
+        .post("/search/create-all")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Iza"))
+        .body("lastName", equalTo("Evelynn"))
+        .body("email", equalTo("legendary@weare.com"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("address.street", equalTo("Klampenborgvej"))
+        .body("address.cityInfo.city", equalTo("Lyngby"))
+        .body("address.cityInfo.zipCode", equalTo("2800"))
+        .body("phones[0].number", equalTo(88888888))
+        .body("phones[0].description", equalTo("Cellphone"));
+    }
 }

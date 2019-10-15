@@ -34,6 +34,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import utils.EMF_Creator;
 import com.google.gson.JsonObject;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -166,7 +168,6 @@ public class SearchResource {
         return FACADE.addPersonWithEverything(person);
     }
 
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @GET
     @Path("/phone")
     @Produces(MediaType.APPLICATION_JSON)
@@ -177,29 +178,24 @@ public class SearchResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested Person"),
                 @ApiResponse(responseCode = "404", description = "Person not found")})
-
     public PersonDTO_OUT getPersonInfoByPhone(@QueryParam("phone") long phone) {
         //    /api/search/phone?phone=<phone>
-        //get from facade
-        return new PersonDTO_OUT();
+        return FACADE.getPersonByPhone(phone);
     }
 
     @GET
     @Path("/city")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Get all persons living in a given city (i.e. 2800 Lyngby)",
-            tags = {"General"},
+            tags = {"General"}, parameters = @Parameter(array = @ArraySchema(schema = @Schema(implementation = CityInfoDTO_IN.class))),
             responses = {
                 @ApiResponse(
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
                 @ApiResponse(responseCode = "200", description = "The Requested list of persons"),
                 @ApiResponse(responseCode = "404", description = "No persons in that city found")})
-    public List<PersonDTO_OUT> getPersonsByCity(@QueryParam("city") String city) {
-        //    /api/search/city?city=<city>
-        //example mentions both zip & city?
-        //get from facade
-        List<PersonDTO_OUT> returnList = new ArrayList();
-        return returnList;
+    public List<PersonDTO_OUT> getPersonsByCity(@QueryParam("zip") String zip, @QueryParam("city") String city) {
+        //    /api/search/city?zip=<zip>&city=<city>
+        return FACADE.getPersonsInCity(new CityInfoDTO_IN(zip, city));
     }
 
     @GET
@@ -209,16 +205,15 @@ public class SearchResource {
             tags = {"General"},
             responses = {
                 @ApiResponse(
-                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO_OUT.class))),
-                @ApiResponse(responseCode = "200", description = "The Requested count of persons with that hoby"),
-                @ApiResponse(responseCode = "404", description = "No hobbies like that found")})
-    public List<String> getAllZipCodes() {
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityInfoDTO_OUT.class))),
+                @ApiResponse(responseCode = "200", description = "An list of all the zipcodes"),
+                @ApiResponse(responseCode = "400", description = "No zipcodes found")})
+    public List<Integer> getAllZipCodes() {
         //    /api/search/zip
-        //get from facade. Not sure if we want this to be string, object or ?
-        List<String> returnList = new ArrayList();
-        return returnList;
+        return FACADE.getZipcodes();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @PUT
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
@@ -334,7 +329,7 @@ public class SearchResource {
         //delete through facade, return
         return new HobbyDTO_OUT();
     }
-    
+
     @GET
     @Path("city/{city}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -353,7 +348,7 @@ public class SearchResource {
         CityInfoDTO_OUT returnItem = FACADE.getCityByName(city);
         return returnItem;
     }
-    
+
     @GET
     @Path("city/zip/{zip}")
     @Produces(MediaType.APPLICATION_JSON)

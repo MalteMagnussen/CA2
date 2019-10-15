@@ -22,6 +22,9 @@ public class PhoneDTO_OUT {
     @Schema(example = "Cell phone")
     private String description;
 
+    public PhoneDTO_OUT() {
+    }
+
     public PhoneDTO_OUT(Integer id, int number, String description) {
         this.id = id;
         this.number = number;

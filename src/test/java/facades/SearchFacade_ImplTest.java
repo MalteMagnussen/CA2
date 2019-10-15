@@ -310,10 +310,14 @@ public class SearchFacade_ImplTest {
 
         AddressDTO_OUT expAddressOUT = exp.getAddress();
         AddressDTO_IN addAddressDTO = new AddressDTO_IN(expAddressOUT.getId(), expAddressOUT.getStreet(), expAddressOUT.getAdditionalInfo());
+        addAddressDTO.setCityInfo(new CityInfoDTO_IN(exp.getAddress().getCityInfo()));
 
         PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(exp.getEmail(), exp.getFirstName(), exp.getLastName(), expHobbyIN, expPhoneIN, addAddressDTO);
         addTestPersonDTO.setId(exp.getId());
-        assertEquals(exp, facade.editPerson(addTestPersonDTO));
+        PersonDTO_OUT result = facade.editPerson(addTestPersonDTO);
+        System.out.println("EXP: " + exp.toString());
+        System.out.println("RESULT: " + result.toString());
+        assertEquals(exp, result);
     }
     
     @Test
@@ -372,6 +376,37 @@ public class SearchFacade_ImplTest {
         PersonDTO_OUT expResult = new PersonDTO_OUT(new Person("rigmor@email.dk", "Rigmor", "Noggenfogger", hobbies1, phones1, address1));
         List<PersonDTO_OUT> result = facade.getPersonByFullName("Rigmor Noggenfogger");
         assertEquals(expResult, result.get(0));
+    }
+
+    @Test
+    public void testgetPersonByPhone() {
+        //Arrange
+        PersonDTO_OUT expResult = new PersonDTO_OUT(testPersons.get(0));
+        long phone = testPersons.get(0).getPhones().get(0).getNumber();
+        PersonDTO_OUT result;
+
+        //Act
+        result = facade.getPersonByPhone(phone);
+
+        //Assert
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testgetPersonByPhone_FAIL1() {
+        Throwable result = Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonByPhone(-1); //bad input
+        });
+        assertTrue(result.getMessage().contains("Bad phone input"));
+        //assertTrue(result.getMessage().contains("400")); //dont work
+    }
+
+    @Test
+    public void testgetPersonByPhone_FAIL2() {
+        Throwable result = Assertions.assertThrows(WebApplicationException.class, () -> {
+            facade.getPersonByPhone(1337); //bad input - but it is within borders. (>0)
+        });
+        assertTrue(result.getMessage().contains("No user with that phone number exists"));
     }
 
     @Test

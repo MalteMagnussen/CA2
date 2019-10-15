@@ -30,6 +30,9 @@ public class AddressDTO_OUT {
         this.additionalInfo = additionalInfo;
     }
 
+    public AddressDTO_OUT() {
+    }
+    
     public AddressDTO_OUT(Address address) {
         this.id = address.getId();
         this.street = address.getStreet();

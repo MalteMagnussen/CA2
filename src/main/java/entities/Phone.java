@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,7 +14,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @NamedQueries({
-    @NamedQuery(name = "Phone.deleteAllRows", query = "DELETE FROM Phone"),})
+    @NamedQuery(name = "Phone.deleteAllRows", query = "DELETE FROM Phone"),
+    @NamedQuery(name = "Phone.getPhone", query = "SELECT p FROM Phone p WHERE p.description = :description AND p.number = :number")})
 
 @Entity
 public class Phone implements Serializable {
@@ -87,6 +87,14 @@ public class Phone implements Serializable {
         this.number = number;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+    
     public Integer getId() {
         return id;
     }

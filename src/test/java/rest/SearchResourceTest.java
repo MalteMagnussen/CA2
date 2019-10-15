@@ -1,21 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package rest;
 
 import dto.PersonDTO_IN;
+import dto.PersonDTO_OUT;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
 import io.restassured.RestAssured;
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -24,11 +22,15 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import utils.EMF_Creator;
 
 public class SearchResourceTest
@@ -124,11 +126,20 @@ public class SearchResourceTest
         person3 = new Person("george@pres.com", "George", "Washington", hobbies3);
         person4 = new Person("legendary@weare.com", "Iza", "Evelynn", hobbies4);
 
+        //Add persons to phones
+        phone1.setPerson(person1);
+        phone2.setPerson(person1);
+        phone3.setPerson(person3);
+        phone4.setPerson(person2);
+        phone5.setPerson(person4);
+        
+        //Add phones to person
         person1.addPhone(phone1);
         person1.addPhone(phone2);
         person3.addPhone(phone3);
         person2.addPhone(phone4);
         person4.addPhone(phone5);
+        
         person1.setAddress(address1);
         person2.setAddress(address1);
         person3.setAddress(address2);
@@ -137,8 +148,12 @@ public class SearchResourceTest
     }
 
     @BeforeEach
-    public void setUp() throws Exception
+    public void setUp(TestInfo testInfo) throws Exception
     {
+        if (testInfo.getTags().contains("skipBeforeEach")){
+            return; //do not perform SetUp
+        } //else set it up (https://stackoverflow.com/a/49694288)
+            
         EntityManager em = emf.createEntityManager();
         try
         {
@@ -158,6 +173,8 @@ public class SearchResourceTest
             em.persist(phone3);
             em.persist(city2);
             em.persist(address2);
+            em.persist(city3);
+            em.persist(address3);
             em.getTransaction().commit();
         } catch (Exception e)
         {
@@ -175,8 +192,11 @@ public class SearchResourceTest
         try
         {
             em.getTransaction().begin();
-            em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Phone.deleteAllRows").executeUpdate();
             em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Address.deleteAllRows").executeUpdate();
+            em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
             em.getTransaction().commit();
 
         } catch (Exception e)
@@ -273,6 +293,140 @@ public class SearchResourceTest
         .body("[0].address.cityInfo.city", equalTo("Lyngby"))
         .body("[0].address.cityInfo.zipCode", equalTo("2800"))
         .body("[0].phones[0].number", equalTo(13371337));
+    }
+    
+     @Test
+    public void testGetPersonInfoByPhone() {
+        //Arrange
+        PersonDTO_OUT expResult = new PersonDTO_OUT(person1);
+        long phone = expResult.getPhones().get(1).getNumber();
+        PersonDTO_OUT result;
+        
+        //Act
+         result = get("/search/phone?phone={phone}", phone). then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .extract()
+                .as(PersonDTO_OUT.class);
+
+        //Assert
+        assertThat((result), equalTo(expResult));
+    }
+    
+    @Test
+    public void testGetPersonInfoByPhone_Exception1() {
+        long phone =  -1; //bad input
+        
+        given()
+                .get("/search/phone?phone={phone}", phone).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Bad phone input"));
+    }
+    
+    @Test
+    public void testGetPersonInfoByPhone_Exception2() {
+        long phone = 25252525; //good input but not found
+        
+        given()
+                .get("/search/phone?phone={phone}", phone).then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode()).
+                body("code", equalTo(404)).
+                body("message", equalTo("No user with that phone number exists"));
+    }
+    
+    @Test
+    public void testGetPersonsByCity(){
+        //Arrange
+        List<PersonDTO_OUT> expResult = new ArrayList();
+        expResult.add(new PersonDTO_OUT(person1)); //both from city1
+        expResult.add(new PersonDTO_OUT(person2)); //both from city1
+        String zip = city1.getZipCode(); //2800
+        String city = city1.getCity(); //Lyngby
+        List<PersonDTO_OUT> result;
+        
+        //Act
+         result = get("search/city?zip={zip}&city={city}", zip, city). then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .extract().body()
+                .jsonPath().getList(".", PersonDTO_OUT.class); //https://stackoverflow.com/a/53006523
+
+        //Assert
+        assertThat((result), equalTo(expResult));
+    }
+    
+    @Test
+    public void testGetPersonsByCity_Exception1(){
+        //Arrange
+        String zip = ""; //bad input
+        String city = ""; 
+        
+        given()
+                .get("search/city?zip={zip}&city={city}", zip, city).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Missing Input"));
+    }
+    
+    @Test
+    public void testGetPersonsByCity_Exception2(){
+        //Arrange
+        String zip = "123"; //Incorrect input
+        String city = "NoCity"; 
+        
+        given()
+                .get("search/city?zip={zip}&city={city}", zip, city).then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode()).
+                body("code", equalTo(404)).
+                body("message", equalTo("No Persons lives in that city."));
+    }
+    
+    @Test 
+    public void testGetAllZipCodes(){
+        //Arrange
+        List<Integer> expResult = new ArrayList();
+        expResult.add(Integer.valueOf(city1.getZipCode())); //2800
+        expResult.add(Integer.valueOf(city2.getZipCode())); //8000
+        expResult.add(Integer.valueOf(city3.getZipCode())); //9900
+        List<Integer> result;
+        
+        //Act
+        result = get("/search/zip/").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .extract().body()
+                .jsonPath().getList("", int.class); //could probably be Integer.class but I'm scared to change anything now that it works.
+
+        //Assert
+////        System.out.println(result.getClass());
+////        System.out.println(expResult.getClass());
+////        System.out.println(expResult.get(0).getClass());
+////        System.out.println(result.get(0).getClass());
+////        System.out.println(result);
+////        System.out.println(expResult);
+        //assertThat((result), equalTo(expResult));
+        //assertEquals(expResult, result);
+        //assertThat(expResult, Matchers.containsInAnyOrder(result.get(0), result.get(1), result.get(2)));
+        assertThat("ARE THEY EQUAL", result, containsInAnyOrder(expResult.toArray()));
+    }
+    
+    /**
+     * Simulates an empty db
+     */
+    @Tag("skipBeforeEach")
+    @Test public void testGetAllZipCodes_Exception1(){
+        //Assert
+        given().
+                get("/search/zip/").then().
+                statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                assertThat().
+                body("code", equalTo(400)).
+                body("message", equalTo("No cities in the database."));
     }
     
     @Test

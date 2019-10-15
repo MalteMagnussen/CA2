@@ -21,7 +21,8 @@ import javax.persistence.NamedQuery;
     @NamedQuery(name = "Hobby.deleteAllRows", query = "DELETE FROM Hobby"),
     @NamedQuery(name = "Hobby.getAll", query = "SELECT h FROM Hobby h"),
     @NamedQuery(name = "Hobby.getHobbyByID", query = "SELECT h FROM Hobby h WHERE h.id = :id"),
-    @NamedQuery(name = "Hobby.getHobby", query = "SELECT h FROM Hobby h WHERE h.name = :name AND h.description = :desc")})
+    @NamedQuery(name = "Hobby.getHobby", query = "SELECT h FROM Hobby h WHERE h.name = :name AND h.description = :desc"),
+    @NamedQuery(name = "Hobby.getHobbyByName", query = "SELECT h FROM Hobby h WHERE h.name = :name ")})
 public class Hobby implements Serializable {
 
     private static final long serialVersionUID = 1L;

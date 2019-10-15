@@ -2,6 +2,7 @@ package facades;
 
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
+import dto.HobbyDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import entities.Address;
@@ -148,5 +149,11 @@ public interface ISearchFacade {
      * @return success message.
      */
     public CityInfoDTO_OUT deleteCity(int ID);
-
+    
+    /**
+     * Get hobby by name.
+     * @param name of the hobby
+     * @return HobbyDTO_OUT
+     */
+    public HobbyDTO_OUT getHobbyByName(String name);
 }

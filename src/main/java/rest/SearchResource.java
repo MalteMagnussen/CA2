@@ -254,20 +254,20 @@ public class SearchResource {
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Get hobbies given a name", tags = {"Hobbies"},
+    @Operation(summary = "Get hobby given a name", tags = {"Hobbies"},
             responses = {
-                @ApiResponse(responseCode = "200", description = "List of hobbies with name"),
+                @ApiResponse(responseCode = "200", description = "Hobby with the given name"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
 
-    public List<HobbyDTO_OUT> getHobbyByName(@PathParam("hobby") String hobby) {
+    public HobbyDTO_OUT getHobbyByName(@PathParam("hobby") String hobby) {
         if (hobby == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
         //Based on entity & DTO we might want first name + last name
         //get from facade, return
-        List<HobbyDTO_OUT> returnList = new ArrayList();
-        return returnList;
+        HobbyDTO_OUT result = FACADE.getHobbyByName(hobby);
+        return result;
     }
 
     @POST

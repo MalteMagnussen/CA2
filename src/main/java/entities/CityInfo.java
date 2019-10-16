@@ -104,14 +104,6 @@ public class CityInfo implements Serializable {
         this.addresses = addresses;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.zipCode);
-        hash = 23 * hash + Objects.hashCode(this.city);
-        hash = 23 * hash + Objects.hashCode(this.addresses);
-        return hash;
-    }
 
     @Override
     public boolean equals(Object obj) {

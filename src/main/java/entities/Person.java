@@ -155,16 +155,6 @@ public class Person implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.email);
-        hash = 59 * hash + Objects.hashCode(this.firstName);
-        hash = 59 * hash + Objects.hashCode(this.lastName);
-        hash = 59 * hash + Objects.hashCode(this.hobbies);
-        return hash;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

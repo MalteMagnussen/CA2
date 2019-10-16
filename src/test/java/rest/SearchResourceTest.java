@@ -10,6 +10,7 @@ import entities.Phone;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.with;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.ArrayList;
@@ -403,16 +404,7 @@ public class SearchResourceTest
                 .jsonPath().getList("", int.class); //could probably be Integer.class but I'm scared to change anything now that it works.
 
         //Assert
-////        System.out.println(result.getClass());
-////        System.out.println(expResult.getClass());
-////        System.out.println(expResult.get(0).getClass());
-////        System.out.println(result.get(0).getClass());
-////        System.out.println(result);
-////        System.out.println(expResult);
-        //assertThat((result), equalTo(expResult));
-        //assertEquals(expResult, result);
-        //assertThat(expResult, Matchers.containsInAnyOrder(result.get(0), result.get(1), result.get(2)));
-        assertThat("ARE THEY EQUAL", result, containsInAnyOrder(expResult.toArray()));
+        assertThat("ARE THEY EQUAL", result, containsInAnyOrder(expResult.toArray())); //Since we don't control the order of persisting we will have to check this way
     }
     
     /**
@@ -572,5 +564,27 @@ public class SearchResourceTest
         .body("address.cityInfo.zipCode", equalTo("2800"))
         .body("phones[0].number", equalTo(88888888))
         .body("phones[0].description", equalTo("Cellphone"));
+    }
+    
+    @Test
+    public void testEditPerson(){
+        //Arrange (Tricky - Requires DTO_IN, returns DTO_OUT)
+        PersonDTO_IN expResult = new PersonDTO_IN(person3);
+        expResult.setFirstName("TestPerson_Does_Not_Exist$");
+        PersonDTO_OUT result;
+
+        //Act
+                    result =
+                        with()
+                        .body(person1)  //include object in body
+                        .contentType("application/json")
+                        .when().put("/person").then() //put REQUEST
+                        .assertThat().log().body()
+                        //.statusCode(HttpStatus.OK_200.getStatusCode())
+                        .extract()
+                        .as(PersonDTO_OUT.class); //extract result JSON as object
+
+        //Assert
+        assertThat((result), equalTo(expResult));
     }
 }

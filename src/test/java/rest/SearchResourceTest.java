@@ -295,6 +295,20 @@ public class SearchResourceTest
         .body("[0].phones[0].number", equalTo(13371337));
     }
     
+    @Test
+    public void testGetHobbyByName()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .get("/search/hobby/MHW")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("description", equalTo("Monster Hunter World"))
+        .body("name", equalTo("MHW"));
+    }
+    
      @Test
     public void testGetPersonInfoByPhone() {
         //Arrange

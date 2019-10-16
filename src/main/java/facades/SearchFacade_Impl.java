@@ -4,6 +4,7 @@ import dto.AddressDTO_IN;
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
 import dto.HobbyDTO_IN;
+import dto.HobbyDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
 import dto.PhoneDTO_IN;
@@ -373,6 +374,19 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
+    public HobbyDTO_OUT getHobbyByName(String name) {
+        EntityManager em = getEntityManager();
+        try {
+            Hobby hobby = em.createNamedQuery("Hobby.getHobbyByName", Hobby.class).setParameter("name", name).getSingleResult();
+            return new HobbyDTO_OUT(hobby);
+        } catch (Exception ex) {
+            throw new WebApplicationException("No hobby with given name in database", 404);
+        } finally {
+            em.close();
+        }
+    }
+    
     /**
      * Get a person by their phone number
      *
@@ -596,6 +610,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    //This method is used in testing but not anywhere else
     public CityInfo getCity(String name) {
         EntityManager em = getEntityManager();
         try {
@@ -613,7 +628,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     }
 
     // Next 3 methods are helpmethods for Edit and Add person. Can also be used for other things, but were made for that purpose. 
-    public CityInfo getCity(String city, String zip) {
+    private CityInfo getCity(String city, String zip) {
         EntityManager em = getEntityManager();
         try {
             CityInfo cityInfo = em.createNamedQuery("CityInfo.getCity", CityInfo.class).setParameter("city", city).setParameter("zip", zip).getSingleResult();
@@ -628,7 +643,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         return null;
     }
 
-    public Address getAddress(String street, String info) {
+    private Address getAddress(String street, String info) {
         EntityManager em = getEntityManager();
         try {
             Address address = em.createNamedQuery("Address.getAddress", Address.class).setParameter("info", info).setParameter("street", street).getSingleResult();
@@ -643,7 +658,7 @@ public class SearchFacade_Impl implements ISearchFacade {
         return null;
     }
 
-    public Hobby getHobby(String name, String desc) {
+    private Hobby getHobby(String name, String desc) {
         EntityManager em = getEntityManager();
         try {
             Hobby hobby = em.createNamedQuery("Hobby.getHobby", Hobby.class).setParameter("name", name).setParameter("desc", desc).getSingleResult();
@@ -658,7 +673,8 @@ public class SearchFacade_Impl implements ISearchFacade {
         return null;
     }
 
-    public Phone getPhone(String description, int phoneNumber) {
+    //Not used
+    private Phone getPhone(String description, int phoneNumber) {
         EntityManager em = getEntityManager();
         try {
             Phone phone = em.createNamedQuery("Phone.getPhone", Phone.class).setParameter("number", phoneNumber).setParameter("description", description).getSingleResult();

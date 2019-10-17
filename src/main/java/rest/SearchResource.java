@@ -218,7 +218,7 @@ public class SearchResource {
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Edit existing person", tags = {"Persons"}, deprecated = true,
+    @Operation(summary = "Edit existing person", tags = {"Persons"},
             requestBody = @RequestBody(description = "Person Data (DTO) to be edited.", 
                     required = true,
                     content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),

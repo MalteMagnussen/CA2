@@ -241,8 +241,7 @@ public class SearchResource {
     public PersonDTO_OUT deletePerson(@PathParam("id") int personId) {
         return FACADE.deletePerson(personId);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
+    
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -255,12 +254,10 @@ public class SearchResource {
         if (hobby == null) {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
-        //Based on entity & DTO we might want first name + last name
-        //get from facade, return
-        HobbyDTO_OUT result = FACADE.getHobbyByName(hobby);
-        return result;
+        return FACADE.getHobbyByName(hobby);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @POST
     @Path("hobby")
     @Produces(MediaType.APPLICATION_JSON)

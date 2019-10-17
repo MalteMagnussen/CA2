@@ -228,8 +228,7 @@ public class SearchResource {
     public PersonDTO_OUT editPerson(PersonDTO_IN person) {
         return FACADE.editPerson(person);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
+    
     @DELETE
     @Path("person/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -243,6 +242,7 @@ public class SearchResource {
         return FACADE.deletePerson(personId);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @GET
     @Path("hobby/{hobby}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -251,7 +251,6 @@ public class SearchResource {
                 @ApiResponse(responseCode = "200", description = "Hobby with the given name"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
-
     public HobbyDTO_OUT getHobbyByName(@PathParam("hobby") String hobby) {
         if (hobby == null) {
             throw new WebApplicationException("Not all required arguments included", 400);

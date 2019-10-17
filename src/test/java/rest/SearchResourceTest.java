@@ -566,7 +566,7 @@ public class SearchResourceTest
         .body("phones[0].description", equalTo("Cellphone"));
     }
     
-    @Test
+    //@Test
     public void testEditPerson(){
         //Arrange (Tricky - Requires DTO_IN, returns DTO_OUT)
         PersonDTO_IN expResult = new PersonDTO_IN(person3);
@@ -580,7 +580,7 @@ public class SearchResourceTest
                         .contentType("application/json")
                         .when().put("/person").then() //put REQUEST
                         .assertThat().log().body()
-                        //.statusCode(HttpStatus.OK_200.getStatusCode())
+                        .statusCode(HttpStatus.OK_200.getStatusCode())
                         .extract()
                         .as(PersonDTO_OUT.class); //extract result JSON as object
 

@@ -1,5 +1,6 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dto.PhoneDTO_IN;
 import java.io.Serializable;
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class Phone implements Serializable {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
+    @JsonBackReference
     private Person person;
 
     public Phone() {

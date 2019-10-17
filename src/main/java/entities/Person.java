@@ -1,5 +1,6 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dto.PersonDTO_IN;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class Person implements Serializable {
             orphanRemoval = true)
     
     @JoinColumn(name = "phone_id")
+    @JsonManagedReference
     private List<Phone> phones = new ArrayList();
 
     @ManyToOne(cascade = CascadeType.PERSIST)

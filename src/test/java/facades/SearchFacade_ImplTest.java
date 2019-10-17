@@ -377,6 +377,13 @@ public class SearchFacade_ImplTest {
         List<PersonDTO_OUT> result = facade.getPersonByFullName("Rigmor Noggenfogger");
         assertEquals(expResult, result.get(0));
     }
+    
+    @Test
+    public void testGetHobbyByName() {
+        HobbyDTO_OUT expResult = new HobbyDTO_OUT(new Hobby("Fisk", "Kun havfisk"));
+        HobbyDTO_OUT result = facade.getHobbyByName("fisk");
+        assertEquals(expResult, result);
+    }
 
     @Test
     public void testgetPersonByPhone() {

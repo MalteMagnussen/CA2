@@ -198,7 +198,11 @@ public class SearchResourceTest
             em.createNamedQuery("Person.deleteAllRows").executeUpdate();
             em.createNamedQuery("Address.deleteAllRows").executeUpdate();
             em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
+            em.createNativeQuery("ALTER TABLE PHONE AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE HOBBY AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
             em.createNativeQuery("ALTER TABLE PERSON AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE ADDRESS AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE CITYINFO AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
             em.getTransaction().commit();
 
         } catch (Exception e)
@@ -643,9 +647,8 @@ public class SearchResourceTest
     @Test
     public void testDeletePerson(){
         //Arrange
-        PersonDTO_IN expResult = new PersonDTO_IN(person2);
+        PersonDTO_IN expResult = new PersonDTO_IN(person3); //only inhabitant of address
         int id = expResult.getId();
-        System.out.println(id);
         PersonDTO_OUT result;
 
         //Act
@@ -661,4 +664,38 @@ public class SearchResourceTest
         assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
     }
     
+    @Test
+    public void testDeletePersonMultipleOccupants(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person2); //both person1 & person2 live at address1 -- see below test
+        //assertThat(person1.getAddress(), equalTo(person2.getAddress()));
+        int id = expResult.getId();
+        PersonDTO_OUT result;
+
+        //Act
+                    result =
+                        given()
+                        .contentType("application/json")
+                        .when().delete("search/person/delete/{id}", id).then() 
+                        .assertThat().log().body()
+                        .statusCode(HttpStatus.OK_200.getStatusCode())
+                        .extract()
+                        .as(PersonDTO_OUT.class); //extract result JSON as object
+        //Assert
+        assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
+    }
+    
+    @Test
+    public void testDeletePerson_Exception1(){
+        //Arrange
+        int id = 99; //bad input
+        
+        //Assert
+        given()
+                .delete("/search/person/delete/{id}", id).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Could not delete Person. Provided ID does not exist."));
+    }
 }

@@ -231,20 +231,16 @@ public class SearchResource {
 
     //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @DELETE
-    @Path("person")
+    @Path("person/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete existing person", tags = {"Persons"}, deprecated = true,
+    @Operation(summary = "Delete existing person", tags = {"Persons"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "The deleted Person"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
-    public PersonDTO_OUT deletePerson(PersonDTO_IN person) {
-        if (person == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        //delete through facade, return
-        return new PersonDTO_OUT();
+    public PersonDTO_OUT deletePerson(@PathParam("id") int personId) {
+        return FACADE.deletePerson(personId);
     }
 
     @GET

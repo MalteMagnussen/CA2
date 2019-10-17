@@ -198,6 +198,7 @@ public class SearchResourceTest
             em.createNamedQuery("Person.deleteAllRows").executeUpdate();
             em.createNamedQuery("Address.deleteAllRows").executeUpdate();
             em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
+            em.createNativeQuery("ALTER TABLE PERSON AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
             em.getTransaction().commit();
 
         } catch (Exception e)
@@ -623,6 +624,27 @@ public class SearchResourceTest
                         .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
                 body("code", equalTo(400)).
                 body("message", equalTo("Person ID was not set."));
+    }
+    
+    @Test
+    public void testDeletePerson(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person2);
+        int id = expResult.getId();
+        System.out.println(id);
+        PersonDTO_OUT result;
+
+        //Act
+                    result =
+                        given()
+                        .contentType("application/json")
+                        .when().delete("search/person/delete/{id}", id).then() 
+                        .assertThat().log().body()
+                        .statusCode(HttpStatus.OK_200.getStatusCode())
+                        .extract()
+                        .as(PersonDTO_OUT.class); //extract result JSON as object
+        //Assert
+        assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
     }
     
 }

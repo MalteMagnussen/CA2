@@ -361,11 +361,26 @@ public class SearchFacade_ImplTest {
         assertEquals(exp, result);
 
     }
-
     
     @Test
+    public void testDeletePerson_MultipleOccupants() {
+        //Person1 & Person4 both live at address1
+        //assertEquals(person1.getAddress(), person4.getAddress());
+        PersonDTO_OUT exp = new PersonDTO_OUT(person1);
+        PersonDTO_OUT result = facade.deletePerson(exp.getId());
+        assertEquals(exp, result);
+    }
+    
+    @Test
+    public void testDeletePerson_No_Address() {
+        PersonDTO_OUT exp = new PersonDTO_OUT(person5);
+        PersonDTO_OUT result = facade.deletePerson(exp.getId());
+        assertEquals(exp, result);
+    }
+
+    @Test
     public void testDeletePerson_FAIL() {
-        int expID = facade.getPersonByFullName("Rigmor Noggenfogger").get(0).getId();
+        int expID = 1337;
         Assertions.assertThrows(WebApplicationException.class, () -> {
             facade.deletePerson(expID);
         });

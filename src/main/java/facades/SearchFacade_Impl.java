@@ -128,7 +128,7 @@ public class SearchFacade_Impl implements ISearchFacade {
     @Override
     public PersonDTO_OUT editPerson(PersonDTO_IN personDTO) {
         // Guard for PersonDTO being null / empty
-        if (personDTO == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()
+        if (personDTO == null || personDTO.getId() == null || personDTO.getEmail() == null || personDTO.getEmail().isEmpty()
                 || personDTO.getFirstName() == null || personDTO.getFirstName().isEmpty()
                 || personDTO.getLastName() == null || personDTO.getLastName().isEmpty()
                 || personDTO.getAddress() == null || personDTO.getHobbies() == null || personDTO.getHobbies().isEmpty()

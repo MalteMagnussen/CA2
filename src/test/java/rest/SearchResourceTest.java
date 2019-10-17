@@ -566,7 +566,7 @@ public class SearchResourceTest
         .body("phones[0].description", equalTo("Cellphone"));
     }
     
-    //@Test
+    @Test
     public void testEditPerson(){
         //Arrange (Tricky - Requires DTO_IN, returns DTO_OUT)
         PersonDTO_IN expResult = new PersonDTO_IN(person3);
@@ -576,15 +576,53 @@ public class SearchResourceTest
         //Act
                     result =
                         with()
-                        .body(person1)  //include object in body
+                        .body(expResult)  //include object in body
                         .contentType("application/json")
-                        .when().put("/person").then() //put REQUEST
-                        .assertThat().log().body()
+                        .when().put("search/person").then() //put REQUEST
+                        .assertThat()
                         .statusCode(HttpStatus.OK_200.getStatusCode())
                         .extract()
                         .as(PersonDTO_OUT.class); //extract result JSON as object
-
         //Assert
-        assertThat((result), equalTo(expResult));
+        assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
     }
+    
+    /**
+     * Facade throws 400 error with this message when input is bad
+     */
+    @Test
+    public void testEditPerson_Exception1(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person3);
+        expResult.setId(null); //bad input
+        
+        //Assert
+        given()
+                .body(expResult).contentType("application/json")
+                .when().put("search/person").then() 
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Missing Input"));
+    }
+    
+    /**
+     * Facade throws 400 error with this message when ID is 0
+     */
+    @Test
+    public void testEditPerson_Exception2(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person3);
+        expResult.setId(0); //bad input
+        
+        //Assert
+        given()
+                .body(expResult).contentType("application/json")
+                .when().put("search/person").then() 
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Person ID was not set."));
+    }
+    
 }

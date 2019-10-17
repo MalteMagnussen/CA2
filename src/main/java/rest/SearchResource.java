@@ -213,13 +213,12 @@ public class SearchResource {
         return FACADE.getZipcodes();
     }
 
-    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @PUT
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Edit existing person", tags = {"Persons"},
-            requestBody = @RequestBody(description = "Person Data (DTO) to be edited.", 
+            requestBody = @RequestBody(description = "Person Data (DTO) to be edited.",
                     required = true,
                     content = @Content(schema = @Schema(implementation = PersonDTO_IN.class))),
             responses = {
@@ -227,9 +226,10 @@ public class SearchResource {
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
             })
     public PersonDTO_OUT editPerson(PersonDTO_IN person) {
-       return FACADE.editPerson(person);
+        return FACADE.editPerson(person);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @DELETE
     @Path("person")
     @Produces(MediaType.APPLICATION_JSON)

@@ -255,8 +255,16 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.getTransaction().begin();
             // Find Person from ID
             Person person = em.find(Person.class, id);
-            if (person == null || person.getAddress() != null) {
+            if (person == null) {
                 throw new WebApplicationException("Could not delete Person. Provided ID does not exist.", 400);
+            }
+            if (person.getAddress() != null) {
+                //Check if there are other occupants
+                Integer residents = getResidents(person.getAddress().getId());
+                //If person in question is sole inhabitant, delete the address
+                if (residents == 1) {
+                    em.remove(person.getAddress());
+                }
             }
             em.remove(person);
             em.getTransaction().commit();
@@ -383,7 +391,7 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.close();
         }
     }
-    
+
     /**
      * Get a person by their phone number
      *
@@ -668,6 +676,26 @@ public class SearchFacade_Impl implements ISearchFacade {
             em.close();
         }
         return null;
+    }
+
+    /**
+     * Used for checking if there are other occupants on a given address before
+     * deleting it (deletePerson)
+     *
+     * @param addressID ID of address to check
+     * @return count(*) of occupants on address
+     */
+    private Integer getResidents(int addressID) {
+        EntityManager em = getEntityManager();
+        try {
+            Integer residents = em.createQuery("SELECT COUNT(p) FROM Person p WHERE p.address.id = :id", Number.class).setParameter("id", addressID).getSingleResult().intValue();
+            if (residents == null || residents == 0) {
+                throw new WebApplicationException("Error investigating address", 500);
+            }
+            return residents;
+        } finally {
+            em.close();
+        }
     }
 
     //Not used

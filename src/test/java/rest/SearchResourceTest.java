@@ -586,6 +586,29 @@ public class SearchResourceTest
     }
     
     @Test
+    public void testAddPersonWithEverything_AlreadyExists()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new PersonDTO_IN(person1))
+        .post("/search/create-all")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Johnny"))
+        .body("lastName", equalTo("Ringo"))
+        .body("email", equalTo("the@king.com"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[1].description", equalTo("Warframe"))
+        .body("address.street", equalTo("Klampenborgvej"))
+        .body("address.cityInfo.city", equalTo("Lyngby"))
+        .body("address.cityInfo.zipCode", equalTo("2800"))
+        .body("phones[0].number", equalTo(13371337));
+    }
+    
+    @Test
     public void testEditPerson(){
         //Arrange (Tricky - Requires DTO_IN, returns DTO_OUT)
         PersonDTO_IN expResult = new PersonDTO_IN(person3);

@@ -284,7 +284,15 @@ public class SearchFacade_Impl implements ISearchFacade {
                 || personDTO.getFirstName() == null || personDTO.getFirstName().isEmpty()
                 || personDTO.getLastName() == null || personDTO.getLastName().isEmpty()
                 || personDTO.getAddress() == null || personDTO.getHobbies() == null || personDTO.getHobbies().isEmpty()
-                || personDTO.getPhones() == null || personDTO.getPhones().isEmpty()) {
+                || personDTO.getPhones() == null || personDTO.getPhones().isEmpty()
+                || personDTO.getPhones().get(0).getNumber() < 0 
+                || personDTO.getPhones().get(0).getDescription().trim().equals("")
+                || personDTO.getAddress().getStreet().trim().equals("")
+                || personDTO.getAddress().getAdditionalInfo().trim().equals("")
+                || personDTO.getAddress().getCityInfo().getCity().trim().equals("")
+                || personDTO.getAddress().getCityInfo().getZipCode().trim().equals("")
+                || personDTO.getHobbies().get(0).getName().trim().equals("")
+                || personDTO.getHobbies().get(0).getDescription().trim().equals("")) {
             throw new WebApplicationException("Missing Input", 400);
         }
 

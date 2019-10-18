@@ -31,6 +31,7 @@ public class PersonDTO_IN {
     }
 
     public PersonDTO_IN(Person person) {
+        this.id = person.getId();
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();

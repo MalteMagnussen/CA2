@@ -114,15 +114,6 @@ public class Address implements Serializable {
         this.persons = persons;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.street);
-        hash = 53 * hash + Objects.hashCode(this.additionalInfo);
-        hash = 53 * hash + Objects.hashCode(this.cityinfo);
-        hash = 53 * hash + Objects.hashCode(this.persons);
-        return hash;
-    }
 
     @Override
     public boolean equals(Object obj) {

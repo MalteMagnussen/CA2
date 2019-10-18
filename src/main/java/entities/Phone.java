@@ -1,5 +1,6 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dto.PhoneDTO_IN;
 import java.io.Serializable;
 import java.util.Objects;
@@ -29,6 +30,7 @@ public class Phone implements Serializable {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "person_id")
+    @JsonBackReference
     private Person person;
 
     public Phone() {
@@ -109,15 +111,6 @@ public class Phone implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + this.number;
-        hash = 37 * hash + Objects.hashCode(this.description);
-        hash = 37 * hash + Objects.hashCode(this.person);
-        return hash;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -140,7 +133,5 @@ public class Phone implements Serializable {
         }
         return true;
     }
-    
-    
 
 }

@@ -1,5 +1,6 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dto.PersonDTO_IN;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class Person implements Serializable {
             orphanRemoval = true)
     
     @JoinColumn(name = "phone_id")
+    @JsonManagedReference
     private List<Phone> phones = new ArrayList();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -152,16 +154,6 @@ public class Person implements Serializable {
 
     public void addHobby(Hobby hobby) {
         this.hobbies.add(hobby);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.email);
-        hash = 59 * hash + Objects.hashCode(this.firstName);
-        hash = 59 * hash + Objects.hashCode(this.lastName);
-        hash = 59 * hash + Objects.hashCode(this.hobbies);
-        return hash;
     }
 
     @Override

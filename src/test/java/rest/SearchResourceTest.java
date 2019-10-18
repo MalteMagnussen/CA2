@@ -10,6 +10,7 @@ import entities.Phone;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.with;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.ArrayList;
@@ -197,6 +198,11 @@ public class SearchResourceTest
             em.createNamedQuery("Person.deleteAllRows").executeUpdate();
             em.createNamedQuery("Address.deleteAllRows").executeUpdate();
             em.createNamedQuery("CityInfo.deleteAllRows").executeUpdate();
+            em.createNativeQuery("ALTER TABLE PHONE AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE HOBBY AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE PERSON AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE ADDRESS AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
+            em.createNativeQuery("ALTER TABLE CITYINFO AUTO_INCREMENT = 1").executeUpdate(); //should ideally be added to all the deleteAllRows-queries.
             em.getTransaction().commit();
 
         } catch (Exception e)
@@ -417,16 +423,7 @@ public class SearchResourceTest
                 .jsonPath().getList("", int.class); //could probably be Integer.class but I'm scared to change anything now that it works.
 
         //Assert
-////        System.out.println(result.getClass());
-////        System.out.println(expResult.getClass());
-////        System.out.println(expResult.get(0).getClass());
-////        System.out.println(result.get(0).getClass());
-////        System.out.println(result);
-////        System.out.println(expResult);
-        //assertThat((result), equalTo(expResult));
-        //assertEquals(expResult, result);
-        //assertThat(expResult, Matchers.containsInAnyOrder(result.get(0), result.get(1), result.get(2)));
-        assertThat("ARE THEY EQUAL", result, containsInAnyOrder(expResult.toArray()));
+        assertThat("ARE THEY EQUAL", result, containsInAnyOrder(expResult.toArray())); //Since we don't control the order of persisting we will have to check this way
     }
     
     /**
@@ -586,5 +583,119 @@ public class SearchResourceTest
         .body("address.cityInfo.zipCode", equalTo("2800"))
         .body("phones[0].number", equalTo(88888888))
         .body("phones[0].description", equalTo("Cellphone"));
+    }
+    
+    @Test
+    public void testEditPerson(){
+        //Arrange (Tricky - Requires DTO_IN, returns DTO_OUT)
+        PersonDTO_IN expResult = new PersonDTO_IN(person3);
+        expResult.setFirstName("TestPerson_Does_Not_Exist$");
+        PersonDTO_OUT result;
+
+        //Act
+                    result =
+                        with()
+                        .body(expResult)  //include object in body
+                        .contentType("application/json")
+                        .when().put("search/person").then() //put REQUEST
+                        .assertThat()
+                        .statusCode(HttpStatus.OK_200.getStatusCode())
+                        .extract()
+                        .as(PersonDTO_OUT.class); //extract result JSON as object
+        //Assert
+        assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
+    }
+    
+    /**
+     * Facade throws 400 error with this message when input is bad
+     */
+    @Test
+    public void testEditPerson_Exception1(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person3);
+        expResult.setId(null); //bad input
+        
+        //Assert
+        given()
+                .body(expResult).contentType("application/json")
+                .when().put("search/person").then() 
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Missing Input"));
+    }
+    
+    /**
+     * Facade throws 400 error with this message when ID is 0
+     */
+    @Test
+    public void testEditPerson_Exception2(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person3);
+        expResult.setId(0); //bad input
+        
+        //Assert
+        given()
+                .body(expResult).contentType("application/json")
+                .when().put("search/person").then() 
+                        .assertThat()
+                        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Person ID was not set."));
+    }
+    
+    @Test
+    public void testDeletePerson(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person3); //only inhabitant of address
+        int id = expResult.getId();
+        PersonDTO_OUT result;
+
+        //Act
+                    result =
+                        given()
+                        .contentType("application/json")
+                        .when().delete("search/person/delete/{id}", id).then() 
+                        .assertThat().log().body()
+                        .statusCode(HttpStatus.OK_200.getStatusCode())
+                        .extract()
+                        .as(PersonDTO_OUT.class); //extract result JSON as object
+        //Assert
+        assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
+    }
+    
+    @Test
+    public void testDeletePersonMultipleOccupants(){
+        //Arrange
+        PersonDTO_IN expResult = new PersonDTO_IN(person2); //both person1 & person2 live at address1 -- see below test
+        //assertThat(person1.getAddress(), equalTo(person2.getAddress()));
+        int id = expResult.getId();
+        PersonDTO_OUT result;
+
+        //Act
+                    result =
+                        given()
+                        .contentType("application/json")
+                        .when().delete("search/person/delete/{id}", id).then() 
+                        .assertThat().log().body()
+                        .statusCode(HttpStatus.OK_200.getStatusCode())
+                        .extract()
+                        .as(PersonDTO_OUT.class); //extract result JSON as object
+        //Assert
+        assertThat((result), equalTo(new PersonDTO_OUT(expResult)));
+    }
+    
+    @Test
+    public void testDeletePerson_Exception1(){
+        //Arrange
+        int id = 99; //bad input
+        
+        //Assert
+        given()
+                .delete("/search/person/delete/{id}", id).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode()).
+                body("code", equalTo(400)).
+                body("message", equalTo("Could not delete Person. Provided ID does not exist."));
     }
 }

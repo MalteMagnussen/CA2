@@ -538,6 +538,37 @@ public class SearchResourceTest
     }
     
     @Test
+    public void testFailAddPersonWithEverything_MissingInput2()
+    {
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(new Person("Lil", "Yung", "lotta@money.com"))
+        .post("/search/create-all")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+        .body("message", equalTo("Missing Input"));
+    }
+    
+    @Test
+    public void testFailAddPersonWithEverything_MissingInput3()
+    {
+        Phone phone = new Phone(18901890, null);
+        Person person = new Person("Lil", "Yung", "lotta@money.com");
+        person.addPhone(phone);
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(person)
+        .post("/search/create-all")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.BAD_REQUEST_400.getStatusCode())
+        .body("message", equalTo("Missing Input"));
+    }
+    
+    @Test
     public void testAddPersonWithEverything()
     {
         person4.setAddress(address3);
@@ -592,6 +623,63 @@ public class SearchResourceTest
         .contentType("application/json")
         .accept("application/json")
         .body(new PersonDTO_IN(person1))
+        .post("/search/create-all")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("firstName", equalTo("Johnny"))
+        .body("lastName", equalTo("Ringo"))
+        .body("email", equalTo("the@king.com"))
+        .body("hobbies[0].description", equalTo("Monster Hunter World"))
+        .body("hobbies[0].name", equalTo("MHW"))
+        .body("hobbies[1].description", equalTo("Warframe"))
+        .body("address.street", equalTo("Klampenborgvej"))
+        .body("address.cityInfo.city", equalTo("Lyngby"))
+        .body("address.cityInfo.zipCode", equalTo("2800"))
+        .body("phones[0].number", equalTo(13371337));
+    }
+    
+    @Test
+    public void testAddPersonWithEverything_AlreadyExists2()
+    {
+        //Testing if the endpoint still works when you add everything without id
+        String payload = "{\n" +
+        "  \"firstName\": \"Johnny\",\n" +
+        "  \"lastName\": \"Ringo\",\n" +
+        "  \"email\": \"the@king.com\",\n" +
+        "  \"hobbies\": [\n" +
+        "    {\n" +
+        "      \"name\": \"MHW\",\n" +
+        "      \"description\": \"Monster Hunter World\"\n" +
+        "    },\n" +
+        "    {\n" +
+        "      \"name\": \"WF\",\n" +
+        "      \"description\": \"Warframe\"\n" +
+        "    }\n" +
+        "  ],\n" +
+        "  \"phones\": [\n" +
+        "    {\n" +
+        "      \"number\": 13371337,\n" +
+        "      \"description\": \"Cellphone\"\n" +
+        "    },\n" +
+        "    {\n" +
+        "      \"number\": 13376887,\n" +
+        "      \"description\": \"Cellphone\"\n" +
+        "    }\n" +
+        "  ],\n" +
+        "  \"address\": {\n" +
+        "    \"street\": \"Klampenborgvej\",\n" +
+        "    \"additionalInfo\": \"Nr. 16, 1. sal tv.\",\n" +
+        "    \"cityInfo\": {\n" +
+        "      \"zipCode\": \"2800\",\n" +
+        "      \"city\": \"Lyngby\"\n" +
+        "    }\n" +
+        "  }\n" +
+        "}";
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(payload)
         .post("/search/create-all")
         .then()
         .assertThat()

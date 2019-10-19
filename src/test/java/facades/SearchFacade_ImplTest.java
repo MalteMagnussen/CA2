@@ -221,6 +221,18 @@ public class SearchFacade_ImplTest {
     }
     
     @Test
+    public void testAddPersonWithEverything2() {
+        PersonDTO_OUT exp = new PersonDTO_OUT(person3);
+        PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(person3);
+        facade.addPerson(addTestPersonDTO);
+        facade.addPerson(addTestPersonDTO);
+        facade.addPerson(addTestPersonDTO);
+        //This test will fail if the facade creates duplicates instead of updating
+        //existing entities and their relations
+        assertEquals(exp, facade.addPersonWithEverything(addTestPersonDTO));
+    }
+    
+    @Test
     public void testAddPersonWithEverything_FAIL() {
         ArrayList<Hobby> addHobbies = new ArrayList();
         Hobby hobby = new Hobby("testhobby", "hobbytest");

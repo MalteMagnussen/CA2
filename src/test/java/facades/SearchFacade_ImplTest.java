@@ -221,6 +221,72 @@ public class SearchFacade_ImplTest {
     }
     
     @Test
+    public void testAddPersonWithEverything2() {
+        PersonDTO_OUT exp = new PersonDTO_OUT(person3);
+        PersonDTO_IN addTestPersonDTO = new PersonDTO_IN(person3);
+        facade.addPerson(addTestPersonDTO);
+        facade.addPerson(addTestPersonDTO);
+        facade.addPerson(addTestPersonDTO);
+        //This test should fail if the facade creates duplicates instead of updating
+        //existing entities and their relations
+        assertEquals(exp, facade.addPersonWithEverything(addTestPersonDTO));
+    }
+    
+    @Test
+    public void testAddPersonWithEverything3() {
+        ArrayList<Hobby> addHobbies = new ArrayList();
+        Hobby hobby = new Hobby("testhobby", "hobbytest");
+        addHobbies.add(hobby);
+        ArrayList<Phone> addPhones = new ArrayList();
+        Phone phone = new Phone(1234, "phonetest");
+        addPhones.add(phone);
+        CityInfo testCity = new CityInfo("testZip", "testCity");
+        Address addAddress = new Address("addTestAddress", "testAddAddress", testCity);
+        Person preExp = new Person("test@email.dk", "testFirstname", "testLastname", addHobbies, addPhones, addAddress);
+        
+        ArrayList<HobbyDTO_IN> addHobbiesDTO = new ArrayList();
+        addHobbiesDTO.add(new HobbyDTO_IN(hobby));
+        ArrayList<PhoneDTO_IN> addPhonesDTO = new ArrayList();
+        addPhonesDTO.add(new PhoneDTO_IN(phone));
+        AddressDTO_IN addAddressDTO = new AddressDTO_IN(addAddress);
+        PersonDTO_OUT exp = new PersonDTO_OUT(preExp);
+
+        PersonDTO_IN addTestPersonDTO = new PersonDTO_IN("test@email.dk", "testFirstname", "testLastname", addHobbiesDTO, addPhonesDTO, addAddressDTO);
+        
+        facade.addPerson(addTestPersonDTO);
+        facade.addPerson(addTestPersonDTO);
+        facade.addPerson(addTestPersonDTO);
+        //This test should fail if the facade creates duplicates instead of updating
+        //existing entities and their relations
+        assertEquals(exp, facade.addPersonWithEverything(addTestPersonDTO));
+    }
+    
+    @Test
+    public void testAddPersonWithEverything4() {
+        ArrayList<PersonDTO_OUT> exp = new ArrayList();
+        exp.add(new PersonDTO_OUT(person1));
+        exp.add(new PersonDTO_OUT(person2));
+        exp.add(new PersonDTO_OUT(person3));
+        exp.add(new PersonDTO_OUT(person4));
+        exp.add(new PersonDTO_OUT(person5));
+        facade.addPersonWithEverything(new PersonDTO_IN(person3));
+        assertEquals(exp.size() + 1, facade.getAllPersonDTO_OUT().size());
+    }
+    
+    @Test
+    public void testAddPersonWithEverything5() {
+        ArrayList<PersonDTO_OUT> exp = new ArrayList();
+        exp.add(new PersonDTO_OUT(person1));
+        exp.add(new PersonDTO_OUT(person2));
+        exp.add(new PersonDTO_OUT(person3));
+        exp.add(new PersonDTO_OUT(person4));
+        exp.add(new PersonDTO_OUT(person5));
+        facade.addPersonWithEverything(new PersonDTO_IN(person3));
+        facade.addPersonWithEverything(new PersonDTO_IN(person4));
+        assertEquals(exp.size() + 2, facade.getAllPersonDTO_OUT().size());
+    }
+    
+    @Test
     public void testAddPersonWithEverything_FAIL() {
         ArrayList<Hobby> addHobbies = new ArrayList();
         Hobby hobby = new Hobby("testhobby", "hobbytest");

@@ -297,12 +297,14 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
 
         // Create Person
-        Person person = new Person(personDTO.getEmail(), personDTO.getFirstName(), personDTO.getLastName());
+        Person person = new Person(personDTO.getEmail().trim(), personDTO.getFirstName().trim(), personDTO.getLastName().trim());
 
         // Add Phones to Person. 
         // They are unique for each person, so no need to check DB for these. 
         personDTO.getPhones().forEach((p) -> {
-            person.addPhone(new Phone(p));
+            Phone phone = new Phone(p);
+            phone.setPerson(person);
+            person.addPhone(phone);
         });
 
         EntityManager em = getEntityManager();
@@ -314,35 +316,38 @@ public class SearchFacade_Impl implements ISearchFacade {
             // Check if Hobby already exists to avoid duplicates.
             // If it does, we manage it with JPA. 
             personDTO.getHobbies().forEach((hobbyDTO) -> {
-                String description = hobbyDTO.getDescription();
-                String name = hobbyDTO.getName();
+                String description = hobbyDTO.getDescription().trim();
+                String name = hobbyDTO.getName().trim();
                 Hobby hobby = getHobby(name, description);
                 // If Hobby doesn't exist in database.
                 if (hobby == null) {
                     hobby = new Hobby(name, description);
                 }
-                // Add Hobby to person. 
+                hobby = em.merge(hobby);
                 person.addHobby(hobby);
             });
 
             // Check if address already exists. 
-            String street = personDTO.getAddress().getStreet();
-            String additionalInfo = personDTO.getAddress().getAdditionalInfo();
+            String street = personDTO.getAddress().getStreet().trim();
+            String additionalInfo = personDTO.getAddress().getAdditionalInfo().trim();
             Address address = getAddress(street, additionalInfo);
             if (address == null) {
                 address = new Address(street, additionalInfo);
             }
 
             // Check if City already exists. 
-            String zipCode = personDTO.getAddress().getCityInfo().getZipCode();
-            String cityName = personDTO.getAddress().getCityInfo().getCity();
+            String zipCode = personDTO.getAddress().getCityInfo().getZipCode().trim();
+            String cityName = personDTO.getAddress().getCityInfo().getCity().trim();
             CityInfo cityInfo = getCity(cityName, zipCode);
             if (cityInfo == null) {
                 cityInfo = new CityInfo(zipCode, cityName);
             }
+            cityInfo = em.merge(cityInfo);
             // Set City on address. 
             address.setCityinfo(cityInfo);
-
+            
+            address = em.merge(address);
+            address.addPerson(person);
             // Set address on Person. 
             person.setAddress(address);
 

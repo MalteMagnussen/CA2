@@ -319,60 +319,40 @@ public class SearchFacade_Impl implements ISearchFacade {
                 String description = hobbyDTO.getDescription();
                 String name = hobbyDTO.getName();
                 Hobby hobby = getHobby(name, description);
-                boolean newHobby = false;
                 // If Hobby doesn't exist in database.
                 if (hobby == null) {
-                    newHobby = true;
                     hobby = new Hobby(name, description);
                 }
-                hobby.addPerson(person);
-                if (newHobby){
-                    person.addHobby(hobby);
-                } else {
-                    em.merge(hobby);
-                    person.addHobby(hobby);
-                }
+                hobby = em.merge(hobby);
+                person.addHobby(hobby);
             });
 
             // Check if address already exists. 
             String street = personDTO.getAddress().getStreet();
             String additionalInfo = personDTO.getAddress().getAdditionalInfo();
-            boolean newAddress = false;
             Address address = getAddress(street, additionalInfo);
             if (address == null) {
-                newAddress = true;
                 address = new Address(street, additionalInfo);
             }
 
             // Check if City already exists. 
             String zipCode = personDTO.getAddress().getCityInfo().getZipCode();
             String cityName = personDTO.getAddress().getCityInfo().getCity();
-            boolean newCity = false;
             CityInfo cityInfo = getCity(cityName, zipCode);
             if (cityInfo == null) {
-                newCity = true;
                 cityInfo = new CityInfo(zipCode, cityName);
             }
-            if (!newCity) {
-                em.merge(cityInfo);
-            }
+            cityInfo = em.merge(cityInfo);
             // Set City on address. 
             address.setCityinfo(cityInfo);
             
-            if (newAddress) {
-                em.persist(address);
-            } else {
-                em.merge(address);
-            }
+            address = em.merge(address);
+            address.addPerson(person);
             // Set address on Person. 
             person.setAddress(address);
 
-            // Persist entities
+            // Persist person
             em.persist(person);
-            for (Phone p : person.getPhones())
-            {
-                em.persist(p);
-            }
 
             // Commit. 
             em.getTransaction().commit();

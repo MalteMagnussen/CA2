@@ -467,6 +467,46 @@ public class SearchFacade_ImplTest {
     }
 
     @Test
+    public void testEditHobby() {
+        Hobby preExp = new Hobby(); 
+        preExp.setId(hobbies1.get(1).getId());
+        preExp.setName(hobbies1.get(1).getName());
+        String newDescription = "Only fish from the sea";
+        preExp.setDescription(newDescription);
+        HobbyDTO_OUT exp = new HobbyDTO_OUT(preExp);
+        HobbyDTO_OUT res = facade.editHobby(new HobbyDTO_IN(preExp));
+        assertEquals(exp, res);
+    }
+    
+    @Test
+    public void testEditHobbyHighDependency() {
+        Hobby hobby = new Hobby(); 
+        hobby.setId(hobbies1.get(1).getId());
+        hobby.setName(hobbies1.get(1).getName());
+        String newDescription = "Only fish from the sea";
+        hobby.setDescription(newDescription);
+        facade.editHobby(new HobbyDTO_IN(hobby));
+        List<PersonDTO_OUT> persons = facade.getPersonByFullName("Rigmor Noggenfogger");
+        List<HobbyDTO_OUT> hobbies = persons.get(0).getHobbies();
+        assertEquals(2, hobbies.size());
+    }
+    
+    @Test
+    public void testEditHobbyHighDependency2() {
+        Hobby hobby = new Hobby(); 
+        hobby.setId(hobbies1.get(1).getId());
+        hobby.setName(hobbies1.get(1).getName());
+        String newDescription = "Only fish from the sea";
+        hobby.setDescription(newDescription);
+        facade.editHobby(new HobbyDTO_IN(hobby));
+        List<PersonDTO_OUT> persons = facade.getPersonByFullName("Rigmor Noggenfogger");
+        List<HobbyDTO_OUT> hobbies = persons.get(0).getHobbies();
+        HobbyDTO_OUT exp = new HobbyDTO_OUT(hobby);
+        HobbyDTO_OUT res = hobbies.get(1);
+        assertEquals(exp, res);
+    }
+    
+    @Test
     public void testgetPersonByPhone() {
         //Arrange
         PersonDTO_OUT expResult = new PersonDTO_OUT(testPersons.get(0));

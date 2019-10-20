@@ -110,4 +110,11 @@ public class Hobby implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Hobby{" + "id=" + id + ", name=" + name + ", description=" + description + ", persons=" + persons + '}';
+    }
+
+    
 }

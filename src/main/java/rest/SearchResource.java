@@ -256,6 +256,26 @@ public class SearchResource {
         }
         return FACADE.getHobbyByName(hobby);
     }
+    
+    @PUT
+    @Path("hobby")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Edit existing hobby", tags = {"Hobbies"},
+            requestBody = @RequestBody(description = "Hobby Data (DTO) to be edited (must include ID).",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "The edited Hobby"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
+            })
+    public HobbyDTO_OUT editHobby(HobbyDTO_IN hobby) {
+        if (hobby == null) {
+            throw new WebApplicationException("Not all required arguments included", 400);
+        }
+        //change through facade, return
+        return FACADE.editHobby(hobby);
+    }
 
     //<editor-fold defaultstate="collapsed" desc="API NOT YET DONE">
     @POST
@@ -275,26 +295,6 @@ public class SearchResource {
             throw new WebApplicationException("Not all required arguments included", 400);
         }
         //add through facade, return
-        return new HobbyDTO_OUT();
-    }
-
-    @PUT
-    @Path("hobby")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Edit existing hobby", tags = {"Hobbies"}, deprecated = true,
-            requestBody = @RequestBody(description = "Hobby Data (DTO) to be edited.",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = HobbyDTO_IN.class))),
-            responses = {
-                @ApiResponse(responseCode = "200", description = "The edited Hobby"),
-                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body")
-            })
-    public HobbyDTO_OUT editHobby(HobbyDTO_IN hobby) {
-        if (hobby == null) {
-            throw new WebApplicationException("Not all required arguments included", 400);
-        }
-        //change through facade, return
         return new HobbyDTO_OUT();
     }
 

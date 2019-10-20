@@ -405,6 +405,27 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
     }
 
+    @Override
+    public HobbyDTO_OUT editHobby(HobbyDTO_IN hobbyDTO) {
+        EntityManager em = getEntityManager();
+        Hobby hobby = new Hobby(hobbyDTO);
+        if (hobby.getId() == null || hobby.getName() == null 
+            || hobby.getDescription() == null || hobby.getName().trim().equals(""))
+        {
+            throw new WebApplicationException("Invalid or missing input", 404);
+        }
+        try {
+            em.getTransaction().begin();
+            em.merge(hobby);
+            em.getTransaction().commit();
+            return new HobbyDTO_OUT(hobby);
+        } catch (Exception ex) {
+            throw new WebApplicationException(ex.getMessage(), 404);
+        } finally {
+            em.close();
+        }
+    }
+    
     /**
      * Get a person by their phone number
      *

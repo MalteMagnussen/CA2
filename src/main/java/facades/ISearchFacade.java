@@ -2,6 +2,7 @@ package facades;
 
 import dto.CityInfoDTO_IN;
 import dto.CityInfoDTO_OUT;
+import dto.HobbyDTO_IN;
 import dto.HobbyDTO_OUT;
 import dto.PersonDTO_IN;
 import dto.PersonDTO_OUT;
@@ -156,4 +157,11 @@ public interface ISearchFacade {
      * @return HobbyDTO_OUT
      */
     public HobbyDTO_OUT getHobbyByName(String name);
+    
+    /**
+     * Edit given hobby's description
+     * @param hobbyDTO
+     * @return HobbyDTO_OUT - the edited hobby
+     */
+    public HobbyDTO_OUT editHobby(HobbyDTO_IN hobbyDTO);
 }

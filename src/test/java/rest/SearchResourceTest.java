@@ -315,6 +315,26 @@ public class SearchResourceTest
         .body("name", equalTo("MHW"));
     }
     
+    @Test
+    public void testEditHobby()
+    {
+        Hobby hobby = new Hobby();
+        hobby.setId(hobbies1.get(1).getId());
+        hobby.setName(hobbies1.get(1).getName()); //WF
+        hobby.setDescription("Warframe - Made by DE");
+        given()
+        .contentType("application/json")
+        .accept("application/json")
+        .body(hobby)
+        .put("/search/hobby")
+        .then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("name", equalTo("WF"))
+        .body("description", equalTo("Warframe - Made by DE"))
+        .body("id", equalTo(hobby.getId()));
+    }
+    
      @Test
     public void testGetPersonInfoByPhone() {
         //Arrange

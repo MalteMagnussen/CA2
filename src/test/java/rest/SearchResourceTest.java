@@ -319,7 +319,7 @@ public class SearchResourceTest
     public void testEditHobby()
     {
         Hobby hobby = new Hobby();
-        hobby.setId(hobbies1.get(1).getId()); //2
+        hobby.setId(hobbies1.get(1).getId());
         hobby.setName(hobbies1.get(1).getName()); //WF
         hobby.setDescription("Warframe - Made by DE");
         given()
@@ -332,7 +332,7 @@ public class SearchResourceTest
         .statusCode(HttpStatus.OK_200.getStatusCode())
         .body("name", equalTo("WF"))
         .body("description", equalTo("Warframe - Made by DE"))
-        .body("id", equalTo(2));
+        .body("id", equalTo(hobby.getId()));
     }
     
      @Test

@@ -416,9 +416,9 @@ public class SearchFacade_Impl implements ISearchFacade {
         }
         try {
             em.getTransaction().begin();
-            em.merge(hobby);
+            Hobby res = em.merge(hobby);
             em.getTransaction().commit();
-            return new HobbyDTO_OUT(hobby);
+            return new HobbyDTO_OUT(res);
         } catch (Exception ex) {
             throw new WebApplicationException(ex.getMessage(), 404);
         } finally {

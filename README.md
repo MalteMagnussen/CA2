@@ -8,3 +8,5 @@ BackEnd repo for Course Assignment 2. Hold Krykke.
 * [FrontEnd Repo](https://github.com/MalteMagnussen/CA2-FrontEnd)
 
 * [Assignment description](https://docs.google.com/document/d/1KwvtlWjx-FINtFSUfkybmThiOaHmSonQgOhssf3hkdU)
+
+What?
